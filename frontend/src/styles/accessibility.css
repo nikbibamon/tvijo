@@ -1,0 +1,231 @@
+/**
+ * Accessibility Styles for Editor Dashboard
+ * High contrast, large text, reduced motion, color blind support
+ */
+
+/* High Contrast Mode */
+.high-contrast {
+  --color-primary: #00ffff !important;
+  --color-success: #00ff00 !important;
+  --color-error: #ff0000 !important;
+  --color-warning: #ffff00 !important;
+  --bg-primary: #000000 !important;
+  --bg-secondary: #1a1a1a !important;
+  --text-primary: #ffffff !important;
+  --text-secondary: #cccccc !important;
+  --border-color: #ffffff !important;
+}
+
+.high-contrast * {
+  border-color: var(--border-color) !important;
+}
+
+.high-contrast button:focus,
+.high-contrast input:focus,
+.high-contrast select:focus,
+.high-contrast textarea:focus {
+  outline: 3px solid #00ffff !important;
+  outline-offset: 2px !important;
+}
+
+.high-contrast .bg-slate-900,
+.high-contrast .bg-slate-900\/50,
+.high-contrast .bg-\[\#080a0f\] {
+  background-color: #000000 !important;
+}
+
+.high-contrast .bg-slate-800 {
+  background-color: #1a1a1a !important;
+}
+
+.high-contrast .text-cyan-400,
+.high-contrast .text-cyan-500 {
+  color: #00ffff !important;
+}
+
+.high-contrast .text-green-400 {
+  color: #00ff00 !important;
+}
+
+.high-contrast .text-red-400 {
+  color: #ff0000 !important;
+}
+
+.high-contrast .text-purple-400 {
+  color: #ff00ff !important;
+}
+
+.high-contrast .text-blue-400 {
+  color: #00ccff !important;
+}
+
+.high-contrast .text-slate-400,
+.high-contrast .text-slate-500 {
+  color: #cccccc !important;
+}
+
+.high-contrast .border-white\/10,
+.high-contrast .border-white\/5 {
+  border-color: #ffffff !important;
+  border-width: 2px !important;
+}
+
+.high-contrast .bg-cyan-500\/10,
+.high-contrast .bg-cyan-500\/20 {
+  background-color: rgba(0, 255, 255, 0.2) !important;
+}
+
+.high-contrast .bg-green-500\/10 {
+  background-color: rgba(0, 255, 0, 0.2) !important;
+}
+
+.high-contrast .bg-red-500\/10 {
+  background-color: rgba(255, 0, 0, 0.2) !important;
+}
+
+/* Large Text Mode */
+.large-text {
+  font-size: 18px;
+}
+
+.large-text h1 {
+  font-size: 2.5rem !important;
+}
+
+.large-text h2 {
+  font-size: 2rem !important;
+}
+
+.large-text h3 {
+  font-size: 1.5rem !important;
+}
+
+.large-text button,
+.large-text input,
+.large-text select,
+.large-text textarea {
+  font-size: 1.1rem !important;
+}
+
+.large-text .text-xs {
+  font-size: 0.9rem !important;
+}
+
+.large-text .text-sm {
+  font-size: 1rem !important;
+}
+
+.large-text .text-base {
+  font-size: 1.1rem !important;
+}
+
+/* Reduced Motion */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Color Blind Modes */
+
+/* Protanopia (red-blind) - enhance blues and yellows */
+.color-blind-protanopia {
+  --color-danger: #ffff00 !important;
+  --color-success: #00ccff !important;
+}
+
+.color-blind-protanopia .text-red-400,
+.color-blind-protanopia .text-red-500 {
+  color: #ffff00 !important;
+}
+
+.color-blind-protanopia .bg-red-500\/10 {
+  background-color: rgba(255, 255, 0, 0.2) !important;
+}
+
+/* Deuteranopia (green-blind) - enhance blues and yellows/oranges */
+.color-blind-deuteranopia {
+  --color-danger: #ff6600 !important;
+  --color-success: #0066ff !important;
+}
+
+.color-blind-deuteranopia .text-green-400,
+.color-blind-deuteranopia .text-green-500 {
+  color: #0066ff !important;
+}
+
+.color-blind-deuteranopia .bg-green-500\/10 {
+  background-color: rgba(0, 102, 255, 0.2) !important;
+}
+
+/* Tritanopia (blue-blind) - enhance reds and greens */
+.color-blind-tritanopia {
+  --color-primary: #ff00ff !important;
+  --color-info: #ff0066 !important;
+}
+
+.color-blind-tritanopia .text-cyan-400,
+.color-blind-tritanopia .text-blue-400,
+.color-blind-tritanopia .text-cyan-500,
+.color-blind-tritanopia .text-blue-500 {
+  color: #ff00ff !important;
+}
+
+.color-blind-tritanopia .bg-cyan-500\/10 {
+  background-color: rgba(255, 0, 255, 0.2) !important;
+}
+
+/* Focus indicators */
+*:focus-visible {
+  outline: 2px solid #06b6d4;
+  outline-offset: 2px;
+}
+
+/* Skip link for keyboard navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: #000;
+  color: #fff;
+  padding: 8px;
+  text-decoration: none;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only-focusable:active,
+.sr-only-focusable:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}

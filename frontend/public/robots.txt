@@ -1,0 +1,41 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /newsadmin/
+Disallow: /_next/
+Disallow: /directory
+Disallow: /investment-funds
+
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+Disallow: /newsadmin/
+Disallow: /_next/
+Disallow: /directory
+Disallow: /investment-funds
+
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+Disallow: /newsadmin/
+Disallow: /_next/
+Disallow: /directory
+Disallow: /investment-funds
+
+User-agent: Yandex
+Allow: /
+Disallow: /api/
+Disallow: /newsadmin/
+Disallow: /_next/
+Disallow: /directory
+Disallow: /investment-funds
+
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /api/
+Disallow: /newsadmin/
+Disallow: /_next/
+Disallow: /directory
+Disallow: /investment-funds
+
+Sitemap: https://tvijo.com/sitemap.xml
