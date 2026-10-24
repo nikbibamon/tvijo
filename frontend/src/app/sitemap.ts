@@ -1,4 +1,6 @@
 import type { MetadataRoute } from 'next';
+import connectedKnowledge from '@/data/connected-knowledge.json';
+import {fetchPublicRelease} from '@/lib/tvijo-extension-release';
 import { comparisons } from '@/data/compare';
 import { solutions } from '@/data/solutions';
 import { LOCALES, DEFAULT_LOCALE } from '@/i18n/config';
@@ -313,6 +315,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Keep curated metadata, but prefer the article's dated source over now.
     const existing = pages.get(page.url);
     pages.set(page.url, existing ? { ...existing, lastModified: page.lastModified } : page);
+  }
+  // Editorial source dates stay stable across rebuilds and status checks.
+  for (const locale of ['en', 'ru']) {
+    const entries = [{slug:'', verified_at:connectedKnowledge.verified_at}, ...connectedKnowledge.articles];
+    for (const article of entries) {
+      const url = `${BASE}/${locale}/knowledge${article.slug ? '/' + article.slug : ''}`;
+      pages.set(url, {url, lastModified:new Date(article.verified_at), changeFrequency:'monthly', priority:0.6});
+    }
+  }
+  const extensionRelease = await fetchPublicRelease();
+  for (const locale of ['en', 'ru']) {
+    const url = `${BASE}/${locale}/products/dshrem`;
+    pages.set(url,{url,lastModified:new Date(extensionRelease?.asOf || connectedKnowledge.verified_at),changeFrequency:'weekly',priority:0.7});
   }
   return [...pages.values()];
 }

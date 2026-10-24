@@ -1,0 +1,383 @@
+{
+  "schema": "tvijo.connected-knowledge/v1",
+  "verified_at": "2026-10-24",
+  "canonical_origin": "https://dsh.tvijo.com",
+  "relation_semantics": "Explicit editorial article links; backlinks are incoming links.",
+  "release_metadata_url": "https://dsh.tvijo.com/api/dshrem/v1/public/extension-release",
+  "proof_url": "https://dsh.tvijo.com/api/dshrem/v1/public/proof",
+  "runtime_status": "integration_in_progress",
+  "articles": [
+    {
+      "id": "tvijo:neovim-terminal-workflow",
+      "slug": "neovim-terminal-workflow",
+      "kind": "workflow",
+      "title": {
+        "en": "Neovim: a terminal workflow with review",
+        "ru": "Neovim: работа в терминале с проверкой"
+      },
+      "summary": {
+        "en": "Keep editing, commands and evidence close together, while keeping ownership explicit.",
+        "ru": "Редактор, команды и доказательства рядом, а ответственность за изменения явная."
+      },
+      "verified_at": "2026-10-24",
+      "canonical_url": "https://dsh.tvijo.com/knowledge/neovim-terminal-workflow",
+      "alternatives": {
+        "main": {
+          "en": "https://tvijo.com/en/knowledge/neovim-terminal-workflow",
+          "ru": "https://tvijo.com/ru/knowledge/neovim-terminal-workflow"
+        },
+        "platform": {
+          "en": "https://platform.tvijo.com/knowledge/neovim-terminal-workflow",
+          "ru": "https://platform.tvijo.com/knowledge/neovim-terminal-workflow?lang=ru"
+        }
+      },
+      "sections": [
+        {
+          "heading": {
+            "en": "Start with one project",
+            "ru": "Начните с одного проекта"
+          },
+          "paragraphs": [
+            {
+              "en": "Open Neovim in the chosen project directory. Inspect the current diff before asking an assistant to edit. Record the files it may change; existing unsaved or uncommitted work remains protected. A terminal pane is a place to run commands, not permission to run every suggested command.",
+              "ru": "Откройте Neovim в выбранном проекте. Перед правками помощника изучите текущий diff и укажите разрешённые файлы. Несохранённая и незакоммиченная работа остаётся защищённой. Окно терминала само по себе не разрешает все предложенные команды."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Move between editor and process",
+            "ru": "Переключайтесь между редактором и процессом"
+          },
+          "paragraphs": [
+            {
+              "en": "Neovim has an embedded terminal. Use :terminal to start a shell buffer and Ctrl-\\ Ctrl-N to return to Normal mode. Keep the editor and a test process in separate splits when that helps review. Check the working directory before commands that write files.",
+              "ru": "В Neovim есть встроенный терминал. Команда :terminal открывает буфер оболочки; Ctrl-\\ Ctrl-N возвращает Normal mode. Для проверки можно держать редактор и тестовый процесс в разных окнах. Перед записью файлов проверьте рабочую папку."
+            },
+            {
+              "en": "A CLI assistant is a separate process with its own login, permissions and quota. Use an explicitly selected account. Subscription CLI sessions and API-key calls have different accounting; never silently switch between them after a failure.",
+              "ru": "CLI-помощник — отдельный процесс со своим входом, разрешениями и квотой. Явно выберите аккаунт. CLI по подписке и вызовы по API-ключу учитываются по-разному; ошибка не должна незаметно переключать их."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Finish with a visible handoff",
+            "ru": "Завершите работу проверяемой передачей"
+          },
+          "paragraphs": [
+            {
+              "en": "Read the changed diff, run the relevant bounded checks, then capture their exit status and the artifact being reviewed. Describe what was checked and what still needs a native environment. The linked handoff guide defines this evidence boundary; the Harness guide explains how an orchestrator can keep it across jobs.",
+              "ru": "Прочтите diff, выполните нужные ограниченные проверки и сохраните код выхода вместе с проверяемым артефактом. Укажите, что проверено и где ещё нужна нативная среда. Связанные руководства описывают передачу доказательств и сохранение их между задачами оркестратора."
+            }
+          ]
+        }
+      ],
+      "links": [
+        "completion-quality-handoffs",
+        "dsh-harness-orchestration"
+      ],
+      "sources": [
+        {
+          "label": "Neovim terminal documentation",
+          "url": "https://neovim.io/doc/user/terminal.html"
+        }
+      ],
+      "graph_label": {
+        "en": "Neovim workflow",
+        "ru": "Neovim в терминале"
+      }
+    },
+    {
+      "id": "tvijo:dsh-harness-orchestration",
+      "slug": "dsh-harness-orchestration",
+      "kind": "orchestration",
+      "title": {
+        "en": "DSH Harness: orchestration with explicit boundaries",
+        "ru": "DSH Harness: оркестрация с явными границами"
+      },
+      "summary": {
+        "en": "Separate upstream capabilities, the Tvijo routing design and evidence of an actual run.",
+        "ru": "Разделяйте возможности upstream, схему маршрутов Tvijo и доказательства реального запуска."
+      },
+      "verified_at": "2026-10-24",
+      "canonical_url": "https://dsh.tvijo.com/knowledge/dsh-harness-orchestration",
+      "alternatives": {
+        "main": {
+          "en": "https://tvijo.com/en/knowledge/dsh-harness-orchestration",
+          "ru": "https://tvijo.com/ru/knowledge/dsh-harness-orchestration"
+        },
+        "platform": {
+          "en": "https://platform.tvijo.com/knowledge/dsh-harness-orchestration",
+          "ru": "https://platform.tvijo.com/knowledge/dsh-harness-orchestration?lang=ru"
+        }
+      },
+      "sections": [
+        {
+          "heading": {
+            "en": "What upstream provides",
+            "ru": "Что предоставляет upstream"
+          },
+          "paragraphs": [
+            {
+              "en": "DeepSeek Harness is a public-preview, open-source harness. Its Cordis plugin composition is configured through layered YAML overlays. Built-in profile templates are web, headless, sdk, sdk-minimal and acp; a built-in tui profile is not listed. Official native subagent packages include @deepseek-ai/dsh-subagent-codex and @deepseek-ai/dsh-subagent-claude-code. Other tools can also orchestrate agents.",
+              "ru": "DeepSeek Harness — открытый harness в public preview. Композиция плагинов Cordis настраивается слоями YAML. Встроенные шаблоны профилей: web, headless, sdk, sdk-minimal и acp; встроенный tui не указан. Официальные пакеты subagent: @deepseek-ai/dsh-subagent-codex и @deepseek-ai/dsh-subagent-claude-code. Другие инструменты тоже умеют оркестрировать агентов."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Tvijo routing design and current evidence",
+            "ru": "Схема маршрутов Tvijo и текущие доказательства"
+          },
+          "paragraphs": [
+            {
+              "en": "The operator-verified local installation at source verification is DSH 0.1.7-rc2, with ds41f as an existing AIOS route. At source verification on 24 October 2026, the runtime lane was implementing DSH → subscription Codex Sol for normal work, Astra6/high for complex work, and Claude Opus5.5 as an advisor through owned tmux sessions. This describes the integration target, not proof that all paths are enabled or published.",
+              "ru": "Оператор проверил локальную установку DSH 0.1.7-rc2 и существующий маршрут AIOS ds41f. На дату проверки источников 24 октября 2026 года runtime-направление реализует DSH → Codex Sol по подписке для обычной работы, Astra6/high для сложной и Claude Opus5.5 как советника через собственные tmux-сессии. Это цель интеграции, а не доказательство включения или публикации всех маршрутов."
+            },
+            {
+              "en": "A durable job should retain its identity, state transitions, chosen route and review receipt across a reconnect. Completion requires observed results. The live proof and release links below are the place to check published evidence; an unavailable proof source means unverified, not success.",
+              "ru": "Постоянная задача должна сохранять идентификатор, переходы состояния, выбранный маршрут и квитанцию проверки при переподключении. Завершение требует наблюдаемых результатов. Ссылки на proof и выпуск ниже ведут к актуальным доказательствам; недоступный источник означает отсутствие проверки, а не успех."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Choose the adapter by direction",
+            "ru": "Выбирайте адаптер по направлению"
+          },
+          "paragraphs": [
+            {
+              "en": "Native DSH subagent packages cover DSH calling the coding CLIs. The community dsh-crew project primarily connects Claude/Codex to DSH; it is not required for the native direction. Keep each job in its declared project scope and carry the quality handoff to the next owner.",
+              "ru": "Нативные пакеты subagent позволяют DSH вызывать coding CLI. Community-проект dsh-crew в основном подключает Claude/Codex к DSH; для нативного обратного направления он не обязателен. Сохраняйте область проекта и передавайте следующему владельцу проверяемый результат."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Opt in, inspect, then run",
+            "ru": "Включите явно, проверьте и запустите"
+          },
+          "paragraphs": [
+            {
+              "en": "The selected project host is the execution boundary. When your installed extension offers the DSH Harness engine, opt in there, inspect the setup and doctor results, and authorize that specific project before submitting work. The host controller provides doctor, authorize, submit, status, resume and stop commands; use its current help and the setup page for the exact installed interface. A browser login does not grant access to the operator shell.",
+              "ru": "Граница выполнения — выбранный хост проекта. Когда в установленном расширении доступен движок DSH Harness, включите его явно, изучите setup и doctor, затем разрешите конкретный проект перед отправкой задачи. У контроллера хоста есть команды doctor, authorize, submit, status, resume и stop; точный интерфейс установленной версии указан в help и на странице настройки. Вход в браузер не даёт доступа к оболочке оператора."
+            },
+            {
+              "en": "After reconnecting, read status instead of submitting a duplicate job. Resume depends on the original authority and remaining limits; stop cancels work. A model finishing advances the job to quality_pending. Tests, source commit and any required publication receipts still decide whether the handoff is complete. Editor completion adapters must match the installed editor hook format; support in documentation alone is not a receipt of a live integration.",
+              "ru": "После переподключения проверьте status, а не отправляйте дубликат. Resume зависит от исходного разрешения и оставшихся лимитов; stop отменяет работу. Завершение моделью переводит задачу в quality_pending. Полноту передачи всё ещё определяют тесты, коммит и необходимые квитанции публикации. Адаптер завершения должен соответствовать формату hooks установленного редактора; наличие инструкции ещё не доказывает живую интеграцию."
+            }
+          ]
+        }
+      ],
+      "links": [
+        "neovim-terminal-workflow",
+        "composable-data-architecture",
+        "completion-quality-handoffs"
+      ],
+      "sources": [
+        {
+          "label": "DeepSeek Harness",
+          "url": "https://www.deepseek.com/en/harness/"
+        },
+        {
+          "label": "Official architecture reference",
+          "url": "https://deepseek-harness.github.io/deepseek-harness/en/reference/"
+        },
+        {
+          "label": "Official subagents reference",
+          "url": "https://deepseek-harness.github.io/deepseek-harness/en/reference/subsystems/subagent"
+        },
+        {
+          "label": "dsh-crew community source",
+          "url": "https://github.com/ZSeven-W/dsh-crew"
+        },
+        {
+          "label": "Tvijo selected-host orchestration setup",
+          "url": "https://dsh.tvijo.com/orchestration/setup"
+        }
+      ],
+      "graph_label": {
+        "en": "DSH Harness",
+        "ru": "DSH Harness"
+      }
+    },
+    {
+      "id": "tvijo:composable-data-architecture",
+      "slug": "composable-data-architecture",
+      "kind": "architecture",
+      "title": {
+        "en": "Composable data for connected knowledge",
+        "ru": "Композиционные данные для связанных знаний"
+      },
+      "summary": {
+        "en": "Connect articles, jobs and evidence with stable identities and small explicit contracts.",
+        "ru": "Связывайте статьи, задачи и доказательства стабильными идентификаторами и небольшими явными контрактами."
+      },
+      "verified_at": "2026-10-24",
+      "canonical_url": "https://dsh.tvijo.com/knowledge/composable-data-architecture",
+      "alternatives": {
+        "main": {
+          "en": "https://tvijo.com/en/knowledge/composable-data-architecture",
+          "ru": "https://tvijo.com/ru/knowledge/composable-data-architecture"
+        },
+        "platform": {
+          "en": "https://platform.tvijo.com/knowledge/composable-data-architecture",
+          "ru": "https://platform.tvijo.com/knowledge/composable-data-architecture?lang=ru"
+        }
+      },
+      "sections": [
+        {
+          "heading": {
+            "en": "Start with existing records",
+            "ru": "Начните с существующих записей"
+          },
+          "paragraphs": [
+            {
+              "en": "In this design, composable data means connecting the events, jobs, evidence and user-selected preferences already needed by the product. Each record keeps its own owner and purpose. The public article catalog contains editorial content and declared links; it does not need a customer identity graph.",
+              "ru": "В этой схеме композиционные данные связывают события, задачи, доказательства и выбранные пользователем настройки, уже нужные продукту. У каждой записи остаются владелец и назначение. Публичный каталог содержит редакционные статьи и явные ссылки; граф идентичностей клиентов ему не нужен."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "One identity, several reading surfaces",
+            "ru": "Одна идентичность, несколько поверхностей чтения"
+          },
+          "paragraphs": [
+            {
+              "en": "An article has one stable ID and canonical URL. English and Russian companions share that identity. Mirrors may present the same content within Tvijo, DSH and the platform, while relation edges point to real article links. Backlinks are derived from incoming links rather than invented similarity scores.",
+              "ru": "У статьи один стабильный ID и канонический URL. Английская и русская версии используют эту идентичность. Tvijo, DSH и платформа могут показывать тот же материал в своём оформлении. Рёбра графа соответствуют реальным ссылкам, а обратные ссылки вычисляются по входящим связям, без выдуманных оценок похожести."
+            },
+            {
+              "en": "Keep source verification dates separate from release publication and job completion. Fetch current extension metadata from its release endpoint; do not stamp today onto unchanged evidence. A failed or absent receipt remains visibly unverified.",
+              "ru": "Разделяйте даты проверки источников, публикации выпуска и завершения задачи. Текущие сведения о расширении берите из метаданных выпуска; не присваивайте сегодняшнюю дату старым доказательствам. Отсутствующая или неудачная квитанция остаётся непроверенной."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Consent remains explicit",
+            "ru": "Согласие остаётся явным"
+          },
+          "paragraphs": [
+            {
+              "en": "This graph adds no tracking and changes no data-consent default. Private jobs, terminal paths, credentials and personal preferences do not belong in a public catalog. Use separate access-controlled evidence when a handoff requires private details. The SSP reference inspired linked reading and backlinks; this article and graph are an original implementation.",
+              "ru": "Граф не добавляет отслеживание и не меняет настройки согласия. Частным задачам, путям терминала, ключам и личным настройкам не место в публичном каталоге. Если передача требует частных данных, используйте отдельные доказательства с контролем доступа. SSP послужил примером связанного чтения и обратных ссылок; статья и граф реализованы самостоятельно."
+            }
+          ]
+        }
+      ],
+      "links": [
+        "dsh-harness-orchestration",
+        "completion-quality-handoffs"
+      ],
+      "sources": [
+        {
+          "label": "Linked-reading layout reference: SSP CDP",
+          "url": "https://www.ssp.sh/brain/cdp-customer-data-platform/"
+        }
+      ],
+      "graph_label": {
+        "en": "Composable data",
+        "ru": "Композиционные данные"
+      }
+    },
+    {
+      "id": "tvijo:completion-quality-handoffs",
+      "slug": "completion-quality-handoffs",
+      "kind": "quality",
+      "title": {
+        "en": "Completion is a reviewable handoff",
+        "ru": "Завершение — это проверяемая передача"
+      },
+      "summary": {
+        "en": "A finished message needs an artifact, relevant checks and a clear boundary of what was observed.",
+        "ru": "Сообщению о завершении нужны артефакт, релевантные проверки и ясная граница наблюдений."
+      },
+      "verified_at": "2026-10-24",
+      "canonical_url": "https://dsh.tvijo.com/knowledge/completion-quality-handoffs",
+      "alternatives": {
+        "main": {
+          "en": "https://tvijo.com/en/knowledge/completion-quality-handoffs",
+          "ru": "https://tvijo.com/ru/knowledge/completion-quality-handoffs"
+        },
+        "platform": {
+          "en": "https://platform.tvijo.com/knowledge/completion-quality-handoffs",
+          "ru": "https://platform.tvijo.com/knowledge/completion-quality-handoffs?lang=ru"
+        }
+      },
+      "sections": [
+        {
+          "heading": {
+            "en": "Define acceptance before execution",
+            "ru": "Определите приёмку до выполнения"
+          },
+          "paragraphs": [
+            {
+              "en": "Name the requested outcome and the exact files or surface the owner may change. Preserve existing work. Choose checks that can disprove a broken result: a graph node must actually open its article at the heading, not merely appear on a canvas. A passing build alone cannot establish that interaction.",
+              "ru": "Назовите результат и точные файлы или поверхность, которые можно менять. Сохраните существующую работу. Выберите проверки, способные обнаружить поломку: узел графа должен открыть статью у заголовка, а не просто появиться на canvas. Одной успешной сборки для этого недостаточно."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Attach evidence to the artifact",
+            "ru": "Привяжите доказательства к артефакту"
+          },
+          "paragraphs": [
+            {
+              "en": "A useful handoff records the artifact identity, check command, exit status, observation date and limitations. Separate synthetic browser flows, public HTTP checks and native editor verification. Never describe a synthetic bridge as a native Windows session. Preserve a failed check as a failure with its reason.",
+              "ru": "Полезная передача содержит идентичность артефакта, команду проверки, код выхода, дату наблюдения и ограничения. Разделяйте синтетический браузер, публичные HTTP-проверки и нативный редактор. Синтетический мост не является сессией Windows. Ошибку проверки сохраняйте вместе с причиной."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Reconnect without inventing completion",
+            "ru": "Переподключайтесь без выдуманного завершения"
+          },
+          "paragraphs": [
+            {
+              "en": "At source verification on 24 October 2026, the runtime lane was implementing a durable quality signal alongside jobs and receipts. This public catalog declares article identities and proof links for that integration; it does not implement a second orchestrator or claim an unavailable run passed. Consult current proof and release metadata before relying on a capability.",
+              "ru": "На дату проверки источников 24 октября 2026 года runtime-направление реализует постоянный сигнал качества рядом с задачами и квитанциями. Публичный каталог объявляет идентичности статей и ссылки на доказательства для этой интеграции; он не создаёт второго оркестратора и не объявляет недоступный запуск успешным. Перед использованием возможностей проверьте текущие метаданные и proof."
+            },
+            {
+              "en": "Use the terminal workflow to inspect a local result, the Harness guide to understand routing, and the composable-data guide to keep identities consistent. These are explicit editorial links, and the graph shows exactly those relations.",
+              "ru": "Используйте руководство по терминалу для локальной проверки, Harness — для маршрутов, а композиционные данные — для согласованных идентификаторов. Это явные редакционные ссылки; граф показывает именно их."
+            }
+          ]
+        }
+      ],
+      "links": [
+        "neovim-terminal-workflow",
+        "dsh-harness-orchestration",
+        "composable-data-architecture"
+      ],
+      "sources": [
+        {
+          "label": "Tvijo public proof",
+          "url": "https://dsh.tvijo.com/api/dshrem/v1/public/proof"
+        },
+        {
+          "label": "Extension release metadata",
+          "url": "https://dsh.tvijo.com/api/dshrem/v1/public/extension-release"
+        }
+      ],
+      "graph_label": {
+        "en": "Quality handoffs",
+        "ru": "Передача результата"
+      }
+    }
+  ],
+  "surface_publication": {
+    "dsh": "prepared",
+    "platform": "prepared",
+    "main": "prepared"
+  },
+  "runtime_evidence": {
+    "observed_at": null,
+    "receipt_url": "https://dsh.tvijo.com/api/dshrem/v1/public/orchestration-verification",
+    "receipt_sha256": null
+  }
+}

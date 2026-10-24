@@ -24,6 +24,7 @@ import { ArticleContent, EntityLegend } from '@/components/kb/ArticleContent';
 import { KbArticleVisualHero } from '@/components/kb/KbArticleVisualHero';
 import Navbar from '@/components/portal/Navbar';
 import Footer from '@/components/portal/Footer';
+import ConnectedArticleGraph from '@/components/kb/ConnectedArticleGraph';
 
 // ============================================================================
 // Types
@@ -433,6 +434,11 @@ export default function ArticleClient() {
     load();
   }, [articleSlug, reloadArticle]);
 
+  useEffect(() => {
+    if (!article || loading || window.location.hash !== '#article-top') return;
+    document.getElementById('article-top')?.scrollIntoView({ block: 'start', behavior: 'instant' });
+  }, [article, loading]);
+
   const handleLike = async () => {
     if (liking || !article) return;
     setLiking(true);
@@ -658,7 +664,7 @@ export default function ArticleClient() {
           </div>
 
           {/* Title */}
-          <h1 className="text-3xl md:text-[2.35rem] font-bold text-white leading-[1.15] tracking-tight max-w-4xl">
+          <h1 id="article-top" tabIndex={-1} className="scroll-mt-24 text-3xl md:text-[2.35rem] font-bold text-white leading-[1.15] tracking-tight max-w-4xl">
             {article.title}
           </h1>
 
@@ -838,6 +844,8 @@ export default function ArticleClient() {
 
       {/* Footer section: related + links */}
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-8 flex-1">
+        <ConnectedArticleGraph article={article} locale={locale} />
+
         {/* Related Articles */}
         {article.related_articles && article.related_articles.length > 0 && (
           <section className="mb-10">

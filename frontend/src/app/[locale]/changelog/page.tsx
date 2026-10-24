@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import Navbar from '@/components/portal/Navbar';
 import Footer from '@/components/portal/Footer';
+import LiveExtensionRelease from '@/components/kb/LiveExtensionRelease';
 import { useStaffUser } from '@/hooks/useStaffUser';
 import { parseLocale } from '@/i18n/config';
 
@@ -194,9 +195,9 @@ export default function ChangelogPage() {
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.24em] text-emerald-400">
             Staff only
           </p>
-          <h1 className="text-4xl font-black">Changelog is internal</h1>
+          <h1 className="text-4xl font-black">{locale === 'ru' ? 'История платформы — для сотрудников' : 'Platform history is internal'}</h1>
           <p className="mt-4 text-gray-400">
-            Product release notes are available to admin and staff users. Public visitors can review the AI OS product overview and FAQ.
+            {locale === 'ru' ? 'История платформы доступна сотрудникам. Публичные выпуски расширения показаны ниже.' : 'Platform history is available to staff. Public extension releases are listed below.'}
           </p>
           <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
             <Link
@@ -212,6 +213,7 @@ export default function ChangelogPage() {
               Open FAQ
             </Link>
           </div>
+          <LiveExtensionRelease locale={locale} />
         </main>
         <Footer />
       </div>
@@ -231,6 +233,8 @@ export default function ChangelogPage() {
             Track all updates, improvements, and new features added to Tvijo platform.
           </p>
         </section>
+
+        <LiveExtensionRelease locale={locale} />
 
         <section className="space-y-8">
           {CHANGELOG_DATA.map((entry) => (
