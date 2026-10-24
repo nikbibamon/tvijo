@@ -24,9 +24,9 @@ export function parsePublicRelease(data:any): PublicExtensionRelease|null {
     source:data.links.source,changelog:data.links.changelog,sha256:data.package.sha256,bytes:data.package.bytes,
     editorRequirement:data.package.editor_requirement,verifiedEnvironment:data.package.verified_environment};
 }
-export async function fetchPublicRelease():Promise<PublicExtensionRelease|null> {
+export async function fetchPublicRelease(fresh=false):Promise<PublicExtensionRelease|null> {
   try {
-    const response = await fetch(RELEASE_URL,{next:{revalidate:60},signal:AbortSignal.timeout(4000),headers:{Accept:'application/json'}});
+    const response = await fetch(RELEASE_URL,{...(fresh?{cache:'no-store' as const}:{next:{revalidate:60}}),signal:AbortSignal.timeout(4000),headers:{Accept:'application/json'}});
     if (!response.ok) return null;
     const text = await response.text(); if(text.length>65536) return null;
     return parsePublicRelease(JSON.parse(text));
