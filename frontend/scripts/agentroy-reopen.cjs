@@ -37,6 +37,8 @@ async function main() {
     const writes = [];
     const detailsRead = [];
     let visibleTasks = tasks;
+    let deniedRoute = null;
+    let denialStatus = 403;
     let fixtureUser = replies.get('auth/me/');
     await context.route('**/*', route => {
       const req = route.request();
@@ -50,6 +52,7 @@ async function main() {
         if (req.method() !== 'GET') writes.push(req.method() + ' ' + url.pathname);
         const key = url.pathname.slice('/api/v1/'.length);
         const ok = url.pathname.startsWith('/api/v1/') && req.method() === 'GET' && replies.has(key);
+        if (key === deniedRoute) return route.fulfill({ status: denialStatus, json: {} });
         if (key === 'auth/me/') return route.fulfill({ json: fixtureUser });
         if (key === 'agentroy/tasks/' && ok) return route.fulfill({ json: { tasks: visibleTasks } });
         if (key.startsWith('agentroy/tasks/') && key !== 'agentroy/tasks/') {
@@ -72,6 +75,27 @@ async function main() {
     await page.reload();
     await expect(result('B')).toBeVisible();
     await expect(page.getByRole('button', { name: /Fixture task B/ })).toHaveAttribute('aria-current', 'true');
+    // The tab and owner stay the same when the server withdraws access.
+    deniedRoute = 'agentroy/tasks/' + tasks[1].id + '/';
+    denialStatus = 404;
+    await page.getByRole('button', { name: 'Refresh' }).click();
+    await expect(page.getByText(/no longer available to this account/)).toBeVisible();
+    await expect(result('B')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /Fixture task B/ })).toHaveCount(0);
+    await page.getByRole('button', { name: /Fixture task A/ }).click();
+    await expect(result('A')).toBeVisible();
+    deniedRoute = 'agentroy/tasks/';
+    denialStatus = 403;
+    await page.getByRole('button', { name: 'Refresh' }).click();
+    await expect(page.getByText(/Access denied by the server/)).toBeVisible();
+    await expect(result('A')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /Fixture task/ })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: 'New task' })).toHaveCount(0);
+    deniedRoute = null;
+    await page.getByRole('button', { name: 'Try again' }).click();
+    await expect(result('A')).toBeVisible();
+    await page.getByRole('button', { name: /Fixture task B/ }).click();
+    await expect(result('B')).toBeVisible();
     // The API can withdraw a task between visits. Never request its saved ID.
     visibleTasks = [tasks[0]];
     detailsRead.length = 0;
@@ -86,7 +110,7 @@ async function main() {
     await expect(result('A')).toHaveCount(0);
     expect(detailsRead).toEqual([]);
     expect(writes).toEqual([]);
-    process.stdout.write('PASS: reload, removed selection, denied account, zero AgentRoy mutations.\n');
+    process.stdout.write('PASS: reload, live detail and list denial, restored access, removed selection, denied account, zero AgentRoy mutations.\n');
   } finally {
     await browser.close();
   }
