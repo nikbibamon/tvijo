@@ -1,0 +1,38 @@
+name: AgentRoy selected task
+on:
+  pull_request:
+    paths:
+      - 'frontend/src/components/agentroy/**'
+      - 'frontend/src/app/**/agentroy/**'
+      - 'frontend/src/lib/portal-auth-fetch.ts'
+      - 'frontend/scripts/agentroy-reopen.cjs'
+      - '.github/workflows/agentroy-selected-task.yml'
+permissions:
+  contents: read
+jobs:
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    env:
+      NEXT_PUBLIC_API_URL: /api/v1
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --no-audit --no-fund
+      - run: ./node_modules/.bin/playwright install --with-deps chromium
+      - name: Exercise the operator screen with a synthetic API
+        run: |
+          npm run dev -- --hostname 127.0.0.1 --port 3000 > "$RUNNER_TEMP/agentroy-next.log" 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          curl --silent --show-error --fail --retry 30 --retry-connrefused --retry-delay 1 --max-time 90 http://127.0.0.1:3000/en/agentroy > /dev/null || { tail -60 "$RUNNER_TEMP/agentroy-next.log"; exit 1; }
+          node scripts/agentroy-reopen.cjs
