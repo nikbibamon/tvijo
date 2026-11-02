@@ -293,26 +293,39 @@ function AgentroyWorkspace({ ownerId }: { ownerId: string }) {
         portalApiFetch<{ tasks: Task[] }>('/agentroy/tasks/', { signal }),
       ]);
       if (signal.aborted) return;
-      setBootstrap(nextBootstrap);
-      const safeTasks = Array.isArray(taskList.tasks)
+      let safeTasks = Array.isArray(taskList.tasks)
         ? taskList.tasks.filter((task) => TASK_STATUSES.includes(task.status))
         : [];
-      setTasks(safeTasks);
       const chosenId = activeId && safeTasks.some((task) => task.id === activeId)
         ? activeId
         : safeTasks[0]?.id ?? null;
-      if (chosenId !== activeId) setActiveId(chosenId);
+      let nextDetail: TaskDetail | null = null;
+      let detailError = '';
       if (chosenId) {
-        const nextDetail = await portalApiFetch<TaskDetail>('/agentroy/tasks/' + encodeURIComponent(chosenId) + '/', { signal });
-        if (signal.aborted) return;
-        setDetail(nextDetail);
-      } else {
-        setDetail(null);
+        try {
+          nextDetail = await portalApiFetch<TaskDetail>('/agentroy/tasks/' + encodeURIComponent(chosenId) + '/', { signal });
+        } catch (error) {
+          if (!(error instanceof PortalApiError) || (error.status !== 403 && error.status !== 404)) throw error;
+          // Access can change between the list and detail requests.
+          safeTasks = safeTasks.filter(task => task.id !== chosenId);
+          detailError = errorText(error, c.loadFailed);
+        }
       }
-      setError('');
+      if (signal.aborted) return;
+      setBootstrap(nextBootstrap);
+      setTasks(safeTasks);
+      setDetail(nextDetail);
+      if (chosenId !== activeId) setActiveId(chosenId);
+      setError(detailError);
       setLastUpdated(new Date().toISOString());
     } catch (loadError) {
-      if (!signal.aborted) setError(errorText(loadError, c.loadFailed));
+      if (signal.aborted) return;
+      if (loadError instanceof PortalApiError && [401, 403, 404].includes(loadError.status)) {
+        setBootstrap(null);
+        setTasks([]);
+        setDetail(null);
+      }
+      setError(errorText(loadError, c.loadFailed));
     } finally {
       if (inFlight.current === controller) {
         inFlight.current = null;
