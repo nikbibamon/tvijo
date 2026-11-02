@@ -43,6 +43,10 @@ async function main() {
       const url = new URL(req.url());
       if (url.origin !== origin.origin) return route.abort();
       if (url.pathname.startsWith('/api/')) {
+        // The site-wide PageTracker posts on navigation. Keep it inside the fixture.
+        if (url.pathname === '/api/v1/trading/track/' && req.method() === 'POST') {
+          return route.fulfill({ status: 204 });
+        }
         if (req.method() !== 'GET') writes.push(req.method() + ' ' + url.pathname);
         const key = url.pathname.slice('/api/v1/'.length);
         const ok = url.pathname.startsWith('/api/v1/') && req.method() === 'GET' && replies.has(key);
@@ -82,7 +86,7 @@ async function main() {
     await expect(result('A')).toHaveCount(0);
     expect(detailsRead).toEqual([]);
     expect(writes).toEqual([]);
-    process.stdout.write('PASS: reload, removed selection, denied account, zero API mutations.\n');
+    process.stdout.write('PASS: reload, removed selection, denied account, zero AgentRoy mutations.\n');
   } finally {
     await browser.close();
   }
