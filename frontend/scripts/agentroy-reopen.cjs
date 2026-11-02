@@ -96,8 +96,16 @@ async function main() {
     await expect(result('A')).toBeVisible();
     await page.getByRole('button', { name: /Fixture task B/ }).click();
     await expect(result('B')).toBeVisible();
-    // The API can withdraw a task between visits. Never request its saved ID.
+    // A fresh list withdraws B even if the replacement detail temporarily fails.
     visibleTasks = [tasks[0]];
+    deniedRoute = 'agentroy/tasks/' + tasks[0].id + '/';
+    denialStatus = 503;
+    await page.getByRole('button', { name: 'Refresh' }).click();
+    await expect(page.getByText('API 503', { exact: true })).toBeVisible();
+    await expect(result('B')).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /Fixture task B/ })).toHaveCount(0);
+    deniedRoute = null;
+    // The API can withdraw a task between visits. Never request its saved ID.
     detailsRead.length = 0;
     await page.reload();
     await expect(result('A')).toBeVisible();
@@ -110,7 +118,7 @@ async function main() {
     await expect(result('A')).toHaveCount(0);
     expect(detailsRead).toEqual([]);
     expect(writes).toEqual([]);
-    process.stdout.write('PASS: reload, live detail and list denial, restored access, removed selection, denied account, zero AgentRoy mutations.\n');
+    process.stdout.write('PASS: reload, live detail and list denial, restored access, replacement unavailable, removed selection, denied account, zero AgentRoy mutations.\n');
   } finally {
     await browser.close();
   }
