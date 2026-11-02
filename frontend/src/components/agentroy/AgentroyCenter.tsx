@@ -204,14 +204,34 @@ function deliveryLabel(delivery: string | null | undefined, c: ReturnType<typeof
 }
 
 export default function AgentroyCenter() {
+  const { user } = useCurrentUser();
+  return user?.id ? <AgentroyWorkspace key={user.id} ownerId={user.id} /> : null;
+}
+
+function AgentroyWorkspace({ ownerId }: { ownerId: string }) {
   const { locale } = useLocale();
   const c = getAgentroyCopy(locale);
-  const { user } = useCurrentUser();
-  const ownerId = user?.id || null;
+  const selectionKey = 'tvijo.agentroy.selected.v1:' + encodeURIComponent(ownerId);
   const [bootstrap, setBootstrap] = useState<Bootstrap | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [detail, setDetail] = useState<TaskDetail | null>(null);
-  const [activeId, setActiveId] = useState<string | null>(null);
+  const [loadedDetail, setDetail] = useState<TaskDetail | null>(null);
+  const [activeId, setActiveId] = useState<string | null>(() => {
+    try {
+      const id = window.sessionStorage.getItem(selectionKey);
+      return id && TASK_ID_PATTERN.test(id) ? id : null;
+    } catch {
+      return null;
+    }
+  });
+  const detail = loadedDetail?.task.id === activeId ? loadedDetail : null;
+  const selectTask = useCallback((id: string) => {
+    setActiveId(id);
+    try {
+      window.sessionStorage.setItem(selectionKey, id);
+    } catch {
+      // Selection still works in this view when tab storage is unavailable.
+    }
+  }, [selectionKey]);
   const [showNewTask, setShowNewTask] = useState(false);
   const [projectId, setProjectId] = useState('');
   const [executorId, setExecutorId] = useState('');
@@ -229,7 +249,7 @@ export default function AgentroyCenter() {
   const [posting, setPosting] = useState(false);
   const [error, setError] = useState('');
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
-  const inFlight = useRef(false);
+  const inFlight = useRef<AbortController | null>(null);
   const pendingRef = useRef<PendingAction | null>(null);
 
   useEffect(() => {
@@ -262,39 +282,63 @@ export default function AgentroyCenter() {
   }, [c.pendingInvalid, c.pendingUnreadable, ownerId]);
 
   const refresh = useCallback(async (quiet = false) => {
-    if (inFlight.current || !user) return;
-    inFlight.current = true;
+    if (inFlight.current) return;
+    const controller = new AbortController();
+    inFlight.current = controller;
+    const { signal } = controller;
     if (!quiet) setRefreshing(true);
     try {
       const [nextBootstrap, taskList] = await Promise.all([
-        portalApiFetch<Bootstrap>('/agentroy/bootstrap/'),
-        portalApiFetch<{ tasks: Task[] }>('/agentroy/tasks/'),
+        portalApiFetch<Bootstrap>('/agentroy/bootstrap/', { signal }),
+        portalApiFetch<{ tasks: Task[] }>('/agentroy/tasks/', { signal }),
       ]);
-      setBootstrap(nextBootstrap);
+      if (signal.aborted) return;
       const safeTasks = Array.isArray(taskList.tasks)
         ? taskList.tasks.filter((task) => TASK_STATUSES.includes(task.status))
         : [];
-      setTasks(safeTasks);
       const chosenId = activeId && safeTasks.some((task) => task.id === activeId)
         ? activeId
         : safeTasks[0]?.id ?? null;
-      if (chosenId !== activeId) setActiveId(chosenId);
-      if (chosenId) {
-        const nextDetail = await portalApiFetch<TaskDetail>('/agentroy/tasks/' + encodeURIComponent(chosenId) + '/');
-        setDetail(nextDetail);
-      } else {
+      // Apply the authorized list even if fetching the next result fails.
+      setBootstrap(nextBootstrap);
+      setTasks(safeTasks);
+      if (chosenId !== activeId) {
         setDetail(null);
+        setActiveId(chosenId);
       }
-      setError('');
+      let nextDetail: TaskDetail | null = null;
+      let detailError = '';
+      if (chosenId) {
+        try {
+          nextDetail = await portalApiFetch<TaskDetail>('/agentroy/tasks/' + encodeURIComponent(chosenId) + '/', { signal });
+        } catch (error) {
+          if (!(error instanceof PortalApiError) || (error.status !== 403 && error.status !== 404)) throw error;
+          // Access can change between the list and detail requests.
+          if (signal.aborted) return;
+          setTasks(safeTasks.filter(task => task.id !== chosenId));
+          detailError = errorText(error, c.loadFailed);
+        }
+      }
+      if (signal.aborted) return;
+      setDetail(nextDetail);
+      setError(detailError);
       setLastUpdated(new Date().toISOString());
     } catch (loadError) {
+      if (signal.aborted) return;
+      if (loadError instanceof PortalApiError && [401, 403, 404].includes(loadError.status)) {
+        setBootstrap(null);
+        setTasks([]);
+        setDetail(null);
+      }
       setError(errorText(loadError, c.loadFailed));
     } finally {
-      setLoading(false);
-      setRefreshing(false);
-      inFlight.current = false;
+      if (inFlight.current === controller) {
+        inFlight.current = null;
+        setLoading(false);
+        setRefreshing(false);
+      }
     }
-  }, [activeId, c.loadFailed, user]);
+  }, [activeId, c.loadFailed]);
 
   useEffect(() => {
     void refresh();
@@ -304,6 +348,8 @@ export default function AgentroyCenter() {
     const timer = window.setInterval(poll, 5000);
     document.addEventListener('visibilitychange', poll);
     return () => {
+      inFlight.current?.abort();
+      inFlight.current = null;
       window.clearInterval(timer);
       document.removeEventListener('visibilitychange', poll);
     };
@@ -409,7 +455,7 @@ export default function AgentroyCenter() {
       if (retryRecordCleared && action.type === 'create') {
         const created = asTask(result);
         if (created?.id) {
-          setActiveId(created.id);
+          selectTask(created.id);
           setShowNewTask(false);
           setNewText('');
         }
@@ -423,7 +469,7 @@ export default function AgentroyCenter() {
     } finally {
       setPosting(false);
     }
-  }, [c.loadFailed, c.pendingOwnerMismatch, c.pendingTaskOwnership, clearPending, ownerId, refresh]);
+  }, [c.loadFailed, c.pendingOwnerMismatch, c.pendingTaskOwnership, clearPending, ownerId, refresh, selectTask]);
 
   const submitNewTask = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -597,7 +643,7 @@ export default function AgentroyCenter() {
               {tasks.map((task) => (
                 <button
                   key={task.id}
-                  onClick={() => { setActiveId(task.id); setShowNewTask(false); setMessageKind('comment'); }}
+                  onClick={() => { selectTask(task.id); setShowNewTask(false); setMessageKind('comment'); }}
                   aria-current={activeId === task.id ? 'true' : undefined}
                   className={'block w-full rounded-2xl px-3.5 py-3 text-left transition ' + (activeId === task.id && !showNewTask ? 'bg-[#e8f3f1] ring-1 ring-inset ring-teal-200' : 'hover:bg-slate-50')}
                 >
