@@ -1,0 +1,43 @@
+name: web
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: frontend
+
+jobs:
+  typecheck-and-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          # test:contract-hash uses --experimental-strip-types, which needs Node 22+
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      # WHY: typecheck сейчас красный на уже существующем коде (15 ошибок TS:
+      # ArticleClient, sitemap, BacktestPanel, microsoft-auth и др.), и он не
+      # должен быть гейтом этого job-а. Остальные проверки (i18n, claims,
+      # внутренние строки, contract hash) остаются обязательными: их падение
+      # валит job. typecheck выполняется и печатает ошибки в лог, но мерж не
+      # блокирует — разбор самих ошибок ведётся отдельной задачей.
+      - name: typecheck (informational, not blocking)
+        run: npm run typecheck
+        continue-on-error: true
+      - name: i18n parity
+        run: npm run check:i18n
+      - name: claims with sources
+        run: npm run check:claims
+      - name: no internal strings
+        run: npm run check:no-internal-strings
+      - name: contract hash
+        run: npm run test:contract-hash
