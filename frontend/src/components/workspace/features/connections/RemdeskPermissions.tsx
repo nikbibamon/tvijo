@@ -33,8 +33,19 @@ type Catalog = {
   capabilities: Capability[];
   documents: AgreementDoc[];
   host_ceiling?: string[];
-  plans: Record<string, { price?: Text }>;
+  plans: Record<string, Plan>;
 };
+type Plan = { rank: number; billing: string; self_hosted?: boolean; price: Text; includes: Text };
+
+const PLAN_NAMES: Record<string, string> = { pro: 'Pro', pro_full: 'Pro Full', lifetime: 'Lifetime' };
+
+/** A higher-ranked monthly plan includes every box a lower one sells. */
+export function planCovers(plans: Record<string, Plan>, have: string, want: string) {
+  if (!want || want === 'free') return true;
+  const h = plans[have];
+  const w = plans[want];
+  return Boolean(h && w && !h.self_hosted && h.rank >= w.rank);
+}
 
 export const REMDESK_URL = process.env.NEXT_PUBLIC_REMDESK_URL || 'https://mcp.tvijo.com';
 const PLATFORM_CONNECTIONS = 'https://platform.tvijo.com/connections';
@@ -44,13 +55,13 @@ const UI = {
     title: 'Server access for assistants',
     lead: 'Tick what ChatGPT or Claude may do on your server. Each box shows what can go wrong and what limits it. You confirm the final choice on the consent page.',
     agreements: 'Agreements',
+    plans: 'Plans',
     risk: 'Risk',
     guard: 'Limited by',
     owner: 'not allowed on this host',
     unpublished: 'not published yet',
     requiredFor: 'required for',
-    needsPro: 'Pro',
-    upgrade: 'Deploy and full access are part of Pro.',
+    upgrade: 'Deploy is part of Pro ($20), full access of Pro Full ($35). Lifetime ($255 once) installs remdesk on your own server.',
     missingDocs: 'Tick the agreements for the boxes you chose.',
     continue: 'Continue to connections',
     unavailable: 'The permission catalog is unavailable right now.',
@@ -59,13 +70,13 @@ const UI = {
     title: 'Доступ ассистентов к серверу',
     lead: 'Отметьте, что ChatGPT или Claude может делать на вашем сервере. У каждой галочки указано, что может пойти не так и чем это ограничено. Окончательный выбор подтверждается на странице согласия.',
     agreements: 'Соглашения',
+    plans: 'Тарифы',
     risk: 'Риск',
     guard: 'Ограничено',
     owner: 'на этом хосте не разрешено',
     unpublished: 'ещё не опубликовано',
     requiredFor: 'нужно для',
-    needsPro: 'Pro',
-    upgrade: 'Выкладка и полный доступ входят в Pro.',
+    upgrade: 'Выкладка входит в Pro ($20), полный доступ в Pro Full ($35). Lifetime ($255 разово) ставит remdesk на ваш сервер.',
     missingDocs: 'Отметьте соглашения для выбранных галочек.',
     continue: 'Перейти к подключениям',
     unavailable: 'Каталог прав сейчас недоступен.',
@@ -74,7 +85,7 @@ const UI = {
 
 export function choiceState(catalog: Catalog, chosen: string[], agreed: string[], plan: string) {
   const needsPro = catalog.capabilities.some(
-    (c) => chosen.includes(c.id) && c.min_plan !== 'free' && c.min_plan !== plan,
+    (c) => chosen.includes(c.id) && !planCovers(catalog.plans, plan, c.min_plan),
   );
   const missing = catalog.documents.filter(
     (d) => d.required_for.some((id) => chosen.includes(id)) && !agreed.includes(`${d.id}@${d.version}`),
@@ -141,7 +152,7 @@ export default function RemdeskPermissions({ locale, plan = 'free' }: { locale: 
                   onChange={() => toggle(chosen, setChosen, c.id)}
                 />{' '}
                 {c.label[lang]}
-                {c.min_plan !== 'free' ? <span className="twk-chip">{t.needsPro}</span> : null}
+                {c.min_plan !== 'free' ? <span className="twk-chip">{PLAN_NAMES[c.min_plan] || c.min_plan}</span> : null}
                 {!allowed ? <small> ({t.owner})</small> : null}
               </label>
               <p className="twk-permission-risk">{t.risk}: {c.risk[lang]}</p>
@@ -149,6 +160,16 @@ export default function RemdeskPermissions({ locale, plan = 'free' }: { locale: 
             </div>
           );
         })}
+      </fieldset>
+      <fieldset>
+        <legend>{t.plans}</legend>
+        {Object.entries(catalog.plans)
+          .sort(([, a], [, b]) => a.rank - b.rank)
+          .map(([id, p]) => (
+            <p key={id} className={id === plan ? 'twk-permission-plan is-current' : 'twk-permission-plan'}>
+              <strong>{p.price[lang]}</strong> · {p.includes[lang]}
+            </p>
+          ))}
       </fieldset>
       <fieldset>
         <legend>{t.agreements}</legend>
