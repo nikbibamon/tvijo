@@ -873,3 +873,12 @@
 }
 .twk-run-result dd { margin: 0; color: var(--twk-text); font-size: 12.5px; font-variant-numeric: tabular-nums; }
 .twk-run-reason { margin: 0; color: #fca5a5; font-size: 11.5px; overflow-wrap: anywhere; }
+
+/* Server-access permissions (catalog served by remdesk /permissions). */
+.twk-permissions fieldset { border: 0; padding: 0; margin: 0 0 1rem; }
+.twk-permission { margin: 0 0 .75rem; }
+.twk-permission label, .twk-permission-doc { display: flex; gap: .4rem; align-items: baseline; flex-wrap: wrap; }
+.twk-permission .twk-chip { margin-left: .3rem; }
+.twk-permission-risk, .twk-permission-guard { margin: .15rem 0 0 1.6rem; font-size: .85rem; opacity: .8; }
+.twk-permission.is-high .twk-permission-risk, .twk-permission.is-critical .twk-permission-risk { color: #f08a8a; opacity: 1; }
+.twk-permissions .twk-primary-button.is-disabled { opacity: .45; pointer-events: none; }

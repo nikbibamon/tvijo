@@ -15,6 +15,7 @@ import { getWorkspaceCopy } from '@/i18n/workspace';
 import { workspaceApi } from '@/lib/workspace-api';
 import { useWorkspaceData } from '@/hooks/use-workspace-data';
 import { WsEmpty, WsError, WsSnippet } from '@/components/workspace/ui/primitives';
+import RemdeskPermissions from './RemdeskPermissions';
 import type { GatewayKey, GatewayKeyStatus, ProviderCredential } from '@/types/workspace';
 
 const PROVIDERS = [
@@ -502,6 +503,8 @@ export default function WorkspaceConnectionsLive() {
           </section>
         )
       ) : null}
+
+      <RemdeskPermissions locale={locale} />
 
       <p className="twk-q0-note">
         <Link href={`/${locale}/workspace/management-keys`}>{t.manageKeysLink}</Link> ·{' '}
