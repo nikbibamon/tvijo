@@ -41,3 +41,5 @@ jobs:
         run: npm run check:no-internal-strings
       - name: contract hash
         run: npm run test:contract-hash
+      - name: extension release loader
+        run: npm run test:extension-release
