@@ -32,7 +32,7 @@ export function middleware(request: NextRequest) {
   }
 
   // Keep public page URLs canonical without touching proxied API paths.
-  if (pathname.length > 1 && pathname.endsWith('/')) {
+  if (pathname.length > 1 && pathname.endsWith('/') && pathname !== '/ua/') {
     const url = new URL(request.url);
     url.pathname = pathname.replace(/\/+$/, '');
     return NextResponse.redirect(url, 308);
@@ -43,7 +43,8 @@ export function middleware(request: NextRequest) {
   // this header the server-rendered document always claims `lang="en"` and
   // only corrects itself after client JavaScript runs.
   const requestHeaders = new Headers(request.headers);
-  const routeLocale = pathname.split('/')[1];
+  const segment = pathname.split('/')[1];
+  const routeLocale = segment === 'ua' ? 'uk' : segment;
   requestHeaders.set(
     'x-tvijo-locale',
     LOCALES.includes(routeLocale as (typeof LOCALES)[number])
