@@ -13,6 +13,7 @@
     "check:claims": "node scripts/check-claims.mjs",
     "check:no-internal-strings": "node scripts/check-no-internal-strings.mjs",
     "test:contract-hash": "node --experimental-strip-types --no-warnings scripts/contract-hash.test.mjs",
+    "test:extension-release": "node --experimental-strip-types --no-warnings --test scripts/tvijo-extension-release.test.mjs",
     "check:release-clean": "node scripts/check-no-internal-strings.mjs --dist \"$(pm2 jlist | node -e \"let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const a=JSON.parse(d).find(p=>p.name==='tvijo-web');process.stdout.write(a?a.pm2_env.pm_cwd+'/.next/static':'')})\")\"",
     "cf:verify": "node scripts/cloudflare-verify.mjs",
     "cf:sync-zone": "node scripts/cloudflare-sync-zone-id.mjs",
