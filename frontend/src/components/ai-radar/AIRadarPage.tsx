@@ -18,13 +18,13 @@ import {
   LayoutGrid,
   Search,
   ShieldCheck,
-  Sparkles,
   Wrench,
 } from 'lucide-react';
 
 import Footer from '@/components/portal/Footer';
 import Navbar from '@/components/portal/Navbar';
 import { aiRadarCopy, aiRadarLanguage } from '@/data/ai-radar';
+import { useStaffUser } from '@/hooks/useStaffUser';
 import { fetchAIRadar, fetchAIRadarBudgetPlan, fetchAIRadarEconomics, type AIRadarBudgetPlan, type AIRadarEconomics, type AIRadarModel, type AIRadarOverview } from '@/services/ai-radar-api';
 
 type Tab = 'overview' | 'models' | 'apps' | 'benchmarks' | 'changes' | 'economics';
@@ -53,9 +53,11 @@ function compact(value: number, locale: string) {
 
 function dateTime(value: string | null, locale: string) {
   if (!value) return '—';
-  return new Intl.DateTimeFormat(locale, {
-    day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC',
-  }).format(new Date(value));
+  const parts = new Intl.DateTimeFormat(locale, {
+    day: 'numeric', month: locale.startsWith('ru') ? 'long' : 'short', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC',
+  }).formatToParts(new Date(value));
+  const part = (type: string) => parts.find(item => item.type === type)?.value || '';
+  return `${part('day')} ${part('month')} ${part('year')}, ${part('hour')}:${part('minute')}`;
 }
 
 function money(value: number | null) {
@@ -76,6 +78,23 @@ function matchesModelFilter(model: AIRadarModel, filter: Filter) {
   return (model.context_length || 0) >= 128000;
 }
 
+function RadarIntroduction({ copy }: { copy: (typeof aiRadarCopy)[keyof typeof aiRadarCopy] }) {
+  return <>
+    <h1 className="max-w-3xl text-4xl font-black tracking-[-0.04em] text-white sm:text-6xl">{copy.hero.title}</h1>
+    <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300 sm:text-xl">{copy.hero.text}</p>
+  </>;
+}
+
+function SignalKinds({ locale, copy }: { locale: string; copy: (typeof aiRadarCopy)[keyof typeof aiRadarCopy] }) {
+  return <section aria-label={copy.hero.title} className="mx-auto grid max-w-7xl gap-6 border-b border-white/10 px-4 py-8 sm:px-6 lg:grid-cols-3 lg:px-8">
+    {copy.signals.map((signal, index) => <article key={signal.title}>
+      <h2 className="text-lg font-semibold text-white">{signal.title}</h2>
+      <p className="mt-2 text-sm leading-6 text-slate-400">{signal.text}</p>
+      {index === 2 && <Link className="mt-3 inline-block text-sm text-cyan-300 underline underline-offset-4" href={`/${locale}/compare#our-trials`}>{copy.trialLink}</Link>}
+    </article>)}
+  </section>;
+}
+
 function RadarHero({ radar, locale, copy }: {
   radar: AIRadarOverview;
   locale: string;
@@ -94,13 +113,12 @@ function RadarHero({ radar, locale, copy }: {
     <section className="border-b border-cyan-300/10 pb-12 pt-28 sm:pb-16 sm:pt-32">
       <div className="mx-auto grid max-w-7xl gap-12 px-4 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8">
         <div>
-          <h1 className="max-w-3xl text-4xl font-black tracking-[-0.04em] text-white sm:text-6xl">{copy.hero.title}</h1>
-          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-300 sm:text-xl">{copy.hero.text}</p>
+          <RadarIntroduction copy={copy} />
           <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-3 text-xs text-slate-400">
             <span className="inline-flex items-center gap-2 font-semibold text-emerald-300">
               <span className="h-2 w-2 rounded-full bg-emerald-300" />{state}
             </span>
-            <span className="inline-flex items-center gap-2"><Clock3 className="h-4 w-4" />{copy.hero.updated} {dateTime(radar.as_of, locale)}</span>
+            <span className="inline-flex items-center gap-2"><Clock3 className="h-4 w-4" />{copy.hero.updated} {radar.as_of ? `${dateTime(radar.as_of, locale)} UTC` : copy.snapshotUnknown}</span>
             <a href={radar.attribution.url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1.5 text-cyan-300 hover:text-cyan-200">
               {copy.hero.source}<ExternalLink className="h-3.5 w-3.5" />
             </a>
@@ -119,7 +137,7 @@ function RadarHero({ radar, locale, copy }: {
   );
 }
 
-function RadarControls({ activeTab, setActiveTab, query, setQuery, filter, setFilter, copy }: {
+function RadarControls({ activeTab, setActiveTab, query, setQuery, filter, setFilter, copy, isStaff }: {
   activeTab: Tab;
   setActiveTab: (tab: Tab) => void;
   query: string;
@@ -127,12 +145,13 @@ function RadarControls({ activeTab, setActiveTab, query, setQuery, filter, setFi
   filter: Filter;
   setFilter: (filter: Filter) => void;
   copy: (typeof aiRadarCopy)[keyof typeof aiRadarCopy];
+  isStaff: boolean;
 }) {
   return (
     <div className="sticky top-16 z-30 border-b border-white/[0.08] bg-[#020f18]/95 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl flex-col justify-between gap-3 px-4 sm:px-6 xl:flex-row xl:items-center lg:px-8">
         <div className="flex overflow-x-auto" role="tablist" aria-label="AI radar views">
-          {TABS.map(({ id, icon: Icon }, index) => (
+          {TABS.map(({ id, icon: Icon }, index) => id === 'economics' && !isStaff ? null : (
             <button
               key={id}
               type="button"
@@ -421,11 +440,18 @@ function ModelEconomicsPanel({ locale, language, copy }: {
   );
 }
 
-function LoadState({ error, retry, copy }: { error: boolean; retry: () => void; copy: (typeof aiRadarCopy)[keyof typeof aiRadarCopy] }) {
-  return <div className="flex min-h-[72vh] items-center justify-center px-4 pt-20"><div className="max-w-md text-center">{error ? <><ShieldCheck className="mx-auto h-9 w-9 text-amber-300" /><p className="mt-5 text-sm leading-6 text-slate-400">{copy.error}</p><button type="button" onClick={retry} className="mt-5 border border-cyan-300/30 px-5 py-2.5 text-sm font-semibold text-cyan-300 hover:bg-cyan-300/[0.06]">{copy.retry}</button></> : <><Sparkles className="mx-auto h-9 w-9 animate-pulse text-cyan-300" /><p className="mt-5 text-sm text-slate-400">{copy.loading}</p></>}</div></div>;
+function LoadState({ error, retry, copy, asOf, locale }: { error: boolean; retry: () => void; copy: (typeof aiRadarCopy)[keyof typeof aiRadarCopy]; asOf: string | null; locale: string }) {
+  return <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+    <div role="status" aria-live="polite" className="text-sm leading-6 text-slate-400">
+      <p>{error ? copy.error : copy.loading}</p>
+      <p className="mt-2">{asOf ? `${copy.hero.updated}: ${dateTime(asOf, locale)} UTC` : copy.snapshotUnknown}</p>
+    </div>
+    {error && <button type="button" onClick={retry} className="mt-5 border border-cyan-300/30 px-5 py-2.5 text-sm font-semibold text-cyan-300 hover:bg-cyan-300/[0.06]">{copy.retry}</button>}
+  </div>;
 }
 
 export default function AIRadarPage({ locale }: { locale: string }) {
+  const isStaff = useStaffUser();
   const language = aiRadarLanguage(locale);
   const copy = aiRadarCopy[language];
   const formatLocale = language === 'ru' ? 'ru-RU' : 'en-GB';
@@ -446,27 +472,35 @@ export default function AIRadarPage({ locale }: { locale: string }) {
     return () => controller.abort();
   }, [reload]);
 
-  if (!radar) return <div className="dark min-h-screen bg-[#020f18] text-white"><Navbar /><LoadState error={error} retry={() => setReload((value) => value + 1)} copy={copy} /></div>;
+  // The initial HTML includes the purpose and signal headings before any client fetch.
+  if (!radar) return <div className="dark min-h-screen bg-[#020f18] text-white"><Navbar /><main>
+    <section className="mx-auto max-w-7xl px-4 pt-28 sm:px-6 sm:pt-32 lg:px-8"><RadarIntroduction copy={copy} /></section>
+    <SignalKinds locale={locale} copy={copy} />
+    <LoadState error={error} retry={() => setReload((value) => value + 1)} copy={copy} asOf={null} locale={formatLocale} />
+  </main><Footer /></div>;
 
   const normalizedQuery = query.trim().toLowerCase();
   const models = radar.trending_models.filter((model) => matchesModelFilter(model, filter) && `${model.name} ${model.id}`.toLowerCase().includes(normalizedQuery));
-  const show = (tab: Tab) => activeTab === 'overview' || activeTab === tab;
+  const visibleTab = activeTab === 'economics' && !isStaff ? 'overview' : activeTab;
+  const show = (tab: Tab) => visibleTab === 'overview' || visibleTab === tab;
 
   return (
     <div className="dark min-h-screen bg-[#020f18] text-white selection:bg-cyan-300/25">
       <Navbar />
       <main>
         <RadarHero radar={radar} locale={formatLocale} copy={copy} />
-        <RadarControls activeTab={activeTab} setActiveTab={setActiveTab} query={query} setQuery={setQuery} filter={filter} setFilter={setFilter} copy={copy} />
+        <SignalKinds locale={locale} copy={copy} />
+        {error && <LoadState error retry={() => setReload((value) => value + 1)} copy={copy} asOf={radar.as_of} locale={formatLocale} />}
+        <RadarControls isStaff={isStaff} activeTab={visibleTab} setActiveTab={setActiveTab} query={query} setQuery={setQuery} filter={filter} setFilter={setFilter} copy={copy} />
         <div className="mx-auto max-w-7xl px-4 pb-20 sm:px-6 lg:px-8">
           {show('models') ? <ModelsTable models={models} locale={formatLocale} copy={copy} /> : null}
           {show('changes') ? <ChangesTimeline radar={radar} query={normalizedQuery} locale={formatLocale} copy={copy} /> : null}
-          {activeTab === 'economics' ? <ModelEconomicsPanel locale={locale} language={language} copy={copy.economics} /> : null}
-          <div className={activeTab === 'overview' ? 'grid gap-x-10 xl:grid-cols-[0.85fr_1.15fr]' : ''}>
+          {isStaff && visibleTab === 'economics' ? <ModelEconomicsPanel locale={locale} language={language} copy={copy.economics} /> : null}
+          <div className={visibleTab === 'overview' ? 'grid grid-cols-[minmax(0,1fr)] gap-x-10 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]' : ''}>
             {show('apps') ? <AppsTable radar={radar} query={normalizedQuery} locale={formatLocale} copy={copy} /> : null}
             {show('benchmarks') ? <BenchmarksTable radar={radar} query={normalizedQuery} copy={copy} /> : null}
           </div>
-          {activeTab === 'overview' ? <><p className="mb-8 border-t border-white/[0.08] pt-6 text-xs leading-5 text-slate-500">{copy.caveat}</p><DecisionGuide locale={locale} copy={copy} /></> : null}
+          {visibleTab === 'overview' ? <><p className="mb-8 border-t border-white/[0.08] pt-6 text-xs leading-5 text-slate-500">{copy.caveat}</p><DecisionGuide locale={locale} copy={copy} /></> : null}
         </div>
       </main>
       <Footer />

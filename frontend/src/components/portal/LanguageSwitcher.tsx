@@ -10,6 +10,9 @@ export default function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname() || '';
   const [open, setOpen] = useState(false);
+  // These research surfaces currently have one published language.
+  const englishOnly = /^\/en\/compare\/(?:research(?:\/[^/]+)?|benchmarks|systems|experiments|methodology)\/?$/.test(pathname);
+  const choices = englishOnly ? (['en'] as const) : LOCALES;
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -56,7 +59,8 @@ export default function LanguageSwitcher() {
 
       {open && (
         <div className="absolute right-0 top-full z-50 mt-2 w-44 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl shadow-slate-200/60 dark:border-emerald-400/15 dark:bg-[#071d24] dark:shadow-black/50">
-          {LOCALES.map((loc) => {
+          {englishOnly && <p className="px-4 py-2 text-xs text-slate-500 dark:text-gray-400">This page is currently available in English.</p>}
+          {choices.map((loc) => {
             const meta = LOCALE_META[loc];
             const isActive = loc === locale;
             return (

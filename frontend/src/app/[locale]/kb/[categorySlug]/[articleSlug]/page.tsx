@@ -57,7 +57,7 @@ export async function generateMetadata({
         languages: {
           'en': `https://tvijo.com/en/kb/${article.category?.slug}/${article.slug}`,
           'ru': `https://tvijo.com/ru/kb/${article.category?.slug}/${article.slug}`,
-          'uk': `https://tvijo.com/uk/kb/${article.category?.slug}/${article.slug}`,
+          'x-default': `https://tvijo.com/en/kb/${article.category?.slug}/${article.slug}`,
         },
       },
       openGraph: {
@@ -66,11 +66,13 @@ export async function generateMetadata({
         url: canonicalUrl,
         type: 'article',
         siteName: 'Tvijo',
+        images: [{ url: '/og-image.png', width: 1200, height: 630, alt: title }],
       },
       twitter: {
         card: 'summary_large_image',
         title,
         description: desc,
+        images: ['/og-image.png'],
       },
     };
 

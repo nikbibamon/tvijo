@@ -1077,3 +1077,103 @@ const en = {
 
 export type Translations = typeof en;
 export default en;
+
+export const portalNavigationCopy = {
+  "openWorkspace": "Open workspace",
+  "security": "Security",
+  "products": "Products",
+  "research": "Research",
+  "skills": "Skills",
+  "knowledge": "Knowledge",
+  "learn": "Learn",
+  "overview": "Product overview",
+  "chat": "Centavra chat",
+  "workspace": "DSHREM workspace",
+  "extension": "Extension & terminal",
+  "pricing": "Pricing",
+  "demo": "Demo",
+  "compare": "Compare",
+  "atlas": "Model Atlas",
+  "trials": "Our trials",
+  "radar": "AI Radar",
+  "method": "Evaluation method",
+  "data": "Open data",
+  "agentSkills": "Agent skills",
+  "axes": "Application profiles (policy axes)",
+  "wiki": "Wiki",
+  "search": "Knowledge search",
+  "technology": "Technology map",
+  "centavraLearn": "Centavra Learn",
+  "library": "AI learning library",
+  "guides": "Practical guides",
+  "exercises": "Evidence exercises",
+  "docs": "Terminal docs",
+  "tools": "Tools",
+  "knowledgeLearning": "Knowledge & learning",
+  "companyHelp": "Company & help",
+  "solutions": "Solutions for teams",
+  "discuss": "Discuss a project",
+  "faq": "FAQ",
+  "login": "Account / sign in",
+  "archive": "Design archive · 18 Oct 2026 (historical)",
+  "changelog": "Changelog"
+};
+
+export const portalTeamLinks = [
+  {
+    "href": "/solutions/centavra/development",
+    "label": "Development teams"
+  },
+  {
+    "href": "/solutions/centavra/growth",
+    "label": "Growth & marketing"
+  },
+  {
+    "href": "/solutions/centavra/content",
+    "label": "SEO & content"
+  },
+  {
+    "href": "/solutions/centavra/operations",
+    "label": "Service businesses"
+  },
+  {
+    "href": "/solutions/centavra/video",
+    "label": "AI Studio · storyboards"
+  },
+  {
+    "href": "/solutions/centavra/games",
+    "label": "Game teams"
+  },
+  {
+    "href": "/solutions/centavra/retail",
+    "label": "Retail operations"
+  },
+  {
+    "href": "/solutions/centavra/logistics",
+    "label": "Logistics desk"
+  },
+  {
+    "href": "/solutions/centavra/property",
+    "label": "Property enquiries"
+  },
+  {
+    "href": "/solutions/centavra/clinic",
+    "label": "Clinic reception"
+  },
+  {
+    "href": "/solutions/centavra/education",
+    "label": "School administration"
+  },
+  {
+    "href": "/solutions/centavra/agriculture",
+    "label": "Farm operations"
+  },
+  {
+    "href": "/solutions/centavra/hospitality",
+    "label": "Hotel guest service"
+  },
+  {
+    "href": "/solutions/centavra/field-service",
+    "label": "Field service"
+  }
+];

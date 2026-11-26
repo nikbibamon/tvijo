@@ -1,0 +1,113 @@
+{
+  "run_id": "A-DSHREM-01",
+  "task": "A",
+  "harness": "DSHREM",
+  "status": "FAIL",
+  "Q": 90,
+  "full_seconds": 178.308120146,
+  "harness_full_seconds": 176.74839016795158,
+  "worker_seconds": 41.44611182063818,
+  "startup_seconds": 136.91407108306885,
+  "package_verification_seconds": 133.92664822191,
+  "verify_seconds": 1.1732757687568665,
+  "api_requests": 8,
+  "input_tokens": 52717,
+  "output_tokens": 6804,
+  "cache_read_tokens": 46336,
+  "reasoning_tokens": "UNKNOWN",
+  "requested_model": "deepseek-flash",
+  "returned_model": [
+    "deepseek-flash"
+  ],
+  "provider": "deepseek_official",
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "thinking": "disabled",
+  "effort": "none",
+  "max_output_tokens": 4096,
+  "context_conservative_bound": 65536,
+  "baseline_sha": "68e5efbfe55883585870df69a2f463ea7dce7cdf",
+  "diff_sha256": "ba0085d21f03f73f60bd2fad88db9bc57ff89003deab80279f80954ba264639b",
+  "human_assisted": false,
+  "criteria": [
+    {
+      "id": "claim_race",
+      "weight": 20,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "stale_fence",
+      "weight": 20,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "restart_replay",
+      "weight": 20,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "concurrent_finish",
+      "weight": 15,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "value_conflict",
+      "weight": 10,
+      "mandatory": true,
+      "passed": false,
+      "error": "AssertionError: conflicting replay accepted"
+    },
+    {
+      "id": "timeout_atomicity",
+      "weight": 10,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "invalid_and_expired",
+      "weight": 5,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    }
+  ],
+  "public_regression_pass": false,
+  "violations": [],
+  "new_tests": [
+    "tests/test_lease_regression.py",
+    "tests/test_queue_stress.py"
+  ],
+  "start_utc": "2026-11-09T05:32:23.819164+00:00",
+  "start_kyiv": "2026-11-09T07:32:23.819164+02:00",
+  "server_load": [
+    2.91650390625,
+    3.5458984375,
+    3.49951171875
+  ],
+  "model_tool_calls": 8,
+  "api_errors": 0,
+  "broker_retries": 0,
+  "semantic_retries": "UNKNOWN",
+  "provider_reported_cost": "UNKNOWN",
+  "invoice_cost": "UNKNOWN",
+  "quantization": "UNKNOWN",
+  "model_serving_revision": "UNKNOWN",
+  "reason": null,
+  "version": "frontend0.2.0-alpha.2 / Harness0.2.2-rc.1",
+  "harness_commit": "592627ace635cdc9d18249b3750207384340bf14",
+  "api_cost_usage_tariff_usd": 0.005178558,
+  "claim_id": "PILOT-A-DSHREM-01",
+  "evidence_url": "/evals/tvijo-eval-comms-radar-20261109/runs/A-DSHREM-01.json",
+  "classification": "engineering_pilot",
+  "checked_on": "2026-11-09",
+  "limits": "480s; USD0.025 per slot; USD0.20 root",
+  "cost_class": "usage_times_verified_tariff; invoice UNKNOWN"
+}

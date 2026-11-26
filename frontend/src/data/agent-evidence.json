@@ -1,0 +1,1217 @@
+{
+  "schema_version": 1,
+  "checked_on": "2026-11-07",
+  "reviewer": "Terra: scoped native/code and public-source checks; human editorial moderation pending",
+  "fresh_until": "2026-12-07",
+  "unknown_policy": "null means unreported or not independently established; unknown is never zero. Product releases and historical study versions are separate.",
+  "cost_policy": "Subscription execution is not billed API spend. It still consumes a paid subscription and quota. Local hosting and free tiers have operating limits. Missing cost remains null.",
+  "sources": [
+    {
+      "id": "S01",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/README.md",
+      "title": "DeepSeek Harness README",
+      "publisher": "DeepSeek AI",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": null,
+      "primary": true,
+      "supports": [
+        "DSH identity, purpose, npm/local run path, MIT license, developer-preview status"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S02",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/releases",
+      "title": "DeepSeek Harness Releases",
+      "publisher": "DeepSeek AI",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": "2026-11-04",
+      "primary": true,
+      "supports": [
+        "DSH latest observed release and selected experimental capabilities"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S04",
+      "url": "https://github.com/Aider-AI/aider/releases",
+      "title": "Aider Releases",
+      "publisher": "Aider-AI",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": "2025-08-09",
+      "primary": true,
+      "supports": [
+        "Latest Aider release observed in official release feed"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S05",
+      "url": "https://github.com/Aider-AI/aider",
+      "title": "Aider official repository (Apache-2.0)",
+      "publisher": "Aider-AI",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": null,
+      "primary": true,
+      "supports": [
+        "Aider purpose, LLM connection setup, codebase map, Git, IDE, lint and test features; Apache license"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S06",
+      "url": "https://github.com/anomalyco/opencode/releases/tag/v2.2.6",
+      "title": "OpenCode Releases",
+      "publisher": "Anomaly",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": "2026-11-06",
+      "primary": true,
+      "supports": [
+        "OpenCode v2.2.6, release date, MCP pooling, worktrees, archived and scripted runs, worktree combination limitation"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S07",
+      "url": "https://github.com/anomalyco/opencode",
+      "title": "Anomaly OpenCode repository",
+      "publisher": "Anomaly",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": null,
+      "primary": true,
+      "supports": [
+        "Current OpenCode identity, coding-agent category, MIT license"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S08",
+      "url": "https://github.com/earendil-works/pi/releases",
+      "title": "Pi Releases",
+      "publisher": "Earendil Works",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": "2026-11-02",
+      "primary": true,
+      "supports": [
+        "Pi v1.5.0, publication date, provider list, device-code login, breaking tool-schema change"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S09",
+      "url": "https://github.com/earendil-works/pi",
+      "title": "Pi repository",
+      "publisher": "Earendil Works",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": null,
+      "primary": true,
+      "supports": [
+        "Pi identity, toolkit and coding-agent CLI description, MIT license"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S10",
+      "url": "https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/README.md",
+      "title": "Pi Coding Agent README (legacy repository path observed in search)",
+      "publisher": "Pi project (search result)",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": null,
+      "primary": true,
+      "supports": [
+        "Interactive, print, RPC and SDK integration modes; repository movement/identity ambiguity"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S11",
+      "url": "https://github.com/aaif-goose/goose/releases",
+      "title": "Goose Releases",
+      "publisher": "AAIF Goose project",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": "2026-10-28",
+      "primary": true,
+      "supports": [
+        "Goose v1.57.0, release date, sessions, provider-related updates"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S12",
+      "url": "https://github.com/aaif-goose/goose",
+      "title": "Goose repository",
+      "publisher": "AAIF Goose project",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": null,
+      "primary": true,
+      "supports": [
+        "Goose description, MCP/ACP topics, Apache-2.0 license"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S13",
+      "url": "https://github.com/langchain-ai/langgraph/releases",
+      "title": "LangGraph Releases",
+      "publisher": "LangChain, Inc.",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": "2026-11-05",
+      "primary": true,
+      "supports": [
+        "LangGraph 1.2.20 version and release date"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S14",
+      "url": "https://github.com/langchain-ai/langgraph",
+      "title": "LangGraph repository",
+      "publisher": "LangChain, Inc.",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": null,
+      "primary": true,
+      "supports": [
+        "LangGraph purpose, framework category, durable execution, human-in-the-loop, memory, MIT license"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S15",
+      "url": "https://pypi.org/project/langgraph/1.2.20/",
+      "title": "LangGraph Python 1.2.20 package metadata",
+      "publisher": "LangChain, Inc.",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": null,
+      "primary": true,
+      "supports": [
+        "Python package version, MIT declaration and dependencies"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S16",
+      "url": "https://github.com/agentscope-ai/agentscope/releases",
+      "title": "AgentScope Releases",
+      "publisher": "AgentScope project",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": "2026-10-27",
+      "primary": true,
+      "supports": [
+        "AgentScope v2.0.11 and release date"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S17",
+      "url": "https://github.com/agentscope-ai/agentscope",
+      "title": "AgentScope repository",
+      "publisher": "AgentScope project",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": null,
+      "primary": true,
+      "supports": [
+        "AgentScope purpose and platform description, project components, Apache-2.0 license"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S18",
+      "url": "https://github.com/openai/openai-agents-python/releases",
+      "title": "OpenAI Agents SDK Python Releases",
+      "publisher": "OpenAI",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": "2026-10-15",
+      "primary": true,
+      "supports": [
+        "Python v0.24.0, TypeScript release search result, SDK features and preview wheel limitations"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S19",
+      "url": "https://github.com/openai/openai-agents-python/blob/main/LICENSE",
+      "title": "OpenAI Agents SDK Python License",
+      "publisher": "OpenAI",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": null,
+      "primary": true,
+      "supports": [
+        "MIT license"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "S20",
+      "url": "https://github.com/openai/openai-agents-js",
+      "title": "OpenAI Agents SDK TypeScript repository",
+      "publisher": "OpenAI",
+      "retrieved_at": "2026-11-07T22:47:17Z",
+      "published_at": null,
+      "primary": true,
+      "supports": [
+        "OpenAI TypeScript SDK project identity"
+      ],
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "OWN01",
+      "title": "Earlier isolated read/write/test canary, 7 November 2026",
+      "url": null,
+      "primary": true,
+      "classification": "own",
+      "checked_on": "2026-11-07",
+      "summary": "The earlier isolated canary established basic read/write/test behavior and budget receipts. Native delegation was established separately by the later OWN02 fixture; systemwide activation remains blocked."
+    },
+    {
+      "id": "B01",
+      "title": "Joel Niklaus: Coding Agent Bench",
+      "url": "https://raw.githubusercontent.com/JoelNiklaus/harness-optimization/main/coding/README.md",
+      "classification": "external",
+      "primary": true,
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T22:52:49.083492+00:00",
+      "http_status": 200,
+      "content_sha256": "61fd398a8e3ec291f5a6f12ee79c0e6bbb4f83170966ba2225665fd5a179df08"
+    },
+    {
+      "id": "B02",
+      "title": "Qihoo360 Harness-Bench repository",
+      "url": "https://raw.githubusercontent.com/Qihoo360/harness-bench/main/README.md",
+      "classification": "external",
+      "primary": true,
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T22:52:49.085885+00:00",
+      "http_status": 200,
+      "content_sha256": "755623a22efe68a1a18f45064e88475d11e18e49f6d9a6138501d8f99b28cf7c"
+    },
+    {
+      "id": "B03",
+      "title": "AIMultiple A-CODE-CLI",
+      "url": "https://aimultiple.com/agentic-cli",
+      "classification": "external",
+      "primary": true,
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T22:52:49.262519+00:00",
+      "http_status": 200,
+      "content_sha256": "c0719ee5e896a3666e12b636238304cb70e36865c65cfe0fce2e631e1ba94049"
+    },
+    {
+      "id": "B04",
+      "title": "Eishan Lawrence: harness efficiency",
+      "url": "https://www.eishanlawrence.com/blog/harness-efficiency-bench",
+      "classification": "external",
+      "primary": true,
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T22:52:49.367154+00:00",
+      "http_status": 200,
+      "content_sha256": "ca8c39433c6bc7a2180467b7009cb6e09864f0a6189a292f96cbd44903f961e5"
+    },
+    {
+      "id": "B05",
+      "title": "Artificial Analysis coding-agent methodology",
+      "url": "https://artificialanalysis.ai/methodology/coding-agents-benchmarking",
+      "classification": "external",
+      "primary": true,
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T22:52:49.504538+00:00",
+      "http_status": 200,
+      "content_sha256": "f2431b410fd810b45e44f609d38da7233df1f2d3674e9c1c1a4bb99dff15b5d7"
+    },
+    {
+      "id": "B06",
+      "title": "Aider polyglot leaderboard",
+      "url": "https://aider.chat/docs/leaderboards/",
+      "classification": "external",
+      "primary": true,
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T22:52:49.505219+00:00",
+      "http_status": 200,
+      "content_sha256": "cea6cab3ac65e4d41cce072fcac5540497d757b3a6f72d997b7c3607b44c470e"
+    },
+    {
+      "id": "B07",
+      "title": "Aider benchmark notes",
+      "url": "https://aider.chat/docs/leaderboards/notes.html",
+      "classification": "external",
+      "primary": true,
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T22:52:49.556042+00:00",
+      "http_status": 200,
+      "content_sha256": "58f709ea4691203fa74781da87ff6bb23a3732e65704746e0d84cccd1c0a0113"
+    },
+    {
+      "id": "B08",
+      "title": "Eishan benchmark repository: unavailable",
+      "url": "https://api.github.com/repos/eishan05/harness-efficiency-bench",
+      "classification": "external",
+      "primary": true,
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T22:52:49.499530+00:00",
+      "http_status": 404,
+      "content_sha256": "4f50e254a719a6b1b06b529bdaa08980e4acf0878aad0090cba7771f6ebdf0b9"
+    },
+    {
+      "id": "B09",
+      "title": "Harness-Bench paper V2, Appendix B.1 and section 4.1",
+      "url": "https://arxiv.org/html/2605.27922v2",
+      "classification": "external",
+      "primary": true,
+      "checked_on": "2026-11-07",
+      "published_on": "2026-10-15"
+    },
+    {
+      "id": "B10",
+      "title": "Harness-Bench arXiv abstract and version history",
+      "url": "https://arxiv.org/abs/2605.27922",
+      "classification": "external",
+      "primary": true,
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "B11",
+      "title": "Eishan Lawrence: The Harness Tax (paper, June 2026)",
+      "url": "https://www.eishanlawrence.com/blog/harness-bench/harness-efficiency-paper.pdf",
+      "classification": "external",
+      "primary": true,
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T22:52:49.473167+00:00",
+      "content_sha256": "f7e17952902b73131fc4dec8ee60a7f79440f2cdf39f64c1f55142e01c6b51d6"
+    },
+    {
+      "id": "OWN02",
+      "title": "Bounded native DSH parent/Luna/Terra acceptance, 7 November 2026",
+      "url": null,
+      "primary": true,
+      "classification": "own",
+      "checked_on": "2026-11-07",
+      "summary": "Operator-run isolated fixture: native Luna returned work, native Terra independently checked the artifact, and the existing controller completed both predeclared checks. Private receipts retained; no matched comparative benchmark or production rollout established."
+    },
+    {
+      "id": "B12",
+      "url": "https://huggingface.co/buckets/joelniklaus/CodingBenchmarkResults",
+      "title": "Coding Agent Bench primary results bucket",
+      "publisher": "Joel Niklaus",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T23:45:12.477634+00:00"
+    },
+    {
+      "id": "B13",
+      "url": "https://raw.githubusercontent.com/JoelNiklaus/harness-optimization/main/coding/RUNS.md",
+      "title": "Coding Agent Bench run log and partial harness pins",
+      "publisher": "Joel Niklaus",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T23:45:12.477660+00:00"
+    },
+    {
+      "id": "B14",
+      "url": "https://cdn.aimultiple.com/benchmark_data/article5_agentic-cli_data.zip?v=1793984913",
+      "title": "A-CODE-CLI public summary dataset ZIP",
+      "publisher": "AIMultiple",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T23:45:12.477664+00:00"
+    },
+    {
+      "id": "B15",
+      "url": "https://github.com/aimultiple-benchmark/agent-benchmark-example-task",
+      "title": "A-CODE-CLI example task",
+      "publisher": "AIMultiple",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T23:45:12.477668+00:00"
+    },
+    {
+      "id": "B16",
+      "url": "https://artificialanalysis.ai/agents/coding-agents",
+      "title": "Coding Agent Index public variant results",
+      "publisher": "Artificial Analysis",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T23:45:12.477673+00:00"
+    },
+    {
+      "id": "B17",
+      "url": "https://huggingface.co/datasets/ArtificialAnalysis/SWE-Atlas-QnA-AA",
+      "title": "SWE-Atlas-QnA-AA dataset and judge configuration",
+      "publisher": "Artificial Analysis",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T23:45:12.477676+00:00"
+    },
+    {
+      "id": "B18",
+      "url": "https://raw.githubusercontent.com/Aider-AI/aider/main/aider/website/_data/polyglot_leaderboard.yml",
+      "title": "Aider polyglot primary per-run data",
+      "publisher": "Aider-AI",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07",
+      "retrieved_at": "2026-11-07T23:45:12.477679+00:00"
+    },
+    {
+      "id": "L01",
+      "url": "https://github.com/deepseek-ai/deepseek-harness/blob/master/LICENSE",
+      "title": "DeepSeek Harness (DSH) license",
+      "publisher": "DeepSeek AI",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "L02",
+      "url": "https://github.com/Aider-AI/aider/blob/main/LICENSE.txt",
+      "title": "Aider license",
+      "publisher": "Aider-AI",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "L03",
+      "url": "https://github.com/anomalyco/opencode/blob/dev/LICENSE",
+      "title": "OpenCode (anomalyco/opencode) license",
+      "publisher": "Anomaly",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "L04",
+      "url": "https://github.com/earendil-works/pi/blob/main/LICENSE",
+      "title": "Pi (earendil-works/pi) license",
+      "publisher": "Earendil Works",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "L05",
+      "url": "https://github.com/aaif-goose/goose/blob/main/LICENSE",
+      "title": "Goose license",
+      "publisher": "Block / AAIF Goose project",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "L06",
+      "url": "https://github.com/langchain-ai/langgraph/blob/main/libs/langgraph/LICENSE",
+      "title": "LangGraph license",
+      "publisher": "LangChain, Inc.",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "L07",
+      "url": "https://github.com/agentscope-ai/agentscope/blob/main/LICENSE",
+      "title": "AgentScope license",
+      "publisher": "AgentScope project (agentscope-ai)",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    },
+    {
+      "id": "L08",
+      "url": "https://github.com/openai/openai-agents-python/blob/main/LICENSE",
+      "title": "OpenAI Agents SDK license",
+      "publisher": "OpenAI",
+      "primary": true,
+      "classification": "external",
+      "checked_on": "2026-11-07"
+    }
+  ],
+  "products": [
+    {
+      "id": "dsh-upstream",
+      "name": "DeepSeek Harness (DSH)",
+      "supplier": "DeepSeek AI",
+      "category": "ready coding agent / harness",
+      "classification": "external",
+      "version": "v0.2.2-rc.1 (pre-release)",
+      "version_date": "2026-11-04",
+      "license": "MIT",
+      "checked_on": "2026-11-07",
+      "purpose": "Open-source agent harness with an everything-is-a-plugin architecture; its README describes the project as in developer preview with compatibility-breaking changes expected.",
+      "connection": "Runs as a local web UI through its npm package or from source.",
+      "capability": "Plugin-oriented architecture; official releases describe Web/Desktop, SDK and ACP profiles and experimental support for child-agent and worktree features.",
+      "limitation": "Official README says developer preview and warns of compatibility-breaking changes. Official release notes label several capabilities experimental; do not treat them as stable guarantees.",
+      "decision": "isolated trial",
+      "decision_classification": "hypothesis",
+      "decision_reason": "Continue upstream compatibility testing in isolation; developer preview requires acceptance before rollout.",
+      "source_ids": [
+        "S01",
+        "S02",
+        "L01"
+      ],
+      "ru": {
+        "category": "Готовая оболочка агента",
+        "summary": "Плагинная оболочка с веб-интерфейсом; предварительная версия может менять совместимость.",
+        "decision": "Продолжать изолированную приёмку."
+      }
+    },
+    {
+      "id": "dshrem",
+      "name": "DSHREM",
+      "supplier": "AIOS / Tvijo",
+      "category": "Adapter / control layer",
+      "classification": "own",
+      "version": null,
+      "version_date": null,
+      "license": null,
+      "checked_on": "2026-11-07",
+      "purpose": "Existing AIOS adaptation and control layer around an execution harness.",
+      "connection": "Existing AIOS adapter; public connection contract unreported.",
+      "capability": "Isolated read/write/test and budget receipts are verified. A bounded native DSH → Luna → Terra task completed with both predeclared checks.",
+      "limitation": "Systemwide activation remains blocked. Private acceptance receipts are not a public replication or a matched performance comparison.",
+      "decision": "use now",
+      "decision_classification": "hypothesis",
+      "decision_reason": "Continue only within the verified isolated scope; broader rollout depends on acceptance.",
+      "source_ids": [
+        "OWN01",
+        "OWN02"
+      ],
+      "ru": {
+        "category": "Адаптер и слой управления",
+        "summary": "Проверены изолированные чтение, запись, тест и бюджетные квитанции. Ограниченное задание DSH → Luna → Terra завершено с двумя заранее заданными проверками. Общая активация остаётся заблокированной.",
+        "decision": "Использовать только в проверенном объёме."
+      }
+    },
+    {
+      "id": "aider",
+      "name": "Aider",
+      "supplier": "Aider-AI",
+      "category": "ready coding agent",
+      "classification": "external",
+      "version": "GitHub release v0.86.0 observed",
+      "version_date": "2025-08-09",
+      "license": "Apache-2.0",
+      "checked_on": "2026-11-07",
+      "purpose": "Terminal-based AI pair programming for starting projects or editing existing codebases.",
+      "connection": "Connects to cloud or local LLMs; the README shows provider API-key configuration and documents use through an IDE/editor.",
+      "capability": "Maps codebases, integrates with Git, and can run linters and tests after changes.",
+      "limitation": "Official examples configure provider credentials; the reviewed README does not document an embedded job-control or grant-management layer.",
+      "decision": "isolated trial",
+      "decision_classification": "hypothesis",
+      "decision_reason": "Candidate for a future isolated experiment on accepted patches and human interventions; no additional integration is selected now. No matched pilot result establishes a gap it would close.",
+      "source_ids": [
+        "S04",
+        "S05",
+        "L02"
+      ],
+      "ru": {
+        "category": "Готовый агент для кода",
+        "summary": "Терминальная работа с репозиторием, картой кода, Git, линтером и тестами; подключение к облачной или локальной модели.",
+        "decision": "Испытать отдельно после фиксации проверяемого пробела; сейчас дополнительная интеграция не выбрана."
+      }
+    },
+    {
+      "id": "opencode",
+      "name": "OpenCode (anomalyco/opencode)",
+      "supplier": "Anomaly",
+      "category": "ready coding agent / harness",
+      "classification": "external",
+      "version": "v2.2.6",
+      "version_date": "2026-11-06",
+      "license": "MIT",
+      "checked_on": "2026-11-07",
+      "purpose": "Open-source coding agent.",
+      "connection": "Official release documents MCP server connections and provider/model configuration; latest release adds optional connection pooling.",
+      "capability": "CLI supports scripted runs and worktree execution; the release notes describe archived runs for scripted and CI sessions.",
+      "limitation": "Worktree runs cannot be combined with --continue or --session, according to the release notes.",
+      "decision": "defer",
+      "decision_classification": "hypothesis",
+      "decision_reason": "Useful scripted-run/worktree candidate; defer another integration while the existing control plane is accepted. Aider is only a conditional future experiment.",
+      "source_ids": [
+        "S06",
+        "S07",
+        "L03"
+      ],
+      "ru": {
+        "category": "Готовый агент для кода",
+        "summary": "Именно продукт Anomaly. Документированы сценарные запуски и рабочие деревья; режим рабочего дерева несовместим с продолжением прежнего сеанса.",
+        "decision": "Отложить дополнительную интеграцию."
+      }
+    },
+    {
+      "id": "pi",
+      "name": "Pi (earendil-works/pi)",
+      "supplier": "Earendil Works",
+      "category": "ready coding agent / harness and agent toolkit",
+      "classification": "external",
+      "version": "v1.5.0",
+      "version_date": "2026-11-02",
+      "license": "MIT",
+      "checked_on": "2026-11-07",
+      "purpose": "Agent toolkit with a unified LLM API, agent loop, TUI, and coding-agent CLI.",
+      "connection": "Official release notes list OpenAI, Azure OpenAI Responses, OpenAI Codex, and GitHub Copilot device-code login among provider connection paths.",
+      "capability": "Official repository describes both toolkit components and a coding-agent CLI; the coding-agent package README documents interactive, print, RPC, and SDK modes.",
+      "limitation": "The official README omits built-in subagents and plan mode; extension packages can add workflows. Compatibility with AIOS controls is untested.",
+      "decision": "study",
+      "decision_classification": "hypothesis",
+      "decision_reason": "CLI/RPC/SDK flexibility is relevant; no measured gap currently justifies another adapter.",
+      "source_ids": [
+        "S08",
+        "S09",
+        "S10",
+        "L04"
+      ],
+      "ru": {
+        "category": "Оболочка и инструментарий",
+        "summary": "Есть CLI, RPC и SDK. Встроенные подагенты отсутствуют в базовом наборе; расширения могут добавлять свои процессы.",
+        "decision": "Изучать, совместимость с управлением AIOS не проверена."
+      }
+    },
+    {
+      "id": "goose",
+      "name": "Goose",
+      "supplier": "Block / AAIF Goose project",
+      "category": "ready general-purpose agent / harness",
+      "classification": "external",
+      "version": "v1.57.0",
+      "version_date": "2026-10-28",
+      "license": "Apache-2.0",
+      "checked_on": "2026-11-07",
+      "purpose": "Extensible on-machine agent for development tasks that can install, execute, edit, and test using LLMs.",
+      "connection": "Official repository identifies MCP and ACP; release notes include provider configuration and OpenRouter support.",
+      "capability": "Official description covers development tasks beyond code suggestions; release notes show caller-supplied session IDs and scheduler behavior.",
+      "limitation": "The project description establishes an on-machine agent; the bounded review did not establish compatibility with AIOS grants or NativeMeter.",
+      "decision": "defer",
+      "decision_classification": "hypothesis",
+      "decision_reason": "General-purpose local execution overlaps the existing harness; grants, cancellation and accounting compatibility remain untested.",
+      "source_ids": [
+        "S11",
+        "S12",
+        "L05"
+      ],
+      "ru": {
+        "category": "Готовый агент общего назначения",
+        "summary": "Локальный агент, CLI и интерфейсы расширения. Совместимость с разрешениями и учётом AIOS не доказана.",
+        "decision": "Отложить дополнительную интеграцию."
+      }
+    },
+    {
+      "id": "langgraph",
+      "name": "LangGraph",
+      "supplier": "LangChain, Inc.",
+      "category": "orchestration framework",
+      "classification": "external",
+      "version": "Python 1.2.20",
+      "version_date": "2026-11-05",
+      "license": "MIT",
+      "checked_on": "2026-11-07",
+      "purpose": "Low-level framework for building stateful, long-running agent and workflow systems.",
+      "connection": "Can be used standalone or with LangChain; Python package metadata lists its SDK and checkpoint dependencies.",
+      "capability": "Official repository documents durable execution, human oversight, and persistent memory.",
+      "limitation": "It is an orchestration framework requiring application integration, rather than a ready coding-agent CLI.",
+      "decision": "study",
+      "decision_classification": "hypothesis",
+      "decision_reason": "Relevant if AIOS needs graph-based stateful workflows; it is not a drop-in harness for current dispatched coding tasks.",
+      "source_ids": [
+        "S13",
+        "S14",
+        "S15",
+        "L06"
+      ],
+      "ru": {
+        "category": "Фреймворк оркестрации",
+        "summary": "Долгоживущие процессы с состоянием, контроль человеком и сохранение состояния; нужна интеграция в приложение.",
+        "decision": "Изучать при появлении конкретной потребности."
+      }
+    },
+    {
+      "id": "agentscope",
+      "name": "AgentScope",
+      "supplier": "AgentScope project (agentscope-ai)",
+      "category": "multi-agent platform / framework",
+      "classification": "external",
+      "version": "v2.0.11",
+      "version_date": "2026-10-27",
+      "license": "Apache-2.0",
+      "checked_on": "2026-11-07",
+      "purpose": "Platform for building multi-agent applications with large language models.",
+      "connection": "Official release notes document provider/model integrations and workspace features; the source repository identifies Python as its project ecosystem.",
+      "capability": "Project materials describe tools, pipelines, messaging, distribution, and studio/monitor components.",
+      "limitation": "It is a developer platform for constructing multi-agent applications, not a ready coding-agent CLI.",
+      "decision": "study",
+      "decision_classification": "hypothesis",
+      "decision_reason": "Could inform future multi-agent orchestration work; no evidence in this bounded research establishes fit with existing AIOS dispatch controls.",
+      "source_ids": [
+        "S16",
+        "S17",
+        "L07"
+      ],
+      "ru": {
+        "category": "Фреймворк агентов",
+        "summary": "Средства разработки приложений с несколькими агентами; это не готовый CLI для задач репозитория.",
+        "decision": "Изучать, не добавлять без измеримого пробела."
+      }
+    },
+    {
+      "id": "openai-agents-sdk",
+      "name": "OpenAI Agents SDK",
+      "supplier": "OpenAI",
+      "category": "agent SDK",
+      "classification": "external",
+      "version": "Python v0.24.0",
+      "version_date": "2026-10-15",
+      "license": "MIT",
+      "checked_on": "2026-11-07",
+      "purpose": "Developer SDK for creating agents and multi-agent workflows.",
+      "connection": "Python library integrated in application code; TypeScript implementation is separate and its version is unreported here.",
+      "capability": "Developer building blocks for agents, tools, handoffs, sessions and tracing; official stable release includes MCP tool annotations.",
+      "limitation": "Requires application code, permissions and model-provider setup. SDK availability does not prove AIOS native delegation. Preview runtime restrictions do not describe stable v0.24.0.",
+      "decision": "study",
+      "decision_classification": "hypothesis",
+      "decision_reason": "Useful orchestration reference; the existing AIOS native path now has a separate bounded acceptance result, so another SDK is not selected.",
+      "source_ids": [
+        "S18",
+        "S19",
+        "S20",
+        "L08"
+      ],
+      "ru": {
+        "category": "SDK OpenAI",
+        "summary": "Библиотека для агентов, инструментов, передачи управления, сеансов и трассировки. Версия TypeScript здесь не установлена.",
+        "decision": "Изучать; библиотека сама по себе не доказывает делегирование AIOS."
+      }
+    }
+  ],
+  "studies": [
+    {
+      "id": "joel",
+      "title": "Joel Niklaus Coding Agent Bench",
+      "classification": "external",
+      "published_on": null,
+      "evaluation_period": null,
+      "agent_versions": null,
+      "models": [
+        "GLM-5.2",
+        "Gemma 4 26B-A4B"
+      ],
+      "provider": "README describes Hugging Face Inference Providers for the baseline and local vLLM pools for Gemma/GLM; exact serving route is run-specific and unreported here.",
+      "tasks": {
+        "description": "Held-out SWE-bench Pro; ten harnesses × two models × 250 tasks",
+        "count": 250
+      },
+      "repeats": 1,
+      "settings": "One rollout per pairing in benchmark images. Current README pins thinking on server-side, with a separate thinking-off ablation. Historical per-run version, context/output and timeout stamps remain unreported here; README documents changed limits, so one numeric setting cannot represent every run.",
+      "metrics": "pass@1, confidence intervals, coverage, tokens and estimated cost",
+      "limitations": "Current README is a moving snapshot, not a dated frozen study. Serving/proxy changes, context/output limits and infrastructure exclusions affect comparisons. Partial thinking-off ablations have uneven coverage. Exact historical versions remain null until run stamps are reviewed.",
+      "source_ids": [
+        "B01",
+        "B12",
+        "B13"
+      ],
+      "checked_on": "2026-11-07",
+      "ru": {
+        "summary": "Набор SWE-bench Pro: десять оболочек, две модели, 250 задач, один проход на сочетание.",
+        "limitations": "Точные исторические версии в просмотренном README не установлены. Влияют прокси, лимиты модели и исключение инфраструктурных сбоев."
+      },
+      "reported_run_log_pins": {
+        "pi": "0.80.3",
+        "OpenCode": "1.17.14",
+        "Codex": "0.142.5",
+        "Qwen Code": "0.21.1",
+        "Crush": "0.87.0",
+        "Goose": "1.41.0"
+      },
+      "version_scope": "Pins are from RUNS.md, not asserted to identify every headline-matrix artifact; remaining harness pins and evaluation date remain unreported here.",
+      "primary_result_source_ids": [
+        "B12"
+      ]
+    },
+    {
+      "id": "harness-bench",
+      "title": "Qihoo360 Harness-Bench V2",
+      "classification": "external",
+      "published_on": "2026-10-15",
+      "evaluation_period": null,
+      "agent_versions": {
+        "Claude Code": "2.1.220",
+        "Codex": "0.145.0",
+        "OpenCode": "1.18.8",
+        "OpenClaw": "2026.5.26",
+        "Hermes": "2026.7.20",
+        "Goose": "1.44.0",
+        "Nanobot": "0.3.0"
+      },
+      "models": [
+        "GPT-5.6 Sol/Terra/Luna",
+        "GLM-5.3 / GLM-5.3-Flash",
+        "DeepSeek-V4 Pro/Flash",
+        "Kimi-K3",
+        "Gemma-4-31B",
+        "Qwen3.8-27B"
+      ],
+      "provider": "Official provider APIs plus local Gemma/Qwen; exact endpoint identities unreported here",
+      "tasks": {
+        "description": "V2 HTML/repository: 274 general + 26 multimodal tasks; the arXiv abstract still reports 106 tasks. Snapshot mismatch must be resolved before numerical reuse.",
+        "count": 300
+      },
+      "repeats": 1,
+      "settings": "Temperature 1.0; 200K input threshold; 150 turns; model maximum output; native context management. General and multimodal coverage differs.",
+      "metrics": "Mean oracle score, full/threshold completion, trajectory length, API tokens/requests and estimated provider cost",
+      "limitations": "V1 raw receipt is superseded by current V2. Abstract and HTML task counts disagree. One rollout gives no repeat variance. Locally hosted model operating costs are excluded from API cost, not zero.",
+      "source_ids": [
+        "B02",
+        "B09",
+        "B10"
+      ],
+      "checked_on": "2026-11-07",
+      "ru": {
+        "summary": "HTML V2 и репозиторий: 274 общие и 26 мультимодальных задач, по одному проходу.",
+        "limitations": "Аннотация arXiv всё ещё говорит о 106 задачах. До согласования снимков числа нельзя переносить в рейтинг. Локальные затраты не входят в оценку API."
+      },
+      "primary_result_source_ids": [
+        "B09"
+      ]
+    },
+    {
+      "id": "aimultiple",
+      "title": "AIMultiple A-CODE-CLI",
+      "classification": "external",
+      "published_on": "2026-06-29",
+      "evaluation_period": "2026-06-05 to 2026-06-08",
+      "agent_versions": {
+        "Claude Code": "2.1.165",
+        "Cline": "3.0.27",
+        "Codex": "0.140.0",
+        "Aider": "0.86.2",
+        "Gemini CLI": "0.26.0",
+        "Forge": "2.13.11",
+        "Goose": "1.37.0",
+        "Grok": "0.2.54",
+        "Junie": "26.06.01 (1831.35)",
+        "Kiro CLI": "2.6.1",
+        "OpenCode": "1.17.7"
+      },
+      "models": [
+        "Sonnet 4.6 non-reasoning; Junie also uses GPT-4.1-mini"
+      ],
+      "provider": "Native provider/OpenRouter; Claude Code subscription OAuth; Kiro hosted credits; Codex/Gemini via proxies",
+      "tasks": {
+        "description": "Ten web-development scenarios; backend and frontend smoke checks. Additional web research and memory probes use different models/protocols.",
+        "count": 10
+      },
+      "repeats": null,
+      "settings": "One-shot builds with default CLI settings. Selected backend evaluations rerun three times; that is not three independent builds for every pairing.",
+      "metrics": "Backend step-pass rate; UI smoke; combined 0.7 backend + 0.3 frontend; elapsed time, tokens, mixed billing costs",
+      "limitations": "Codex and Gemini proxy adapters change behavior; Junie has a helper model. Research probes use native search models and N=1. Subscription/credits/API accounting cannot be treated as one token price. The public ZIP was retrieved after an initial HTTP403; its README states CC BY-NC 4.0. Raw dataset tables are not redistributed here. The example task is not the full task suite.",
+      "source_ids": [
+        "B03",
+        "B14",
+        "B15"
+      ],
+      "checked_on": "2026-11-07",
+      "ru": {
+        "summary": "Десять задач веб-разработки; сборки 5–8 июня 2026; Sonnet 4.6 без reasoning.",
+        "limitations": "Прокси Codex и Gemini меняют условия; у Junie есть вспомогательная модель. Повторные проверки готового backend не равны независимым сборкам. Публичный ZIP получен после первоначального HTTP403. README указывает CC BY-NC 4.0; исходные таблицы здесь не воспроизводятся. Пример задания не заменяет полный набор."
+      },
+      "primary_result_source_ids": [
+        "B14"
+      ],
+      "dataset_license": "CC BY-NC 4.0 according to ZIP README; no raw dataset embedded"
+    },
+    {
+      "id": "eishan",
+      "title": "Eishan Lawrence harness efficiency",
+      "classification": "external",
+      "published_on": "2026-06-12",
+      "evaluation_period": null,
+      "agent_versions": null,
+      "models": [
+        "deepseek/deepseek-v4-flash",
+        "nvidia/nemotron-3-ultra-550b-a55b:free"
+      ],
+      "provider": "OpenRouter; upstream providers not pinned. Most use chat/completions; Claude Code uses the messages dialect.",
+      "tasks": {
+        "description": "12 small Python tasks × 12 harness configurations (including Aider architect mode) × two model runs",
+        "count": 12
+      },
+      "repeats": 1,
+      "settings": "One run per task/model/configuration in isolated Docker workspaces; deterministic oracles. Secondary model replication is not a repeat. Exact historical agent pins, effort and numeric budgets unreported. The paper also studies ten SWE-bench Lite tasks and injected context.",
+      "metrics": "Tokens per solved task, startup overhead and completion",
+      "limitations": "Advertised repository returned HTTP 404 in the supplied receipt, limiting reproducibility. Small tasks mostly succeed; token ordering does not establish quality on larger repositories. A free tier is not zero resource or operating cost. Cache behavior depends on the harness/gateway/provider path and API dialect; auxiliary model calls remain in totals.",
+      "source_ids": [
+        "B04",
+        "B08",
+        "B11"
+      ],
+      "checked_on": "2026-11-07",
+      "ru": {
+        "summary": "Двенадцать конфигураций, двенадцать небольших задач Python, две модели через OpenRouter.",
+        "limitations": "Один запуск на сочетание; вторая модель не повтор. Репозиторий вернул 404, что ограничивает воспроизводимость."
+      },
+      "primary_result_source_ids": [
+        "B11"
+      ]
+    },
+    {
+      "id": "artificial-analysis",
+      "title": "Artificial Analysis Coding Agent Index v2.0",
+      "classification": "external",
+      "published_on": "2026-10",
+      "evaluation_period": null,
+      "agent_versions": null,
+      "models": null,
+      "provider": null,
+      "tasks": {
+        "description": "FrontierCode v1.1 (100), Terminal-Bench 4.0 (66), SWE-Atlas-QnA-AA (124)",
+        "count": 290
+      },
+      "repeats": 3,
+      "settings": "Settings, effort, agent version, model and provider are row-specific; there is no single shared configuration. Five judge votes on Q&A criteria are distinct from three attempts.",
+      "metrics": "Equal-weight benchmark index; per-attempt quality; elapsed time, tokens, API cost and integrity failures",
+      "limitations": "This is a methodology, not one frozen leaderboard row. Historical versions/model/provider are null here; inspect the exact row before using a score. FrontierCode tasks are not public. Costs use API token pricing, not consumer subscriptions; missing telemetry is excluded, never filled with zero.",
+      "source_ids": [
+        "B05",
+        "B16",
+        "B17"
+      ],
+      "checked_on": "2026-11-07",
+      "ru": {
+        "summary": "Методика индекса v2.0: 290 задач, три попытки на задачу; актуальна с октября 2026.",
+        "limitations": "Версия агента, модель, effort и провайдер зависят от строки. Расходы считаются по тарифам API, а не подпискам; часть задач закрыта."
+      },
+      "primary_result_source_ids": [
+        "B16"
+      ]
+    },
+    {
+      "id": "aider-polyglot",
+      "title": "Aider polyglot leaderboard",
+      "classification": "external",
+      "published_on": "2025-11-20",
+      "evaluation_period": null,
+      "agent_versions": null,
+      "models": null,
+      "provider": null,
+      "tasks": {
+        "description": "225 Exercism exercises across C++, Go, Java, JavaScript, Python and Rust",
+        "count": 225
+      },
+      "repeats": null,
+      "settings": "Row-specific version/commit, model, edit format, reasoning effort and command. Pass 2 repairs the first attempt after feedback; it is not an independent repeated trial.",
+      "metrics": "Percent correct, correct edit format, elapsed time and historical token cost",
+      "limitations": "Last-updated date is not the date of every run. Example row: 2025-08-23, Aider 0.86.2.dev / commit 32faf82, gpt-5 (high), diff, command aider --model openai/gpt-5. Provider endpoint unreported. Do not replace row versions with current product versions.",
+      "source_ids": [
+        "B06",
+        "B07",
+        "B18"
+      ],
+      "checked_on": "2026-11-07",
+      "ru": {
+        "summary": "225 упражнений Exercism; последняя дата обновления 20 ноября 2025.",
+        "limitations": "Версии, модель и настройки берутся из конкретной строки. Второй проход исправляет первый по обратной связи, это не независимый повтор."
+      },
+      "primary_result_source_ids": [
+        "B18"
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "slug": "dshrem-vs-aider",
+      "competitor_id": "aider",
+      "title": "DSHREM vs Aider: control layer or coding agent?",
+      "description": "Compare DSHREM’s isolated canary evidence with Aider’s coding workflow, limits and fit. Sources checked 7 November 2026.",
+      "fit": "Choose Aider for a terminal coding workflow with Git and test integration. Consider DSHREM within an existing AIOS deployment where scoped execution and budget receipts are acceptance requirements.",
+      "decision": "Keep the existing control plane now. Aider is the sole candidate for a future isolated coding-harness experiment after an explicit gap and budget are defined; no additional integration is selected in this edition.",
+      "source_ids": [
+        "OWN01",
+        "S04",
+        "S05",
+        "OWN02"
+      ]
+    },
+    {
+      "slug": "dshrem-vs-opencode",
+      "competitor_id": "opencode",
+      "title": "DSHREM vs OpenCode: choose by workflow and evidence",
+      "description": "DSHREM and Anomaly OpenCode compared by verified capability, connection, limits and workflow fit, with dated primary sources.",
+      "fit": "Choose Anomaly OpenCode for a ready coding agent and documented scripted worktree runs. Consider DSHREM for the already controlled AIOS workflow, keeping deployment acceptance separate from upstream features.",
+      "decision": "Study OpenCode’s scripted interface and defer another integration. There are no matched head-to-head quality or time measurements, and the current control plane already handles dispatch and accounting.",
+      "source_ids": [
+        "OWN01",
+        "S06",
+        "S07",
+        "OWN02"
+      ]
+    }
+  ],
+  "cta": {
+    "url": "https://dsh.tvijo.com/docs",
+    "label": "Read setup documentation",
+    "checked_on": "2026-11-07",
+    "verification": "HTTP200 GET on the existing setup documentation; the previous home #cta fragment was absent and is not used."
+  },
+  "wiki": {
+    "section": "ai-agents-explained",
+    "existing_links": [
+      {
+        "url": "https://tvijo.com/wiki/agents-md-and-rules-files/",
+        "title": "Set an agent’s scope"
+      },
+      {
+        "url": "https://tvijo.com/wiki/agent-task-receipts-what-they-prove/",
+        "title": "What task receipts prove"
+      },
+      {
+        "url": "https://tvijo.com/wiki/ai-coding-agent-cost-per-task/",
+        "title": "Cost per agent task"
+      }
+    ],
+    "link_verification": "Existing URLs and category verified in the read-only Wiki corpus. Live Wiki HTTP verification blocked; preflight must recheck. New slugs absent from that corpus; production uniqueness remains a publisher dry-run check.",
+    "topics": [
+      {
+        "slug": "model-harness-sdk-orchestrator-evidence",
+        "title": {
+          "en": "Model, harness, SDK or orchestrator",
+          "ru": "Модель, harness, SDK и оркестратор"
+        },
+        "lede": {
+          "en": "A model can talk. A harness can act. An SDK helps build. A task still needs a check. Pick the layer your team can run, test and own with care.",
+          "ru": "Модель даёт ответ. Код ведёт цикл. SDK даёт блоки. Но кто ведёт труд и кто его примет? Вот как найти свой слой и не ждать от него того, чего он не даёт."
+        },
+        "audience": {
+          "en": "Teams choosing a coding agent or building controlled agent workflows",
+          "ru": "Команды, выбирающие агента для кода или управляемый процесс исполнения"
+        },
+        "you_will_learn": {
+          "en": [
+            "Separate a model, harness, SDK and orchestrator",
+            "Read product fit and evidence boundaries",
+            "Define a bounded integration pilot"
+          ],
+          "ru": [
+            "Различать модель, оболочку, SDK и оркестратор",
+            "Читать границы пригодности и доказательств",
+            "Определять ограниченный пилот интеграции"
+          ]
+        },
+        "body": {
+          "en": "## The layers and the decision\n\nA model generates the next response. A harness turns responses into work: it supplies context, exposes tools, applies permissions, keeps a session and decides how to recover from errors. An SDK gives a developer components for constructing that loop. An orchestrator tracks relationships and state across jobs. A product may combine these layers, so a name alone is an incomplete description of what you are buying or operating.\n\nThe practical question is where your unfinished work sits. If a person needs to edit a repository today, a ready coding agent may cover the workflow. If a team is building an application around custom tools, an SDK can be appropriate. If work must survive interruption, route between workers and collect acceptance, orchestration becomes a separate responsibility. Installing another library does not establish that any of these responsibilities has been accepted in your environment.\n\n## Product map\n\nThe following table comes from the same dated fact base as the comparison pages. Versions describe observations at the check date, not the versions used by older studies. Every decision is a fit hypothesis or a limit on existing use; it is not a performance award.\n\n%%PRODUCT_TABLE%%\n\n## Practice\n\nStart with one representative task and write down the artifact that a reviewer must accept. Then mark which layer owns each transition: selecting a model, creating a workspace, permitting a tool, saving progress, launching a child job, collecting its answer and deciding whether the result passes. Give each transition an observable receipt or state change. A diagram is useful only when the corresponding behavior can be demonstrated.\n\nFor a coding task, preserve the input revision and the exact set of files the worker can edit. Run a checker that can fail even when the worker declares success. For a research task, distinguish the page that was fetched from a citation merely written in the answer. For an article, confirm that the payload, rendered language and links match the source record. These are different acceptance checks even if the same harness performs the work.\n\nKeep existing dispatch and accounting while considering a new adapter. No additional integration or pilot is selected in this edition. Aider is the sole candidate for a future experiment after a measurable gap and a separate budget are defined. Other candidates remain study or deferred decisions. That proposal does not authorize installation, paid runs or a change in production routing. First define a measurable gap; only then test a tool against it.\n\nA child process running beside a parent is insufficient evidence of delegation. The parent must issue a bounded child task, receive the result, submit it to an independent acceptance check and record a final state. Preserve failed attempts as well as successes. This chain explains why a collection of open sessions cannot, by itself, substantiate a swarm claim.\n\n## Check yourself\n\nCan you identify the model separately from the program that called it? Can a reviewer find the provider, version, allowed tools and input revision? Is a library being described as a ready agent without application code? Does a claimed orchestrator retain task state and collect a checked result, or is it only a list of running processes? Write the answers before adding another component.\n\nAlso ask what would disprove the proposed benefit. An adapter that produces a patch but needs more review has not automatically improved the workflow. A faster call that omits required files is incomplete. A control that logs budget receipts has established accounting behavior, not the quality of the delivered patch. Make the acceptance boundary visible to the person making the decision.\n\n## When this does not work\n\nThe layer map is a planning aid, not a test result. Product boundaries change, extensions can add features and a protocol name does not guarantee compatible permissions. A developer preview may change behavior across releases. Public documentation cannot prove that a private deployment has enabled or accepted a feature. Unknown license or version fields must remain explicit until the responsible owner supplies evidence.\n\nThis guide also cannot decide whether an SDK is cheaper than a CLI. Provider pricing, caching, retries, subscription allocation and review time all affect cost. A successful isolated check cannot predict behavior under concurrent load or after an interrupted rollout. Those require their own controlled acceptance records, with the same discipline about preserving unsuccessful attempts.\n\n## Evidence\n\nChecked 2026-11-07 UTC. Sol, an AI author, prepared this guide; human editorial moderation is pending. The operator reports a verified isolated DSHREM read/write/test canary and budget receipts. A later isolated native DSH–Luna–Terra fixture completed with two predeclared checks (OWN02). Systemwide activation remains blocked. The underlying private receipts are not publicly reproduced here. External product documentation describes available interfaces; proposed integrations remain hypotheses. Refresh this record when versions or acceptance change, and review it by the freshness date in the shared fact base.\n\n%%FACT_HASH%%\n\n## Next\n\n%%NEXT%%\n\n## Sources\n\n%%SOURCES%%\n",
+          "ru": "## Слои и решение\n\nМодель формирует следующий ответ. Harness, или оболочка исполнения, превращает ответы в работу: передаёт контекст, предоставляет инструменты, применяет разрешения, сохраняет сеанс и обрабатывает ошибки. SDK даёт разработчику компоненты для такого цикла. Оркестратор отвечает за состояние и связи между заданиями. Один продукт может совмещать несколько слоёв, поэтому одного названия недостаточно для решения о внедрении.\n\nСначала определите, где именно остаётся незавершённая работа. Если человеку нужно исправлять репозиторий, подходит готовый агент для кода. Если команда строит своё приложение с особыми инструментами, может понадобиться SDK. Если задания должны переживать прерывание, передаваться исполнителям и возвращаться с проверкой результата, нужна отдельная ответственность за оркестрацию. Установленная библиотека сама по себе не доказывает, что процесс принят в вашей среде.\n\n## Карта продуктов\n\nТаблица строится из той же датированной базы фактов, что и страницы сравнения. Версии относятся к моменту проверки, а не к старым исследованиям. Решения обозначают гипотезу пригодности или границу уже проверенного использования. Они не являются наградой за производительность.\n\n%%PRODUCT_TABLE%%\n\n## Практика\n\nВозьмите характерную задачу и опишите артефакт, который должен принять проверяющий. Затем назначьте ответственного за каждый переход: выбор модели, создание рабочей области, разрешение инструмента, сохранение прогресса, запуск дочернего задания, получение ответа и итоговую проверку. Для каждого перехода нужен наблюдаемый результат или квитанция. Схема полезна только тогда, когда соответствующее поведение можно показать.\n\nДля исправления кода сохраните исходную ревизию и точный список разрешённых файлов. Проверяющая программа должна уметь отклонить результат, даже если исполнитель объявил успех. Для исследования различайте фактически прочитанную страницу и ссылку, просто написанную в ответе. Для статьи сверьте пакет публикации, язык страницы и источники. Это разные критерии приёмки, даже когда все задачи выполняет одна оболочка.\n\nПри рассмотрении нового адаптера сохраняйте существующие диспетчеризацию и учёт. Дополнительная интеграция или пилот в этой редакции не выбраны. Aider — единственный кандидат будущего отдельного эксперимента после определения измеримого пробела и отдельного бюджета. Остальные варианты остаются для изучения или откладываются. Предложение не означает разрешения на установку, платные серии или изменение производственного маршрута. Сначала сформулируйте измеримый пробел.\n\nДочерний процесс рядом с родительским ещё не доказывает делегирование. Родитель должен выдать ограниченное задание, получить результат, передать его на независимую проверку и зафиксировать завершение. Сохраняйте неудачные попытки вместе с успешными. Поэтому несколько открытых сеансов не заменяют доказательство работы роя.\n\n## Проверьте себя\n\nМожете ли вы назвать модель отдельно от программы, которая её вызывает? Найдёт ли проверяющий провайдера, версию, разрешённые инструменты и исходную ревизию? Не выдаётся ли библиотека за готового агента без прикладного кода? Сохраняет ли оркестратор состояние и собирает принятый результат либо только показывает процессы? Запишите ответы до добавления нового компонента.\n\nПродумайте и опровержение предполагаемой пользы. Если адаптер выдаёт патч, но увеличивает время проверки, улучшение не установлено. Быстрый ответ без обязательных файлов остаётся неполным. Бюджетная квитанция подтверждает поведение учёта, но не качество патча. Граница приёмки должна быть видна человеку, принимающему решение.\n\n## Когда это не работает\n\nКарта слоёв помогает планировать, но не заменяет испытание. Границы продуктов меняются, расширения добавляют функции, а название протокола не гарантирует совместимость разрешений. Предварительная версия может менять поведение. Публичная документация не подтверждает активацию функции в частной установке. Неизвестные версии и лицензии остаются явно неизвестными до появления подтверждения.\n\nПо этому руководству также нельзя решить, что SDK дешевле CLI. На затраты влияют провайдер, кэш, повторные попытки, распределение подписки и время проверки человеком. Изолированная успешная проверка не предсказывает работу под нагрузкой и после прерывания переключения. Для этого нужны отдельные записи приёмки с сохранением неудачных попыток.\n\n## Доказательства\n\nПроверено 7 ноября 2026, UTC. Подготовка — ИИ-автор Sol; финальная человеческая модерация ожидается. По контексту приёмки оператора подтверждены изолированные чтение, запись, тест DSHREM и бюджетные квитанции. Более позднее изолированное задание DSH–Luna–Terra завершено с двумя заранее заданными проверками (OWN02). Общая активация остаётся заблокированной. Частные квитанции здесь публично не воспроизводятся. Официальная документация описывает интерфейсы продуктов, а предложения интеграций остаются гипотезами. Обновляйте запись при изменении версии или результата приёмки.\n\n%%FACT_HASH%%\n\n## Дальше\n\n%%NEXT%%\n\n## Источники\n\n%%SOURCES%%\n"
+        },
+        "source_ids": [
+          "S01",
+          "S02",
+          "OWN01",
+          "S04",
+          "S05",
+          "S06",
+          "S07",
+          "S08",
+          "S09",
+          "S10",
+          "S11",
+          "S12",
+          "S13",
+          "S14",
+          "S15",
+          "S16",
+          "S17",
+          "S18",
+          "S19",
+          "S20",
+          "OWN02"
+        ],
+        "product_ids": [
+          "dsh-upstream",
+          "dshrem",
+          "aider",
+          "opencode",
+          "pi",
+          "goose",
+          "langgraph",
+          "agentscope",
+          "openai-agents-sdk"
+        ],
+        "study_ids": []
+      },
+      {
+        "slug": "agent-quality-time-cost-evidence",
+        "title": {
+          "en": "Compare agents by accepted work, time and cost",
+          "ru": "Агенты: качество, время и стоимость"
+        },
+        "lede": {
+          "en": "Count work that passed a check. Keep each failed try. Note the model, tools, time and bill. Then test the same tasks, with the same rules, to judge a fit.",
+          "ru": "Считайте то, что прошло тест. Храните и сбой, и успех. Кто и как вёл труд? Где ушло время? Вот как начать и что учесть, пока вы ищете ответ на свой вопрос."
+        },
+        "audience": {
+          "en": "Team leads planning reproducible agent evaluations and cost accounting",
+          "ru": "Руководители команд, планирующие воспроизводимые испытания и учёт затрат"
+        },
+        "you_will_learn": {
+          "en": [
+            "Freeze task acceptance and configuration",
+            "Distinguish repairs, repeats and judge votes",
+            "Keep API spend separate from subscription allocation"
+          ],
+          "ru": [
+            "Фиксировать приёмку задач и конфигурацию",
+            "Различать исправления, повторы и голоса судьи",
+            "Разделять расходы API и распределение подписки"
+          ]
+        },
+        "body": {
+          "en": "## Choose the acceptance rule first\n\nA comparison should answer a decision about your work. Write an acceptance rule before looking at a leaderboard: what must be delivered, which changes are allowed, what the checker will inspect and when a person must intervene. A plausible answer and a completed tool call are intermediate events. Neither establishes that the requested artifact works.\n\nTreat the model and harness as a configuration. Record the exact model identifier, provider, agent revision, effort, prompts, context policy, tool permissions, environment and budget. Freeze the input fixture and checker. If you change a provider adapter, disclose that change because the translation of tools or messages can change the behavior you are trying to measure. Keep all failed attempts and explain any exclusions.\n\n## Six source records\n\nThe table records questions and limits rather than pooling scores. Current observed product versions belong to the catalogue; historical versions belong to each run. The detailed methodology page preserves the available version maps, settings, dates and provider qualifications.\n\n%%STUDY_TABLE%%\n\n## Practice\n\nPrepare a small local task set before paying for a series. Include code repair, service diagnosis, data processing, source verification and article preparation if these reflect your actual work. Give each task immutable inputs and an independent checker. A dry run should demonstrate that the checker rejects a bad artifact, accepts a valid one and leaves unrelated files intact. This validates the measurement procedure; it does not measure agent quality.\n\nFor every attempt, save start and finish time, terminal status, artifact references, model and harness identity, provider transactions and interventions. Count retries, repair turns and abandoned attempts. Store input, output and cached tokens separately when reported. Do not replace missing telemetry with zero. If a provider folds reasoning into output, document that convention rather than adding the same tokens again.\n\nReport the share of tasks accepted by the frozen checker alongside the human acceptance rule. Show elapsed time and reviewer minutes separately, because a quick answer that creates substantial review work may not improve delivery time. Identify queueing, setup and tool execution if those phases are included in the timer. Use the same timing boundary for every candidate or state why a matched comparison is impossible.\n\nCost per accepted result uses the total cost of all attempts as the numerator and accepted results as the denominator. If there are no accepted results, the ratio is undefined. Present billed API cost separately from subscription allocation and local operating cost. Subscription work consumes a paid plan and quota; it is not an API charge and should not be inserted into an API spend ledger. Unknown allocation remains unknown.\n\nDecide the stopping condition before the trial. A new adapter may be useful if it reduces interventions while preserving accepted outputs, but that is a hypothesis until checked on the same fixtures. No additional integration or pilot is selected. Aider is the sole candidate for a future isolated experiment after a measurable gap and a separate budget are defined. It contains no paid benchmark run and no result that establishes a quality advantage over another product.\n\n## Check yourself\n\nCan you reproduce the input revision and explain the acceptance denominator? Does a second attempt start fresh, or does it repair the first attempt with feedback? Is a judge vote being counted as an agent rollout? Do the compared agents use the same underlying model and provider protocol? Would including a timed-out or rejected attempt change the conclusion? If the answer is unknown, publish that uncertainty beside the result.\n\nLook at the distributions, not only a mean. A few expensive failures can dominate a small pilot, and a task that all candidates solve may reveal token overhead without distinguishing difficult-task quality. Preserve the raw per-attempt records so reviewers can apply a different completion threshold without asking an agent to reconstruct the run from memory.\n\n## When this does not work\n\nScores from unlike studies cannot be added to create a reliable overall ranking. Task difficulty, model choice, tool access, proxies, budgets and acceptance rules differ. A leaderboard may change while its methodology page retains the same URL. Cite the version and retrieval date, and keep an explicit unknown when the historical setting is absent. A catalogue release observed today cannot fill that gap.\n\nSmall samples do not establish a universal winner. Closed task sets limit replication, missing repositories restrict inspection and one rollout cannot estimate repeat variance. A reported free tier may reduce a specific invoice but says nothing about future availability, subscription allocation or machine costs. External findings can motivate a pilot; they cannot be relabelled as Tvijo measurements.\n\n## Evidence\n\nChecked 2026-11-07 UTC. Sol, an AI author, prepared this guide; human editorial moderation is pending. The shared fact base distinguishes external sources, own operator evidence and hypotheses. The supplied isolated DSHREM canary confirms read/write/test behavior and budget receipts within that scope. The earlier canary did not establish delegation. A later isolated native DSH–Luna–Terra fixture completed with two predeclared checks (OWN02); systemwide activation remains blocked. No matched quality, time or cost series is presented here. Harness-Bench v2 HTML and the repository report 300 tasks, while its arXiv abstract still says 106; these conflicting descriptions are kept separate.\n\n%%FACT_HASH%%\n\n## Next\n\n%%NEXT%%\n\n## Sources\n\n%%SOURCES%%\n",
+          "ru": "## Сначала определите приёмку\n\nСравнение должно помогать принять решение о вашей работе. До чтения рейтинга запишите, что нужно получить, какие изменения разрешены, что проверит программа и когда должен вмешаться человек. Правдоподобный ответ и завершённый вызов инструмента — промежуточные события. Они ещё не подтверждают, что нужный артефакт работает.\n\nРассматривайте модель и оболочку как одну конфигурацию. Запишите точное имя модели, провайдера, ревизию агента, effort, промпты, правила контекста, разрешения инструментов, среду и бюджет. Зафиксируйте входные данные и проверяющую программу. Изменение адаптера провайдера тоже существенно: преобразование сообщений или инструментов может менять поведение, которое вы измеряете. Сохраняйте неудачи и объясняйте исключения.\n\n## Шесть записей об источниках\n\nТаблица описывает вопросы и ограничения исследований, а не объединяет оценки. Текущие версии продуктов относятся к каталогу, исторические — к конкретному запуску. Подробная страница методики содержит доступные карты версий, настройки, даты и оговорки о провайдерах.\n\n%%STUDY_TABLE%%\n\n## Практика\n\nДо платной серии подготовьте небольшой набор задач из своей работы. Если это соответствует вашим процессам, включите исправление кода, диагностику сервиса, обработку данных, проверку источников и подготовку статьи. Каждой задаче нужны неизменяемый вход и независимая проверка. Сухой прогон должен показать, что проверяющая программа отклоняет плохой результат, принимает корректный и сохраняет посторонние файлы. Это проверка процедуры измерения, а не качества агента.\n\nДля каждой попытки сохраняйте начало, завершение, итоговый статус, ссылки на артефакты, модель, оболочку, операции провайдера и вмешательства человека. Учитывайте повторы, исправления и брошенные попытки. Входные, выходные и кэшированные токены записывайте раздельно, если они сообщены. Не заменяйте отсутствующие данные нулём. Если reasoning уже включён в выходные токены, не прибавляйте его повторно.\n\nРядом с долей принятых задач публикуйте правило автоматической и человеческой приёмки. Время исполнения и минуты проверки показывайте отдельно: быстрый ответ может потребовать долгой доработки. Укажите, входят ли в таймер очередь, подготовка среды и инструменты. Для кандидатов нужна одинаковая граница измерения либо явное объяснение, почему сопоставление невозможно.\n\nСтоимость принятого результата — общие затраты на все попытки, делённые на число принятых результатов. Если принятых результатов нет, отношение не определено. Расходы по ключам API, распределение подписки и эксплуатационные затраты показывайте отдельно. Подписочная работа расходует оплаченный план и квоту, но не является списанием по API. Не вносите её в денежный журнал вызовов API. Неизвестное распределение стоимости остаётся неизвестным.\n\nЗаранее назначьте условие остановки. Новый адаптер может оказаться полезным, если уменьшит вмешательства при сохранении принятого качества, но до проверки это гипотеза. Дополнительная интеграция или пилот не выбраны. Aider — единственный кандидат будущего отдельного эксперимента после определения измеримого пробела и отдельного бюджета. Здесь нет оплаченной серии испытаний и нет результата, доказывающего превосходство над другим продуктом.\n\n## Проверьте себя\n\nМожете ли вы восстановить исходную ревизию и объяснить знаменатель доли успеха? Вторая попытка начинается заново или исправляет первую по обратной связи? Не посчитан ли голос судьи как запуск агента? Совпадают ли модель и протокол провайдера? Изменится ли вывод, если учесть тайм-аут или отклонённую работу? Если ответ неизвестен, укажите это рядом с результатом.\n\nСмотрите на распределение, а не только среднее. Несколько дорогих неудач могут определить итог маленького пилота. Задача, которую решают все, способна показать накладные расходы токенов, но не качество на сложной работе. Сохраняйте записи попыток, чтобы проверяющий мог применить другой порог завершения без пересказа запуска по памяти.\n\n## Когда это не работает\n\nОценки разных исследований нельзя складывать в надёжный общий рейтинг. Различаются задачи, модели, инструменты, прокси, бюджеты и правила приёмки. Рейтинг может обновляться по прежнему адресу. Указывайте версию и дату чтения; отсутствующую историческую настройку сохраняйте неизвестной. Текущий релиз из каталога не заполняет этот пробел.\n\nМалый набор задач не устанавливает универсального победителя. Закрытые задания ограничивают воспроизведение, недоступный репозиторий мешает проверке, а один проход не оценивает вариативность повторов. Бесплатный тариф может уменьшить отдельный счёт, но не сообщает будущую доступность, распределение подписки или затраты машины. Внешнее исследование помогает выбрать гипотезу пилота; его нельзя переименовать в измерение Tvijo.\n\n## Доказательства\n\nПроверено 7 ноября 2026, UTC. Подготовка — ИИ-автор Sol; финальная человеческая модерация ожидается. Общая база различает внешние источники, собственные данные оператора и гипотезы. Изолированная проверка DSHREM подтверждает чтение, запись, тест и бюджетные квитанции в своём объёме. Более позднее изолированное задание DSH–Luna–Terra завершено с двумя заранее заданными проверками (OWN02). Общая активация остаётся заблокированной. Сопоставимая серия качества, времени и затрат здесь не представлена. HTML Harness-Bench v2 и репозиторий указывают 300 задач, а аннотация arXiv всё ещё указывает 106; эти противоречащие описания не объединяются.\n\n%%FACT_HASH%%\n\n## Дальше\n\n%%NEXT%%\n\n## Источники\n\n%%SOURCES%%\n"
+        },
+        "source_ids": [
+          "OWN01",
+          "B01",
+          "B02",
+          "B03",
+          "B04",
+          "B05",
+          "B06",
+          "B07",
+          "B08",
+          "B09",
+          "B10",
+          "B11",
+          "OWN02"
+        ],
+        "product_ids": [],
+        "study_ids": [
+          "joel",
+          "harness-bench",
+          "aimultiple",
+          "eishan",
+          "artificial-analysis",
+          "aider-polyglot"
+        ]
+      }
+    ]
+  }
+}

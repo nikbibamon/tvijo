@@ -1,0 +1,200 @@
+{
+  "schema": "tvijo.public.experiment/1",
+  "experiment_id": "tvijo-harness-local-fixtures-20261109-10",
+  "record_revision": 3,
+  "state": "RECONCILED_SCOPE_LIMITED",
+  "observed_on": "2026-11-10",
+  "author_disclosure": "Tvijo is evaluating its own harness.",
+  "classification": "engineering pilot; not SWE-bench or Terminal-Bench",
+  "task_families": {
+    "T1": "durable queue, claims and effects",
+    "T2": "cursor pagination contract/store/API",
+    "T3": "terminal input, paste, grapheme, reflow and viewport"
+  },
+  "provider_export_windows": [
+    {
+      "start_utc": "2026-11-09T22:00:00+00:00",
+      "end_utc": "2026-11-09T23:00:00+00:00",
+      "exported_paid_total": {
+        "USD": "0.2682621180000000"
+      },
+      "unit_price_reconciliation_delta": "0E-16",
+      "price_export_sha256": "7ee1fe8ca4058dfdfd14066ca2f919fa7af0d490f68d716da23147d5a96f00fa"
+    },
+    {
+      "start_utc": "2026-11-09T23:00:00+00:00",
+      "end_utc": "2026-11-10T00:00:00+00:00",
+      "exported_paid_total": {
+        "USD": "0.6273348420000000"
+      },
+      "unit_price_reconciliation_delta": "0E-16",
+      "price_export_sha256": "7ee1fe8ca4058dfdfd14066ca2f919fa7af0d490f68d716da23147d5a96f00fa"
+    }
+  ],
+  "provider_export_total_usd": "0.8955969600000000",
+  "provider_invoice_total_usd": null,
+  "task_attributed_invoice_total_usd": null,
+  "original_dshrem_identified_requests": 213,
+  "original_dshrem_key_window_requests": 214,
+  "unattributed_key_window_requests": 1,
+  "configuration_identity_completeness": "PARTIAL; returned aliases do not attest all provider/harness settings",
+  "attempt_observations": [
+    {
+      "attempt_id": "dshrem-T1-01",
+      "source_sha256": "2ab199094e096742b257386a9c93a1be4679adc1c975843f2cd4c7ae05e53aa8",
+      "execution_state": "FAILED",
+      "stop_reasons": [
+        "max-tokens"
+      ],
+      "identified_provider_responses": 4,
+      "usage_representations": 8,
+      "independently_accepted": null,
+      "attributed_cost_usd": null
+    },
+    {
+      "attempt_id": "dshrem-T1-02",
+      "source_sha256": "0b43c31a9398e2184407419fc2270f39b00687edc2fbf9a2b7e6681de21959f5",
+      "execution_state": "FAILED",
+      "stop_reasons": [
+        "max-tokens"
+      ],
+      "identified_provider_responses": 4,
+      "usage_representations": 8,
+      "independently_accepted": null,
+      "attributed_cost_usd": null
+    },
+    {
+      "attempt_id": "dshrem-T1-03",
+      "source_sha256": "3d84188377be1f17a006cc37b40d7361070aa924779a729266579b8a27397e15",
+      "execution_state": "COMPLETED",
+      "stop_reasons": [
+        "completed"
+      ],
+      "identified_provider_responses": 14,
+      "usage_representations": 28,
+      "independently_accepted": null,
+      "attributed_cost_usd": null
+    },
+    {
+      "attempt_id": "dshrem-T1-patched",
+      "source_sha256": "a9ce92ba59445e8e1dbeb8b9199c9444f17c1b3c245155dccfc68530cae4a5e4",
+      "execution_state": "COMPLETED",
+      "stop_reasons": [
+        "completed"
+      ],
+      "identified_provider_responses": 30,
+      "usage_representations": 60,
+      "independently_accepted": null,
+      "attributed_cost_usd": null
+    },
+    {
+      "attempt_id": "T2-dshrem-01",
+      "source_sha256": "9f7df82cb8bd97f3518632505747c4b70a92886740e41046def9e4daeec66bfe",
+      "execution_state": "COMPLETED",
+      "stop_reasons": [
+        "completed"
+      ],
+      "identified_provider_responses": 14,
+      "usage_representations": 28,
+      "independently_accepted": null,
+      "attributed_cost_usd": null
+    },
+    {
+      "attempt_id": "dshrem-T2-patched",
+      "source_sha256": "5b047d4ae68eb9ad33346fd75b4408f181396c2bfe6403dc14065d68adeedf70",
+      "execution_state": "COMPLETED",
+      "stop_reasons": [
+        "completed"
+      ],
+      "identified_provider_responses": 15,
+      "usage_representations": 30,
+      "independently_accepted": null,
+      "attributed_cost_usd": null
+    },
+    {
+      "attempt_id": "T3-dshrem-01",
+      "source_sha256": "62f4959c7ced38068e129e66c408d444bc4e63dc1dfdbd891378d13991878f05",
+      "execution_state": "OPERATOR_STOPPED",
+      "stop_reasons": [
+        null
+      ],
+      "identified_provider_responses": 177,
+      "usage_representations": 354,
+      "independently_accepted": null,
+      "attributed_cost_usd": null
+    },
+    {
+      "attempt_id": "dshrem-T3-patched",
+      "source_sha256": "287a0f0a6c705238f415504c6911857b67012ac6bda0bb020e7314b99c52fbb4",
+      "execution_state": "COMPLETED",
+      "stop_reasons": [
+        "completed"
+      ],
+      "identified_provider_responses": 102,
+      "usage_representations": 204,
+      "independently_accepted": null,
+      "attributed_cost_usd": null
+    },
+    {
+      "attempt_id": "dshrem-T3-patched-02",
+      "source_sha256": "494ea9ac053aeb50e42800f768067f4f2f780fbe32e717074668cb7552a27c06",
+      "execution_state": "UNKNOWN_OR_IN_FLIGHT",
+      "stop_reasons": [
+        null
+      ],
+      "identified_provider_responses": 139,
+      "usage_representations": 278,
+      "independently_accepted": null,
+      "attributed_cost_usd": null
+    }
+  ],
+  "reported_patched_T3_claim": {
+    "model_calls": 53,
+    "wall_seconds": 199,
+    "reported_cost_usd": "0.028666",
+    "reported_gold_cases": 19,
+    "status": "REQUIRES_EXACT_ATTEMPT_AND_PATCH_MATCH",
+    "reason": "Available snapshots contain a 102-response completed turn plus another unterminated attempt; a summary alone cannot establish their correspondence."
+  },
+  "quality_index": "NOT_ESTIMABLE",
+  "ranking": "NOT_ESTIMABLE; no universal winner or stable second place",
+  "measured_atlas_snapshots_imported": 0,
+  "new_paid_API_calls_by_programme": 0,
+  "subscription_cost_basis": {
+    "usage": "Recorded separately where CLI receipts expose it",
+    "allocated_seat_cost": null,
+    "basis": "No defensible task allocation; not free API work"
+  },
+  "limitations": [
+    "Explicit input revision order selects overlapping export snapshots; their totals are not additive.",
+    "Provider billing exports do not allocate pooled key-window charges to individual tasks.",
+    "Normalized journal usage omits authoritative cache-category settlement; no invented task USD.",
+    "A response identity deduplicates representations, never distinct paid requests with equal tokens.",
+    "Growing or unterminated journals remain unknown/in flight; no automatic retry or settlement.",
+    "A worker turn ending does not establish independent grading or acceptance.",
+    "No stable overall ranking, causal attribution, absolute cap or customer-saving guarantee."
+  ],
+  "record_scope": "Versioned account-window and journal reconciliation; trial acceptance and task invoice attribution remain unknown. This record is not a deployment receipt.",
+  "software_validation": {
+    "source_commit": "654e7c5dbd744539b7ef0b344303845dbe85f004",
+    "scope": "corrected evaluator and bounded shared-root budget admission",
+    "independent_review": {
+      "requested_model": "gpt-6.1-terra",
+      "served_model": null,
+      "status": "PASS_SCOPED",
+      "grader_cases": 18,
+      "parent_price_handoff_cases": 131,
+      "direct_legacy_cases": 3
+    },
+    "lead_http_cases": 45,
+    "full_canon": "NOT_RUN_LOAD_SHED",
+    "installation": "NOT_INSTALLED",
+    "basis": "Offline source and fixture review; not acceptance of the historical task attempts, an invoice, or a production deployment."
+  },
+  "_provenance": {
+    "source_file": "experiment-record.en.json",
+    "source_sha256": "d7f214ae752ebc27955599ed41c138413f620b3e85fe31f37d914d918d5fe1be",
+    "source_git_revision": "dc908cc046af4e9a24361b0287cb51f36d105cfe",
+    "projection": "Unchanged canonical revision3 with this provenance object appended; a reconciliation record, not a deployment receipt."
+  }
+}

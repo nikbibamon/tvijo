@@ -1,0 +1,112 @@
+{
+  "run_id": "A-Pi-01",
+  "task": "A",
+  "harness": "Pi",
+  "status": "FAIL",
+  "Q": 55,
+  "full_seconds": 49.30545330499997,
+  "harness_full_seconds": 45.47754895314574,
+  "worker_seconds": 44.23586970195174,
+  "startup_seconds": 0.8163352012634277,
+  "package_verification_seconds": 0,
+  "verify_seconds": 1.0485169440507889,
+  "api_requests": 14,
+  "input_tokens": 105896,
+  "output_tokens": 5709,
+  "cache_read_tokens": 98944,
+  "reasoning_tokens": "UNKNOWN",
+  "requested_model": "deepseek-flash",
+  "returned_model": [
+    "deepseek-flash"
+  ],
+  "provider": "deepseek_official",
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "thinking": "disabled",
+  "effort": "none",
+  "max_output_tokens": 4096,
+  "context_conservative_bound": 65536,
+  "baseline_sha": "68e5efbfe55883585870df69a2f463ea7dce7cdf",
+  "diff_sha256": "a850f28998e215905bde8c9be814c9d1175d8b8909ae2790550aa16d45041dca",
+  "human_assisted": false,
+  "criteria": [
+    {
+      "id": "claim_race",
+      "weight": 20,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "stale_fence",
+      "weight": 20,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "restart_replay",
+      "weight": 20,
+      "mandatory": true,
+      "passed": false,
+      "error": "AssertionError: (False, True)"
+    },
+    {
+      "id": "concurrent_finish",
+      "weight": 15,
+      "mandatory": true,
+      "passed": false,
+      "error": "AssertionError: ([False, False, False, True, False], [True, True, True, True, True])"
+    },
+    {
+      "id": "value_conflict",
+      "weight": 10,
+      "mandatory": true,
+      "passed": false,
+      "error": "AssertionError: conflicting replay accepted"
+    },
+    {
+      "id": "timeout_atomicity",
+      "weight": 10,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "invalid_and_expired",
+      "weight": 5,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    }
+  ],
+  "public_regression_pass": false,
+  "violations": [],
+  "new_tests": [
+    "tests/test_queue_lease.py"
+  ],
+  "start_utc": "2026-11-09T05:35:24.625363+00:00",
+  "start_kyiv": "2026-11-09T07:35:24.625363+02:00",
+  "server_load": [
+    2.73193359375,
+    3.41015625,
+    3.45458984375
+  ],
+  "model_tool_calls": 15,
+  "api_errors": 0,
+  "broker_retries": 0,
+  "semantic_retries": "UNKNOWN",
+  "provider_reported_cost": "UNKNOWN",
+  "invoice_cost": "UNKNOWN",
+  "quantization": "UNKNOWN",
+  "model_serving_revision": "UNKNOWN",
+  "reason": null,
+  "version": "1.5.0",
+  "harness_commit": "UNKNOWN npm artifact; release source tag fixed",
+  "api_cost_usage_tariff_usd": 0.004765032,
+  "claim_id": "PILOT-A-Pi-01",
+  "evidence_url": "/evals/tvijo-eval-comms-radar-20261109/runs/A-Pi-01.json",
+  "classification": "engineering_pilot",
+  "checked_on": "2026-11-09",
+  "limits": "480s; USD0.025 per slot; USD0.20 root",
+  "cost_class": "usage_times_verified_tariff; invoice UNKNOWN"
+}

@@ -911,8 +911,22 @@
     padding: 12px 18px;
   }
 
+  .headerInner {
+    flex-wrap: wrap;
+  }
+
+  /* Keep the five site sections reachable on phones: one scrollable row under the logo and actions. */
   .nav {
-    display: none;
+    order: 3;
+    flex: 1 0 100%;
+    gap: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-right: 0;
+  }
+
+  .nav a {
+    white-space: nowrap;
   }
 
   .headerCta {
@@ -988,4 +1002,21 @@
     transition: none !important;
     animation: none !important;
   }
+}
+
+.pageNav {
+  max-width: 1160px;
+  margin: 18px auto 0;
+  padding: 0 24px;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+}
+
+.nav a[aria-current='true'] {
+  color: #e7ecf5;
+}
+
+.nav a:focus-visible {
+  outline: 2px solid #7dd3fc;
+  outline-offset: 3px;
 }

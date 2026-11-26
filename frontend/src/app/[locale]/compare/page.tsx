@@ -2,7 +2,11 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import Navbar from '@/components/portal/Navbar';
 import Footer from '@/components/portal/Footer';
-import { comparisons } from '@/data/compare';
+import { comparisons, agentEvidence } from '@/data/compare';
+import HarnessPilot from '@/components/compare/HarnessPilot';
+import CompareEntry from '@/components/compare/CompareEntry';
+import { AgentOverview } from '@/components/compare/AgentEvidence';
+import { ResearchEntry } from '@/components/compare/ResearchFrame';
 import { LOCALES } from '@/i18n/config';
 import { marketingMetadata, ENGLISH_ONLY_LOCALES } from '@/lib/seo/marketing';
 
@@ -18,9 +22,9 @@ export function generateMetadata({
   return marketingMetadata({
     locale: params.locale,
     path: '/compare',
-    title: 'Compare Tvijo: gateways, observability and governance',
+    title: 'Compare agents, harnesses and AI gateways | Tvijo',
     description:
-      'Side-by-side comparisons against Portkey, LiteLLM, Langfuse, LangSmith, Credo AI and n8n, each leading with what the other tool does better than us.',
+      'Sourced agent and SDK matrix, DSHREM vs Aider and OpenCode, evaluation methodology, and six existing gateway and governance comparisons.',
     keywords: ['LLM gateway comparison', 'AI gateway', 'Tvijo vs Portkey', 'Tvijo vs LiteLLM', 'AI observability', 'AI cost control'],
     indexIn: ENGLISH_ONLY_LOCALES,
   });
@@ -70,7 +74,7 @@ export default function CompareIndexPage({
           Compare
         </p>
         <h1 className="mt-3 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-          How TVIJO compares
+          Choose tools by workflow and evidence
         </h1>
         <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-300">
           TVIJO is not a replacement for a gateway, an observability tool, or a
@@ -79,7 +83,12 @@ export default function CompareIndexPage({
           does well, then shows where the single-layer approach differs.
         </p>
 
-        <div className="mt-12 grid gap-5 sm:grid-cols-2">
+        <div className="mt-10"><CompareEntry locale={locale} /></div>
+        {params.locale === 'en' ? <ResearchEntry locale="en" /> : null}
+        <HarnessPilot locale={locale} />
+        {params.locale === 'en' ? <details className="mt-12 text-slate-300"><summary className="cursor-pointer text-xl font-semibold text-white">Historical source matrix · checked 7 November 2026 · separate conditions</summary><AgentOverview /></details> : null}
+        <h2 id="product-comparisons" className="mt-16 scroll-mt-28 text-3xl font-semibold text-white">Gateways, observability and governance</h2>
+        <div className="mt-6 grid gap-5 sm:grid-cols-2">
           {comparisons.map((c) => (
             <Link
               key={c.slug}
@@ -122,21 +131,21 @@ export default function CompareIndexPage({
             Not sure which layer you need?
           </h3>
           <p className="mx-auto mt-3 max-w-xl text-sm text-slate-400">
-            Talk to sales or book a demo to see routing, spend
-            control and audit evidence in one cockpit.
+            Start with the existing setup documentation, then open the workspace
+            to explore the workflow that fits your team.
           </p>
           <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
             <Link
-              href={`/${locale}/#cta`}
+              href={agentEvidence.cta.url}
               className="inline-flex w-full items-center justify-center rounded-xl bg-emerald-400 px-6 py-3 text-sm font-semibold text-[#001b18] shadow-lg shadow-emerald-500/25 transition hover:bg-emerald-300 sm:w-auto"
             >
-              Talk to Sales
+              Read setup documentation
             </Link>
             <Link
-              href={`/${locale}/demo`}
+              href="https://dsh.tvijo.com/"
               className="inline-flex w-full items-center justify-center rounded-xl border border-white/15 bg-white/5 px-6 py-3 text-sm font-semibold text-white transition hover:bg-white/10 sm:w-auto"
             >
-              Book Demo
+              Open workspace
             </Link>
           </div>
         </div>

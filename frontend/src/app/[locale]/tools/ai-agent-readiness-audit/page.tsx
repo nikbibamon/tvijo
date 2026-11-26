@@ -133,6 +133,7 @@ export function generateMetadata({ params }: { params: { locale: string } }): Me
       },
     },
     openGraph: {
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: 'AI Agent Readiness Audit' }],
       title,
       description,
       type: 'website',

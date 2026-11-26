@@ -17,11 +17,11 @@
   function mount(root, input) {
     if (mounted.has(root)) return mounted.get(root);
     if (!input || input.schema !== 'tvijo.article-graph/v1' || !Array.isArray(input.nodes) || !Array.isArray(input.edges)) return () => {};
-    const nodes = input.nodes.slice(0, 48).filter(n => n && typeof n.id === 'string' &&
+    const nodes = input.nodes.slice(0, 512).filter(n => n && typeof n.id === 'string' &&
       typeof n.title === 'string' && n.title.length <= 300 && safeHref(n.href));
     const byId = new Map(nodes.map(n => [n.id, n]));
     if (byId.size !== nodes.length || !nodes.length) return () => {};
-    const edges = input.edges.slice(0, 192).filter(e => e && byId.has(e.source) && byId.has(e.target));
+    const edges = input.edges.slice(0, 4096).filter(e => e && byId.has(e.source) && byId.has(e.target));
     const ru = root.lang === 'ru';
     const tr = (en, russian) => ru ? russian : en;
     const host = root.querySelector('.tg-mount') || root;
@@ -66,6 +66,13 @@
       const s = el('span', cls, text); legend.append(s);
     }
     const count = el('span'); legend.append(count); wrap.append(legend);
+    if (input.coverage) {
+      const coverage = el('p', 'tg-coverage', input.coverage.status === 'snapshot'
+        ? tr('Published article index observed: ', 'Индекс опубликованных статей проверен: ') + input.coverage.observed_at
+        : tr('Public article index unavailable; showing local guides.', 'Публичный индекс недоступен; показаны локальные руководства.'));
+      wrap.append(coverage);
+    }
+    const directory = el('ul', 'tg-directory'); directory.hidden = true; wrap.append(directory);
     const preview = el('aside', 'tg-preview'); preview.setAttribute('aria-live', 'polite');
     const heading = el('strong'), summary = el('p'), backlink = el('span', 'tg-meta');
     const open = el('a', 'tg-open', tr('Read article ↑', 'Читать статью ↑')); preview.append(heading, summary, backlink, open); wrap.append(preview); host.append(wrap);
@@ -91,6 +98,7 @@
       backlink.textContent = tr('Incoming links: ', 'Входящих ссылок: ') + edges.filter(e => e.target === n.id).length;
       open.href = n.href;
       for (const [id, view] of views) view.a.classList.toggle('tg-selected', id === n.id);
+      schedule();
     }
     function draw() {
       frame = 0; if (!visible || !root.isConnected) return;
@@ -105,7 +113,7 @@
         const ry = y * Math.cos(pitch) - rz * Math.sin(pitch), depth = y * Math.sin(pitch) + rz * Math.cos(pitch);
         const perspective = 3.8 / (3.8 - depth);
         const px = width / 2 + rx * radius * perspective, py = height / 2 + ry * radius * perspective;
-        const view = views.get(n.id), match = !query || n.title.toLocaleLowerCase().includes(query);
+        const view = views.get(n.id), match = !query || (n.title + ' ' + (n.summary || '')).toLocaleLowerCase().includes(query);
         if (match) matches++;
         view.a.setAttribute('transform', `translate(${px.toFixed(2)},${py.toFixed(2)})`);
         view.a.setAttribute('data-depth', depth.toFixed(4));
@@ -113,6 +121,7 @@
         view.a.setAttribute('tabindex', match ? '0' : '-1');
         view.circle.setAttribute('r', ((n.id === input.selected ? 9 : 6) * perspective).toFixed(2));
         view.text.replaceChildren();
+        view.text.setAttribute('visibility', nodes.length <= 24 || n.id === selected.id ? 'visible' : 'hidden');
         const max = width < 500 ? 19 : 29;
         const graphLabel = typeof n.label === 'string' && n.label.length <= 100 ? n.label : n.title;
         const words = graphLabel.split(' '); let row = '', rows = [];
@@ -135,6 +144,10 @@
         l.classList.toggle('tg-edge-active', e.source === input.selected || e.target === input.selected);
       }
       count.textContent = `${matches}/${nodes.length} ` + tr('articles', 'статей');
+      directory.hidden = !query; directory.replaceChildren();
+      if (query) for (const n of nodes.filter(n => (n.title + ' ' + (n.summary || '')).toLocaleLowerCase().includes(query))) {
+        const row=el('li'), link=el('a', '', n.title); link.href=n.href; row.append(link);directory.append(row);
+      }
     }
     function schedule() { if (visible && !frame) frame = requestAnimationFrame(draw); }
     function rotate(y, p) { yaw += y; pitch = Math.max(-1.2, Math.min(1.2, pitch + p)); schedule(); }
@@ -162,6 +175,7 @@
     const resize = new ResizeObserver(schedule); resize.observe(svg);
     choose(selected); schedule();
     const dispose = () => { abort.abort(); observer.disconnect(); resize.disconnect(); if(frame) cancelAnimationFrame(frame); wrap.remove(); mounted.delete(root); };
+    const fallback = root.querySelector('.tg-fallback'); if (fallback) fallback.open = false;
     mounted.set(root, dispose); return dispose;
   }
   function init() {

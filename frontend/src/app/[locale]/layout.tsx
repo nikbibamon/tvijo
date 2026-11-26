@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
 import { LOCALES, LOCALE_META, isValidLocale, DEFAULT_LOCALE } from '@/i18n/config';
 import { getTranslations } from '@/i18n/index';
 
@@ -25,7 +26,7 @@ export function generateMetadata({
   const t = getTranslations(locale);
 
   const languages: Record<string, string> = {};
-  for (const loc of LOCALES) {
+  for (const loc of ['en', 'ru'] as const) {
     languages[LOCALE_META[loc].hreflang] = `https://tvijo.com/${loc}`;
   }
   languages['x-default'] = `https://tvijo.com/${DEFAULT_LOCALE}`;
@@ -85,8 +86,13 @@ export function generateStaticParams() {
 
 export default function LocaleLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: { locale: string };
 }) {
+  // An unknown first segment (/people, /anything) used to render the home page with a
+  // canonical to /en — a duplicate under arbitrary URLs. It is a missing page instead.
+  if (!isValidLocale(params.locale)) notFound();
   return <>{children}</>;
 }

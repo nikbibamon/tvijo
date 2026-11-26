@@ -5,9 +5,27 @@ import { LOCALES, DEFAULT_LOCALE } from '@/i18n/config';
 const LOCALE_PATTERN = LOCALES.join('|');
 
 /**
- * Middleware: redirect bare `/` to the default locale and handle locale-aware
- * redirects for legacy surfaces.
+ * 2026-11-06: publishes EN and RU only. Every other locale route used to render
+ * English with `canonical` pointing at /en, which is duplicate content, and it
+ * filled the sitemap with 200+ URLs Google was told not to index. Those routes
+ * now permanently redirect to /en.
  */
+const PUBLISHED_LOCALES: readonly string[] = ['en', 'ru'];
+
+/**
+ * Redirects must never carry the internal upstream address. The app runs behind
+ * nginx on 127.0.0.1:<port>, so `request.url` is `http://localhost:<port>/...`
+ * and an absolute Location leaked it to browsers and crawlers. A relative
+ * Location (RFC 7231 §7.1.2 allows it) is resolved against the public host.
+ */
+const PUBLIC_ORIGIN = 'https://tvijo.com';
+
+function redirect(pathname: string, status: 307 | 308) {
+  // Absolute URL on the public origin: `request.url` inside the container is
+  // http://localhost:<port>, and NextResponse.redirect rejects a relative Location.
+  return NextResponse.redirect(new URL(pathname, PUBLIC_ORIGIN), status);
+}
+
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
@@ -20,22 +38,32 @@ export function middleware(request: NextRequest) {
   // it cached and would keep resolving to /ru no matter what this function returns.
   // A temporary redirect plus no-store lets those clients re-ask and recover.
   if (pathname === '/') {
-    const response = NextResponse.redirect(new URL(`/${DEFAULT_LOCALE}`, request.url), 307);
+    const response = redirect(`/${DEFAULT_LOCALE}`, 307);
     response.headers.set('Cache-Control', 'no-store');
     return response;
+  }
+
+  // Unpublished locales (hi, ko, ja, zh, de, es, pt, nl, uk) → English.
+  const firstSegment = pathname.split('/')[1];
+  if (
+    firstSegment &&
+    LOCALES.includes(firstSegment as (typeof LOCALES)[number]) &&
+    !PUBLISHED_LOCALES.includes(firstSegment)
+  ) {
+    const rest = pathname.slice(firstSegment.length + 1);
+    return redirect(`/${DEFAULT_LOCALE}${rest}`, 308);
   }
 
   // Hide legacy public signals surface from normal users (308 permanent).
   const hiddenSignalsMatch = pathname.match(new RegExp(`^\\/(${LOCALE_PATTERN})\\/signals\\/?$`));
   if (hiddenSignalsMatch) {
-    return NextResponse.redirect(new URL(`/${hiddenSignalsMatch[1]}`, request.url), 308);
+    return redirect(`/${hiddenSignalsMatch[1]}`, 308);
   }
 
   // Keep public page URLs canonical without touching proxied API paths.
   if (pathname.length > 1 && pathname.endsWith('/')) {
-    const url = new URL(request.url);
-    url.pathname = pathname.replace(/\/+$/, '');
-    return NextResponse.redirect(url, 308);
+    const trimmed = pathname.replace(/\/+$/, '');
+    return redirect(`${trimmed}${request.nextUrl.search}`, 308);
   }
 
   // Pass the route locale to the root server layout. The root layout sits

@@ -273,3 +273,7 @@ export const COMPARE_COLUMN_SLUGS: Record<string, string> = {
   "Credo AI": "tvijo-vs-credo-ai",
   LiteLLM: "tvijo-vs-litellm",
 };
+
+// The evidence-backed agent catalogue is separate from the six gateway entries.
+// Both server components and Wiki payload generation read this one fact base.
+export { default as agentEvidence } from './agent-evidence.json';

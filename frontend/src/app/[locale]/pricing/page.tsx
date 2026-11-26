@@ -45,7 +45,7 @@ function PlanCard({ plan, c, onSubscribe }: { plan: Plan; c: PricingCopy; onSubs
         </div>
       )}
 
-      <h3 className="text-xl font-bold text-white mt-1">{plan.name}</h3>
+      <h2 className="text-xl font-bold text-white mt-1">{plan.name}</h2>
       <p className="text-xs text-gray-500 mt-1 min-h-[36px]">{plan.description}</p>
 
       <div className="mt-4 mb-4">

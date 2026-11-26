@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import GoogleAccountLink from './GoogleAccountLink';
 import { usePathname } from 'next/navigation';
 import { WorkspaceIcon } from '@/components/workspace/WorkspaceIcon';
 import { WsError, WsSnippet } from '@/components/workspace/ui/primitives';
@@ -21,6 +22,7 @@ export default function WorkspaceProfileLive() {
       {profile.loading ? <WsSnippet kind="metrics" rows={2} /> : null}
       {profile.error ? <WsError message={profile.error} onRetry={profile.reload} /> : null}
       {profile.data ? <section className="twk-profile-card"><span className="twk-profile-avatar"><WorkspaceIcon name="user" /></span><div><p>{t.displayName}</p><strong>{profile.data.full_name || `${profile.data.first_name || ''} ${profile.data.last_name || ''}`.trim() || t.notSet}</strong><p>{t.email}</p><strong>{profile.data.email}</strong></div><Link className="twk-secondary-button" href={`/${locale}/profile`}>{t.editPublic} <WorkspaceIcon name="arrow" /></Link></section> : null}
+      {profile.data ? <GoogleAccountLink /> : null}
     </div>
   );
 }

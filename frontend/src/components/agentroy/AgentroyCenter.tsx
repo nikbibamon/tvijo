@@ -771,7 +771,7 @@ export default function AgentroyCenter() {
               <a href="https://dsh.tvijo.com/download" target="_blank" rel="noreferrer">{c.terminalDownload}</a>
               <a href="https://dsh.tvijo.com/docs" target="_blank" rel="noreferrer">{c.terminalDocs}</a>
               <a href="https://platform.tvijo.com/keys" target="_blank" rel="noreferrer">{c.keys}</a>
-              <a href="https://github.com/nikbibamon/cursortvijo" target="_blank" rel="noreferrer">{c.editorSource}</a>
+              <a href="https://dsh.tvijo.com/download#vscode" target="_blank" rel="noreferrer">{locale === 'ru' ? 'Скачать Tvijo для VS Code' : 'Download Tvijo for VS Code'}</a>
               <Link href={'/' + locale} className="hover:underline">{c.home}</Link>
             </nav>
           </div>

@@ -1,4 +1,5 @@
 import catalog from '@/data/connected-knowledge.json';
+import PromptHandoff from './PromptHandoff';
 import Navbar from '@/components/portal/Navbar';
 import Footer from '@/components/portal/Footer';
 import ConnectedArticleGraph, { type ArticleGraphData } from './ConnectedArticleGraph';
@@ -91,6 +92,7 @@ export default async function ConnectedKnowledgeArticle({ slug, locale }: {slug:
           <p data-runtime-status={state.runtime_status}>{runtimeLabel(state.runtime_status,ru)}</p>
           <p><a href={state.runtime_evidence.receipt_url}>{ru ? 'Квитанция проверки runtime' : 'Runtime verification receipt'}</a>{state.runtime_evidence.observed_at ? ' · ' + state.runtime_evidence.observed_at : ''}</p>
         </aside>
+        <PromptHandoff locale={lang} />
         <ConnectedArticleGraph graph={graph} locale={lang} />
       </main>
     </div>

@@ -927,9 +927,9 @@ const EN: WorkspaceCopy = {
     workspaceTitle: "Your personal Tvijo workspace",
     groups: [
       { items: [{ label: "Home" }] },
-      { label: "Workspace", items: [{ label: "Overview" }, { label: "Activity" }, { label: "Runs & Evidence" }, { label: "Models" }, { label: "Apps & Plugins" }, { label: "Contracts" }, { label: "Reference" }] },
+      { label: "Workspace", items: [{ label: "Overview" }, { label: "Activity" }, { label: "Runs & Evidence" }, { label: "Models" }, { label: "Apps & downloads" }, { label: "Contracts" }, { label: "Reference" }, { label: "Knowledge & learning" }] },
       { label: "Control", items: [{ label: "Connections" }, { label: "Management Keys" }, { label: "Guardrails" }] },
-      { label: "Resources", items: [{ label: "Infrastructure" }, { label: "Domains" }] },
+      { label: "Resources", items: [{ label: "Infrastructure" }, { label: "Domain check" }] },
       { label: "Account", items: [{ label: "Billing & Credits" }, { label: "Profile" }, { label: "Preferences" }] },
     ],
     mobileTabs: [
@@ -1746,9 +1746,9 @@ const UK: WorkspaceCopy = {
     workspaceTitle: "Ваш особистий робочий простір Tvijo",
     groups: [
       { items: [{ label: "Головна" }] },
-      { label: "Робочий простір", items: [{ label: "Огляд" }, { label: "Активність" }, { label: "Запуски та докази" }, { label: "Моделі" }, { label: "Застосунки й плагіни" }, { label: "Контракти" }, { label: "Довідник" }] },
+      { label: "Робочий простір", items: [{ label: "Огляд" }, { label: "Активність" }, { label: "Запуски та докази" }, { label: "Моделі" }, { label: "Застосунки й завантаження" }, { label: "Контракти" }, { label: "Довідник" }, { label: "Знання й навчання" }] },
       { label: "Керування", items: [{ label: "Під’єднання" }, { label: "Ключі управління" }, { label: "Запобіжники" }] },
-      { label: "Ресурси", items: [{ label: "Інфраструктура" }, { label: "Домени" }] },
+      { label: "Ресурси", items: [{ label: "Інфраструктура" }, { label: "Перевірка домену" }] },
       { label: "Акаунт", items: [{ label: "Білінг та кредити" }, { label: "Профіль" }, { label: "Налаштування" }] },
     ],
     mobileTabs: [
@@ -2570,9 +2570,9 @@ const RU: WorkspaceCopy = {
     workspaceTitle: "Ваше личное рабочее пространство Tvijo",
     groups: [
       { items: [{ label: "Главная" }] },
-      { label: "Пространство", items: [{ label: "Обзор" }, { label: "Активность" }, { label: "Запуски и доказательства" }, { label: "Модели" }, { label: "Приложения и плагины" }, { label: "Контракты" }, { label: "Справочник" }] },
+      { label: "Пространство", items: [{ label: "Обзор" }, { label: "Активность" }, { label: "Запуски и доказательства" }, { label: "Модели" }, { label: "Приложения и загрузки" }, { label: "Контракты" }, { label: "Справочник" }, { label: "Знания и обучение" }] },
       { label: "Управление", items: [{ label: "Подключения" }, { label: "Ключи управления" }, { label: "Ограничения" }] },
-      { label: "Ресурсы", items: [{ label: "Инфраструктура" }, { label: "Домены" }] },
+      { label: "Ресурсы", items: [{ label: "Инфраструктура" }, { label: "Проверка домена" }] },
       { label: "Аккаунт", items: [{ label: "Биллинг и кредиты" }, { label: "Профиль" }, { label: "Настройки" }] },
     ],
     mobileTabs: [

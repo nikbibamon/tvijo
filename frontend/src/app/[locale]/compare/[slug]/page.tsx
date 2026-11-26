@@ -5,12 +5,13 @@ import Navbar from '@/components/portal/Navbar';
 import Footer from '@/components/portal/Footer';
 import { comparisons, getComparison, type CompareValue } from '@/data/compare';
 import { LOCALES } from '@/i18n/config';
+import { AgentPairPage, evidencePairs } from '@/components/compare/AgentEvidence';
 import { marketingMetadata, ENGLISH_ONLY_LOCALES } from '@/lib/seo/marketing';
 
 export function generateStaticParams() {
-  return LOCALES.flatMap((locale) =>
+  return [...LOCALES.flatMap((locale) =>
     comparisons.map((c) => ({ locale, slug: c.slug })),
-  );
+  ), ...evidencePairs.map((p) => ({ locale: 'en', slug: p.slug }))];
 }
 
 export function generateMetadata({
@@ -18,6 +19,8 @@ export function generateMetadata({
 }: {
   params: { locale: string; slug: string };
 }): Metadata {
+  const pair = evidencePairs.find((p) => p.slug === params.slug);
+  if (pair) return marketingMetadata({ locale: params.locale, path: `/compare/${pair.slug}`, title: pair.title, description: pair.description, keywords: ['DSHREM comparison', 'coding agent', 'harness evidence'], ogType: 'article', indexIn: ENGLISH_ONLY_LOCALES });
   const c = getComparison(params.slug);
   if (!c) return { title: { absolute: 'Compare — TVIJO' } };
   return marketingMetadata({
@@ -45,6 +48,11 @@ export default function ComparePage({
   params: { locale: string; slug: string };
 }) {
   const locale = params.locale === 'ru' ? 'ru' : 'en';
+  const pair = evidencePairs.find((p) => p.slug === params.slug);
+  if (pair) {
+    if (params.locale !== 'en') notFound();
+    return <AgentPairPage pair={pair} />;
+  }
   const c = getComparison(params.slug);
   if (!c) notFound();
 
