@@ -90,7 +90,7 @@ export default function RootLayout({
         {/* До React: сразу выставить тему из localStorage тем же ключом, что и SiteThemeProvider */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `!function(){try{var d=document.documentElement;var t=localStorage.getItem('tvijo-theme');d.classList.remove('light','dark');if(t==='light'){d.classList.add('light');d.style.colorScheme='light';}else{d.classList.add('dark');d.style.colorScheme='dark';}var u=localStorage.getItem('tvijo-ui-mode');d.dataset.ui=u==='simple'||u==='rich'?u:'rich';var seg=location.pathname.split('/')[1];if(seg&&seg.length===2)d.lang=seg;}catch(e){document.documentElement.classList.add('dark');document.documentElement.dataset.ui='rich';}}();`,
+            __html: `!function(){try{var d=document.documentElement;var t=localStorage.getItem('tvijo-theme');d.classList.remove('light','dark');if(t==='light'){d.classList.add('light');d.style.colorScheme='light';}else{d.classList.add('dark');d.style.colorScheme='dark';}var u=localStorage.getItem('tvijo-ui-mode');d.dataset.ui=u==='simple'||u==='rich'?u:'rich';var seg=location.pathname.split('/')[1];if(seg==='ua')d.lang='uk';else if(seg&&seg.length===2)d.lang=seg;}catch(e){document.documentElement.classList.add('dark');document.documentElement.dataset.ui='rich';}}();`,
           }}
         />
         <script
