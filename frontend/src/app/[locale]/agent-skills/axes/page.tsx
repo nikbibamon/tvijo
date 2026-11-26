@@ -29,6 +29,7 @@ import {
   type Verdict,
 } from '@/data/agent-axes';
 import styles from './axes.module.css';
+import { portalNavigation } from '@/components/portal/navigation';
 
 const ruLocale = (locale: string) => locale.toLowerCase().startsWith('ru');
 const pick = (value: Bi, ru: boolean): string => (ru ? value.ru : value.en);
@@ -74,12 +75,12 @@ export default function AgentAxesPage({ params }: { params: { locale: string } }
             <span>Tvijo</span>
             <i aria-hidden="true" />
           </Link>
-          <nav className={styles.nav} aria-label="Agent skills">
-            <Link href={`/${locale}/agent-skills`}>
-              {ru ? 'Наборы правил' : 'Skill packs'}
-            </Link>
-            <Link href={`/${locale}/privacy`}>{ru ? 'Приватность' : 'Privacy'}</Link>
-            <Link href={`/${locale}/terms`}>{ru ? 'Условия' : 'Terms'}</Link>
+          <nav className={styles.nav} aria-label={ru ? 'Разделы Tvijo' : 'Tvijo sections'}>
+            {portalNavigation(locale).groups.map((group) => (
+              <Link key={group.id} href={group.links[0].href} aria-current={group.id === 'skills' ? 'true' : undefined}>
+                {group.label}
+              </Link>
+            ))}
           </nav>
         </div>
       </header>
@@ -88,91 +89,24 @@ export default function AgentAxesPage({ params }: { params: { locale: string } }
         <section className={styles.hero}>
           <p className={styles.eyebrow}>{POLICY_ID}</p>
           <h1>{pick(TITLE, ru)}</h1>
-          <p className={styles.lede}>{pick(INTRO, ru)}</p>
+          <p className={styles.lede}>{ru
+            ? 'Оси помогают описать требования задачи и выбрать подходящий профиль применения агента. Сначала запишите обязательные ограничения, затем предпочтения для сравнения допустимых вариантов. Эта страница описывает политику; автоматическое применение ограничений и сертификацию она не подтверждает.'
+            : 'Use the axes to describe task requirements and choose an agent application profile. Record mandatory constraints first, then preferences for comparing eligible options. This page describes policy; it does not establish automatic enforcement or certification.'}</p>
+          <p className={styles.sectionNote}>{ru
+            ? 'Пример: если данные должны оставаться локально, обязательное ограничение исключает неподходящие маршруты. Среди оставшихся вариантов мягкие ограничения помогают учесть язык работы и предпочтения по стоимости; выбранный профиль ещё нужно проверить на задаче.'
+            : 'Example: if data must stay local, a hard constraint filters out incompatible routes. Soft constraints then rank eligible options by language fit and cost preferences; the selected profile still needs a task check.'}</p>
+          <p className={styles.sectionNote}>{pick(INTRO, ru)}</p>
           <nav className={styles.jump} aria-label={ru ? 'Разделы' : 'Sections'}>
-            <a href="#lines">{ru ? 'Линии моделей' : 'Model lines'}</a>
             <a href="#axes">{ru ? 'Оси' : 'Axes'}</a>
             <a href="#choosing">{ru ? 'Выбор модели' : 'Choosing a model'}</a>
             <a href="#claims">{ru ? 'Лестница утверждений' : 'Claim ladder'}</a>
             <a href="#nist">NIST AI RMF</a>
+            <a href="#profiles">{ru ? 'Поля профиля' : 'Profile fields'}</a>
             <a href="#invariants">{ru ? 'Инварианты' : 'Invariants'}</a>
+            <a href="#tests">{ru ? 'Проверки' : 'Checks'}</a>
+            <a href="#history">{ru ? 'История и обсуждения' : 'History and discussions'}</a>
+            <a href="#lines">{ru ? 'Линии моделей' : 'Model lines'}</a>
           </nav>
-        </section>
-
-        <section className={styles.section} aria-labelledby="revisions">
-          <h2 id="revisions">{ru ? 'Ревизии политики' : 'Policy revisions'}</h2>
-          <div className={styles.revs}>
-            {REVISIONS.map((rev) => (
-              <div key={rev.id} className={`${styles.rev} ${styles[rev.state]}`}>
-                <b>{pick(rev.label, ru)}</b>
-                <span>{pick(rev.note, ru)}</span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        <section className={styles.section} aria-labelledby="lines">
-          <h2 id="lines">{ru ? 'Линии моделей' : 'Model lines'}</h2>
-          <p className={styles.question}>{pick(LINE_QUESTION, ru)}</p>
-          <div className={styles.tableWrap}>
-            <table className={`${styles.table} ${styles.matrix}`}>
-              <thead>
-                <tr>
-                  <th>{ru ? 'Решение человека · безопасное умолчание' : 'Human decision · safe default'}</th>
-                  {LINES.map((line) => (
-                    <th key={line.id}>{line.model}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {DECISIONS.map((decision) => (
-                  <tr key={decision.id}>
-                    <td>
-                      <b>{pick(decision.label, ru)}</b>
-                      <div className={styles.cellNote}>{pick(decision.safeDefault, ru)}</div>
-                    </td>
-                    {LINES.map((line) => {
-                      const verdict = line.verdicts[decision.id];
-                      return (
-                        <td key={line.id}>
-                          <span className={`${styles.verdict} ${styles[`v_${verdict}`]}`}>
-                            {pick(verdictLabel[verdict], ru)}
-                          </span>
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className={styles.lines}>
-            {LINES.map((line) => (
-              <article key={line.id} className={styles.line} id={`line-${line.id}`}>
-                <header>
-                  <h3>{line.model}</h3>
-                  <span className={styles.route}>{pick(line.route, ru)}</span>
-                </header>
-                <p className={styles.role}>{pick(line.role, ru)}</p>
-                <p>{pick(line.summary, ru)}</p>
-                <ul className={styles.points}>
-                  {line.points.map((point) => (
-                    <li key={point.en}>{pick(point, ru)}</li>
-                  ))}
-                </ul>
-                <p className={styles.disagree}>
-                  <strong>{ru ? 'Разногласие: ' : 'Disagrees: '}</strong>
-                  {pick(line.disagrees, ru)}
-                </p>
-                <p className={styles.receipt}>{pick(line.receipt, ru)}</p>
-              </article>
-            ))}
-          </div>
-          <p className={styles.sectionNote}>
-            {ru
-              ? 'Линии — советы, а не голоса. Решения о деньгах, публичных заявлениях и приоритете принимает человек; совпадение линий не доказывает правоту.'
-              : 'Lines are advice, not votes. A person decides on money, public claims and priority; lines agreeing with each other does not make them right.'}
-          </p>
         </section>
 
         <section className={styles.section} aria-labelledby="axes">
@@ -457,6 +391,87 @@ export default function AgentAxesPage({ params }: { params: { locale: string } }
               <li key={item.en}>{pick(item, ru)}</li>
             ))}
           </ul>
+        </section>
+
+        <section className={styles.section} aria-labelledby="history">
+          <h2 id="history">{ru ? 'История и обсуждения моделей (21 октября 2026)' : 'History and model discussions (21 Oct 2026)'}</h2>
+          <p className={styles.sectionNote}>{ru ? 'Ответы моделей — советы по проектированию политики. Они не являются измерениями качества или подтверждением исполнения.' : 'Model replies are advice on policy design. They are not quality measurements or evidence of enforcement.'}</p>
+        </section>
+
+        <section className={styles.section} aria-labelledby="revisions">
+          <h2 id="revisions">{ru ? 'Ревизии политики' : 'Policy revisions'}</h2>
+          <div className={styles.revs}>
+            {REVISIONS.map((rev) => (
+              <div key={rev.id} className={`${styles.rev} ${styles[rev.state]}`}>
+                <b>{pick(rev.label, ru)}</b>
+                <span>{pick(rev.note, ru)}</span>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section className={styles.section} aria-labelledby="lines">
+          <h2 id="lines">{ru ? 'Линии моделей' : 'Model lines'}</h2>
+          <p className={styles.question}>{pick(LINE_QUESTION, ru)}</p>
+          <div className={styles.tableWrap}>
+            <table className={`${styles.table} ${styles.matrix}`}>
+              <thead>
+                <tr>
+                  <th>{ru ? 'Решение человека · безопасное умолчание' : 'Human decision · safe default'}</th>
+                  {LINES.map((line) => (
+                    <th key={line.id}>{line.model}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {DECISIONS.map((decision) => (
+                  <tr key={decision.id}>
+                    <td>
+                      <b>{pick(decision.label, ru)}</b>
+                      <div className={styles.cellNote}>{pick(decision.safeDefault, ru)}</div>
+                    </td>
+                    {LINES.map((line) => {
+                      const verdict = line.verdicts[decision.id];
+                      return (
+                        <td key={line.id}>
+                          <span className={`${styles.verdict} ${styles[`v_${verdict}`]}`}>
+                            {pick(verdictLabel[verdict], ru)}
+                          </span>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className={styles.lines}>
+            {LINES.map((line) => (
+              <article key={line.id} className={styles.line} id={`line-${line.id}`}>
+                <header>
+                  <h3>{line.model}</h3>
+                  <span className={styles.route}>{pick(line.route, ru)}</span>
+                </header>
+                <p className={styles.role}>{pick(line.role, ru)}</p>
+                <p>{pick(line.summary, ru)}</p>
+                <ul className={styles.points}>
+                  {line.points.map((point) => (
+                    <li key={point.en}>{pick(point, ru)}</li>
+                  ))}
+                </ul>
+                <p className={styles.disagree}>
+                  <strong>{ru ? 'Разногласие: ' : 'Disagrees: '}</strong>
+                  {pick(line.disagrees, ru)}
+                </p>
+                <p className={styles.receipt}>{pick(line.receipt, ru)}</p>
+              </article>
+            ))}
+          </div>
+          <p className={styles.sectionNote}>
+            {ru
+              ? 'Линии — советы, а не голоса. Решения о деньгах, публичных заявлениях и приоритете принимает человек; совпадение линий не доказывает правоту.'
+              : 'Lines are advice, not votes. A person decides on money, public claims and priority; lines agreeing with each other does not make them right.'}
+          </p>
         </section>
 
         <section className={styles.disclosure} aria-label="Disclosure">

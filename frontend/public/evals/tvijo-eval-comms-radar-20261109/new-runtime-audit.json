@@ -1,0 +1,597 @@
+{
+  "schema_version": 1,
+  "artifact": "TVIJO-EVAL-COMMS-RADAR-20261109 New Runtime fixed-sample verification",
+  "decided_at": "2026-11-09T04:36:00Z",
+  "summary": {
+    "classification_counts_exactly_over_selected_10": {
+      "confirmed": 4,
+      "partially_confirmed": 3,
+      "stale": 2,
+      "unverified": 1,
+      "duplicate": 0,
+      "sum": 10
+    },
+    "records_with_supporting_primary_source": 9,
+    "records_with_official_primary_source_reviewed_but_no_support_for_main_claim": 1,
+    "duplicate_flags": 0,
+    "records_with_forecast_claims": 0,
+    "utility_criteria": [
+      {
+        "criterion_id": "NR-USE-1",
+        "criterion": "At least 8 of the 10 fixed-sample core claims are confirmed by primary evidence and are not stale.",
+        "result": "not_met",
+        "evidence": "4/10 are classified confirmed; 3 are partial, 2 stale, and 1 unverified.",
+        "reason": "Partial, stale, and unverified items do not count toward the threshold."
+      },
+      {
+        "criterion_id": "NR-USE-2",
+        "criterion": "Every interpretation and inference in this audit is explicitly labeled separately from reported facts.",
+        "result": "met",
+        "evidence": "All 10 records use separate reported_facts, publisher_interpretation, analyst_inference, and forecast_claims fields.",
+        "reason": "The audit preserves New Runtime's Field Note/Analysis distinction while also marking the auditor's own applicability judgments."
+      },
+      {
+        "criterion_id": "NR-USE-3",
+        "criterion": "Source-selection counts are exact, duplicate flags are separate, and no substitutes are added.",
+        "result": "met",
+        "evidence": "The 10 selected URLs and RSS publication timestamps match the frozen selection file; duplicate_flags count is 0.",
+        "reason": "Only the frozen selected records are assessed."
+      }
+    ],
+    "promotion_readiness": "not_met",
+    "promotion_decision": "NOT_PROMOTED: threshold not met",
+    "recommendation_to_sol": "Treat New Runtime as a discovery lead, not a verified technical source. Do not add it to the existing radar registry on this sample alone; reassess only with a larger fresh sample and primary-source checks.",
+    "limitations": [
+      "This is one fixed 10-item snapshot, not a longitudinal accuracy or freshness study.",
+      "First-party product pages and authored case studies verify that claims were published by their owners; they do not independently establish real-world performance or user counts.",
+      "No New Runtime instructions or suggested commands were executed.",
+      "No registry, crawler, production system, or recurring job was changed."
+    ]
+  },
+  "records": [
+    {
+      "selection_index": 1,
+      "claim_id": "NR-20261109-01",
+      "title": "vork is a headless Rust/Slang 3D engine where coding agents write scenes as code and render on GPU.",
+      "newruntime_url": "https://newruntime.com/posts/vork-is-a-headless-rust-slang-3d-engine-12ecec/",
+      "publisher_type": "field_note",
+      "rss_published_at_utc": "2026-11-09T03:00:02Z",
+      "primary_event_date": {
+        "value": "2026-11-07T20:41:52Z",
+        "basis": "GitHub commit a18cac5 is titled 'vork 0.2.0'; this is the nearest pinned project event before the RSS publication."
+      },
+      "primary_sources": [
+        {
+          "url": "https://github.com/voyager-so/vork",
+          "kind": "official_project_repository",
+          "version": "0.2.0 at commit a18cac5d68eae4b6d8d7c0126c44722b02edb897",
+          "source_date": "2026-11-07T20:41:52Z",
+          "capture": "vork_v0.2.0_readme.raw",
+          "capture_sha256": "ebdf2362e9b3c774c231f011f0b67a87b17bc4db788cfe6ca429dce341692065"
+        },
+        {
+          "url": "https://api.github.com/repos/voyager-so/vork/commits?per_page=5",
+          "kind": "official_version_history",
+          "capture": "vork_main_commits.json",
+          "capture_sha256": "593f6a69abfa535071355583a3842ed6c5f1e12fa4cda87e36f7b967b51a2d4f"
+        }
+      ],
+      "reported_facts": [
+        "The project describes itself as a headless 3D/VFX engine for agents, implemented in Rust and Slang, with GPU rendering.",
+        "The commit current around the story date is v0.2.0; v0.3.0 landed at 2026-11-09T03:31:50Z, after this RSS item's 03:00:02Z publication."
+      ],
+      "publisher_interpretation": [
+        "New Runtime frames the tool as code-authored scene creation rather than driving a conventional GUI."
+      ],
+      "analyst_inference": [
+        {
+          "text": "Low direct fit for Tvijo's coding-agent communication/evaluation needs; it may be relevant only if the product later adds agent-authored 3D/VFX workflows.",
+          "label": "inference"
+        }
+      ],
+      "forecast_claims": [],
+      "result": "confirmed",
+      "limitations": [
+        "Repository description and examples establish what the project claims and contains, not quality or reliability of rendered output.",
+        "Current main has advanced beyond the 0.2.0 snapshot; the 0.3.0 commit postdates the RSS time."
+      ],
+      "contradictions": [],
+      "recheck_condition": "Recheck the pinned README and latest release before discussing current capabilities; distinguish features present at publication from later commits.",
+      "duplicate_flags": []
+    },
+    {
+      "selection_index": 2,
+      "claim_id": "NR-20261109-02",
+      "title": "Continuity Research released Tess-4.5-27B, a 27B Apache-2.0 fine-tune of Qwen3.8-27B for agentic coding.",
+      "newruntime_url": "https://newruntime.com/posts/continuity-research-released-tess-4-5-27b-a-1c8d16/",
+      "publisher_type": "field_note",
+      "rss_published_at_utc": "2026-11-09T00:00:02Z",
+      "primary_event_date": {
+        "value": "2026-10-18T18:32:14Z",
+        "basis": "Hugging Face model API createdAt; lastModified 2026-10-18T23:29:35Z."
+      },
+      "primary_sources": [
+        {
+          "url": "https://huggingface.co/migtissera/Tess-4.5-27B",
+          "kind": "publisher_model_card",
+          "version": "revision 91b231133470bd147aac8036ed94d35e9bf1dc13",
+          "source_date": "2026-10-18",
+          "capture": "tess_readme.raw",
+          "capture_sha256": "f4e2237c13c137034f8602c697e58aeb62bafa4e37bf785a32ca441772de78b9"
+        },
+        {
+          "url": "https://huggingface.co/api/models/migtissera/Tess-4.5-27B",
+          "kind": "official_model_metadata",
+          "version": "91b231133470bd147aac8036ed94d35e9bf1dc13",
+          "capture": "tess_model.json",
+          "capture_sha256": "b61566cffb019c646162a0c66dccbcfdd6d97f7dcd42e897cc83df3cc77548b8"
+        }
+      ],
+      "reported_facts": [
+        "The model card identifies a 27B model, Apache-2.0 license, Qwen/Qwen3.8-27B base, and coding/agentic tags."
+      ],
+      "publisher_interpretation": [
+        "The model card describes the model as built for engineering and agentic work; its reported BenchLocal scores and speed figures are publisher-authored results, not independently reproduced here."
+      ],
+      "analyst_inference": [
+        {
+          "text": "Useful as a candidate to monitor for local-model and harness compatibility, but it is not evidence for Tvijo's four-shell benchmark or a coding-agent quality ranking.",
+          "label": "inference"
+        }
+      ],
+      "forecast_claims": [],
+      "result": "confirmed",
+      "limitations": [
+        "No model was installed or run; no benchmark, weight integrity, or inference performance was independently checked."
+      ],
+      "contradictions": [],
+      "recheck_condition": "Recheck the model revision, base-model declaration, license, and benchmark protocol before citing performance or current availability.",
+      "duplicate_flags": []
+    },
+    {
+      "selection_index": 3,
+      "claim_id": "NR-20261109-03",
+      "title": "Zed 1.24.2 shipped Oct 14 with Git tags, Terminal tabs in the Agent Panel and File Finder pre-fill",
+      "newruntime_url": "https://newruntime.com/analysis/research-zed-1-24-2-shipped-oct-14-with-git-tags-terminal-tabs-in-the-agent-panel-and/",
+      "publisher_type": "analysis",
+      "rss_published_at_utc": "2026-11-08T22:00:00Z",
+      "primary_event_date": {
+        "value": "2026-10-14T16:43:09Z",
+        "basis": "GitHub release API published_at for v1.24.2; Zed's stable release page separately gives Oct 14, 2026."
+      },
+      "primary_sources": [
+        {
+          "url": "https://github.com/zed-industries/zed/releases/tag/v1.24.2",
+          "kind": "official_release",
+          "version": "v1.24.2",
+          "source_date": "2026-10-14T16:43:09Z",
+          "capture": "zed_release.json",
+          "capture_sha256": "231c8611d74719d792d3b9ac29eeee51b974c334955233cbe94e1d7ebe8ff0b1"
+        },
+        {
+          "url": "https://zed.dev/releases/stable/1.24.2",
+          "kind": "official_release_notes",
+          "version": "1.24.2",
+          "capture": "zed_stable.raw",
+          "capture_sha256": "0596e59ef66a48a7053d4c5fb21758eb560b0aa6b4e733d9cd0d842aea66eed0"
+        },
+        {
+          "url": "https://zed.dev/releases/stable",
+          "kind": "current_stable_index",
+          "version": "1.27.0 observed",
+          "capture": "zed_current_stable.raw",
+          "capture_sha256": "e47573db7f51aad1c47ef209843c05846fdecfa10c176af8475bc7ea5c2fcfe3"
+        },
+        {
+          "url": "https://api.github.com/repos/zed-industries/zed/releases/tags/v1.24.4",
+          "kind": "later_official_release",
+          "version": "v1.24.4",
+          "source_date": "2026-10-20T10:34:04Z",
+          "capture": "v1.24.4.json",
+          "capture_sha256": "cf0c770a21c3a71964b99d41d756c9bb9aee982d09be293b94da0775732e49de"
+        },
+        {
+          "url": "https://api.github.com/repos/zed-industries/zed/releases/tags/v1.27.0",
+          "kind": "later_official_release",
+          "version": "v1.27.0",
+          "source_date": "2026-11-04T17:04:23Z",
+          "capture": "v1.27.0.json",
+          "capture_sha256": "79c99e53c38f9ce9792af66cae0aaa887270f82077cd76f7deb21d6e82712772"
+        }
+      ],
+      "reported_facts": [
+        "The official release date and three named features match the Zed release notes.",
+        "Later official releases 1.24.4 (Oct 20) and 1.27.0 (Nov 4) both predate the Nov 8 aggregator item, so 1.24.2 was already superseded when the story appeared."
+      ],
+      "publisher_interpretation": [
+        "New Runtime's analysis says a 1.24.1 link in its reviewed evidence was not a stable release and had caused a later changelog excerpt to be mixed in."
+      ],
+      "analyst_inference": [
+        {
+          "text": "The release facts are correct historically, but this item is stale as a current release update and has little direct relevance to Tvijo's internal agent runtime.",
+          "label": "inference"
+        }
+      ],
+      "forecast_claims": [],
+      "result": "stale",
+      "limitations": [
+        "Historical release accuracy does not establish that the item was timely when republished on Nov 8.",
+        "The v1.24.1 GitHub release API lookup returned 404 and the current Zed route resolves to the stable index; that is not proof that no historical development/pre-release build existed."
+      ],
+      "contradictions": [
+        "The Nov 8 aggregator publication followed later stable versions; current official index already showed 1.27.0 at audit time."
+      ],
+      "recheck_condition": "For a current radar, verify the latest stable version and compare the release event date with the aggregator date; retain old releases only as explicitly historical notes.",
+      "duplicate_flags": []
+    },
+    {
+      "selection_index": 4,
+      "claim_id": "NR-20261109-04",
+      "title": "AgentAudit publishes MCP server 3.0.0 and SDK 1.2.0 with Merkle-batched agent audit logs on Base",
+      "newruntime_url": "https://newruntime.com/posts/agentaudit-publishes-mcp-server-3-0-0-and-3ee038/",
+      "publisher_type": "field_note",
+      "rss_published_at_utc": "2026-11-08T21:00:02Z",
+      "primary_event_date": {
+        "value": "2026-11-08T16:36:23.414Z",
+        "basis": "NPM registry time for @agentauditai/mcp-server 3.0.0; SDK 1.2.0 was published at 2026-11-08T16:33:05.469Z."
+      },
+      "primary_sources": [
+        {
+          "url": "https://registry.npmjs.org/%40agentauditai%2fmcp-server",
+          "kind": "official_package_registry",
+          "version": "3.0.0",
+          "source_date": "2026-11-08T16:36:23.414Z",
+          "package_shasum": "1ca2fbb17237aed5227065c3cd092fb2c89e2e1b",
+          "capture": "agentaudit_server_full.json",
+          "capture_sha256": "8567db7834408f81978ae4401c139eca8aed674d30de4fab25579bf2876baad2"
+        },
+        {
+          "url": "https://registry.npmjs.org/%40agentauditai%2fsdk",
+          "kind": "official_package_registry",
+          "version": "1.2.0",
+          "source_date": "2026-11-08T16:33:05.469Z",
+          "package_shasum": "55b6d2376b6bf48647e3d21ae73f4a60af93d532",
+          "capture": "agentaudit_sdk_full.json",
+          "capture_sha256": "36dc5951d32b6d3760f0264f9246001c3225d000dead730b78d34813eb4d6ae3"
+        }
+      ],
+      "reported_facts": [
+        "The registry lists both versions as latest and gives matching Nov 8 publication times.",
+        "The package README describes audit_action/get_audit_log/verify_proof tools and Base AuditVault v2; it also states that the vault does not authenticate submitters and that evidence bundles must be retained."
+      ],
+      "publisher_interpretation": [
+        "New Runtime presents this as an MCP-based audit/evidence interoperability pattern, while warning that the address supplied by a caller does not prove the caller's identity."
+      ],
+      "analyst_inference": [
+        {
+          "text": "Potentially relevant to audit-evidence design, but an on-chain third-party package is not a substitute for AIOS's authorized journal, lease, tenant scope, or controller receipts.",
+          "label": "inference"
+        }
+      ],
+      "forecast_claims": [],
+      "result": "confirmed",
+      "limitations": [
+        "Package metadata and README verify the release and declared behavior, not contract security, a live transaction, identity attribution, or legal compliance.",
+        "NPM's read-only package endpoint was used; the package was not installed or executed."
+      ],
+      "contradictions": [],
+      "recheck_condition": "Recheck package version, registry integrity, deployed contract code/access controls, and explicit submitter identity before any technical comparison or adoption.",
+      "duplicate_flags": []
+    },
+    {
+      "selection_index": 5,
+      "claim_id": "NR-20261109-05",
+      "title": "Nous Research released hermes-security, an official Hermes Agent plugin for local repo security review.",
+      "newruntime_url": "https://newruntime.com/posts/nous-research-released-hermes-security-an-official-hermes-d55f0e/",
+      "publisher_type": "field_note",
+      "rss_published_at_utc": "2026-11-08T21:00:02Z",
+      "primary_event_date": {
+        "value": null,
+        "basis": "Nous's current marketplace listing verifies availability but does not provide a stable initial publication timestamp."
+      },
+      "primary_sources": [
+        {
+          "url": "https://hermes-agent.nousresearch.com/marketplace/hermes-security",
+          "kind": "official_marketplace_listing",
+          "version": "0.1.2 at 2026-11-09T04:27Z observation; New Runtime reported 0.1.1 at its publication snapshot",
+          "capture": "hermes_security.raw",
+          "capture_sha256": "eaa805481b8d5fea4b83906bdced944695a7a56d8283b20ee1b083628e1b7bcf"
+        }
+      ],
+      "reported_facts": [
+        "Nous's marketplace labels hermes-security Official and describes parallel subagent reviewers, evidence-backed reports, standard/deep/diff modes, export, and optional reproduction tests.",
+        "The listing explicitly says the configured model provider receives the reviewed code and repository test runs are not sandboxed."
+      ],
+      "publisher_interpretation": [
+        "New Runtime calls this a structured review workflow for existing Hermes users."
+      ],
+      "analyst_inference": [
+        {
+          "text": "Relevant to security-review workflow research, but the provider data path and test execution scope should be reviewed before any use on Tvijo repositories.",
+          "label": "inference"
+        }
+      ],
+      "forecast_claims": [],
+      "result": "confirmed",
+      "limitations": [
+        "This confirms the official listing and stated behavior, not vulnerability-finding quality or safety in a real repository.",
+        "The current marketplace version differs from the 0.1.1 version reported by New Runtime, consistent with a possible post-publication update; release history was not independently pinned."
+      ],
+      "contradictions": [],
+      "recheck_condition": "Check the Nous marketplace changelog and exact version before citing the feature set; re-review provider data handling and test isolation.",
+      "duplicate_flags": []
+    },
+    {
+      "selection_index": 6,
+      "claim_id": "NR-20261109-06",
+      "title": "A Habr case study describes a five-layer memory system behind an assistant used by about 1",
+      "newruntime_url": "https://newruntime.com/posts/a-habr-case-study-describes-a-five-layer-cc496d/",
+      "publisher_type": "field_note",
+      "rss_published_at_utc": "2026-11-08T18:00:02Z",
+      "primary_event_date": {
+        "value": "2026-11-08T11:46:39Z",
+        "basis": "Habr JSON-LD datePublished 2026-11-08T14:46:39+03:00."
+      },
+      "primary_sources": [
+        {
+          "url": "https://habr.com/ru/articles/1105098/",
+          "kind": "first_person_case_study",
+          "version": "article 1105098",
+          "source_date": "2026-11-08T11:46:39Z",
+          "capture": "hab r_article.raw",
+          "capture_sha256": "7d6dd6db7315493c720541684220bd39f7120c9b1181229fd9122a61b5826d22"
+        }
+      ],
+      "reported_facts": [
+        "The author describes a Telegram/MAX/VK assistant and a multi-layer memory architecture, and self-reports about 1,200 users, 11,674 archived records over 134 subjects, and 16,333 PostgreSQL rounds for 657 users.",
+        "The author explicitly says a scheduled production skill-decay run could not be confirmed."
+      ],
+      "publisher_interpretation": [
+        "New Runtime's practical lesson is to preserve original conversations, retrieve bounded context, and keep memory access rules explicit."
+      ],
+      "analyst_inference": [
+        {
+          "text": "Useful as a practitioner case study for memory and access-policy design; metrics and production operation remain the author's unverified report.",
+          "label": "inference"
+        }
+      ],
+      "forecast_claims": [],
+      "result": "partially_confirmed",
+      "limitations": [
+        "The article is primary to the author's account, not independent evidence of user counts, data volumes, system reliability, or performance.",
+        "The author distinguishes implemented layers from ideas still in a library; do not describe all five as production-verified."
+      ],
+      "contradictions": [],
+      "recheck_condition": "Seek a dated first-party artifact or independent evidence before treating scale or production-status metrics as verified; preserve explicit implemented/planned distinctions.",
+      "duplicate_flags": []
+    },
+    {
+      "selection_index": 7,
+      "claim_id": "NR-20261109-07",
+      "title": "WakeVane: open-source, event-driven harness for long-running coding agents, built on Databricks' Omnigent (alpha)",
+      "newruntime_url": "https://newruntime.com/posts/wakevane-open-source-event-driven-harness-for-long-c81475/",
+      "publisher_type": "field_note",
+      "rss_published_at_utc": "2026-11-08T18:00:02Z",
+      "primary_event_date": {
+        "value": "2026-11-08T14:29:54Z",
+        "basis": "Repository dist-branch commit eba874c; repository itself was created 2026-10-22. Official site was captured on Nov 9; it does not expose a stable launch timestamp."
+      },
+      "primary_sources": [
+        {
+          "url": "https://www.wakevane.com/",
+          "kind": "publisher_product_site",
+          "version": "Alpha; no semver stated",
+          "capture": "wakevane_home.raw",
+          "capture_sha256": "6153f617e7ef43f65c20f8ccf32b190afa209d096b48b51545cf95b253c33013"
+        },
+        {
+          "url": "https://github.com/juanpasaflipz/wakevane",
+          "kind": "publisher_repository",
+          "version": "dist branch commit eba874c7d25aa1f7bbd3ecb587b88c494b6eb0c6",
+          "source_date": "2026-11-08T14:29:54Z",
+          "capture": "wakevane_repo.json",
+          "capture_sha256": "ba22320a65dbe69040e806b6ed7536b06d1dd7689bd2b8b6378e430400056a69"
+        },
+        {
+          "url": "https://www.databricks.com/blog/introducing-omnigent-meta-harness-combine-control-and-share-your-agents",
+          "kind": "upstream_vendor_announcement",
+          "version": "Omnigent",
+          "capture": "web search result turn21search9",
+          "source_date": "2026-06"
+        }
+      ],
+      "reported_facts": [
+        "The site and GitHub repository describe WakeVane as an Apache-2.0 alpha harness that responds to events and builds on Omnigent.",
+        "The product site says its illustrated sequence is not live activity and that its first public-repository run is not yet available."
+      ],
+      "publisher_interpretation": [
+        "New Runtime interprets WakeVane as an event-triggered Omnigent distribution with spending visibility; it explicitly says no productivity or cost gain has been demonstrated."
+      ],
+      "analyst_inference": [
+        {
+          "text": "Conceptually adjacent to long-running agent orchestration, but the site states its public run is unavailable; do not treat product claims as a verified performance result or an AIOS-ready integration.",
+          "label": "inference"
+        }
+      ],
+      "forecast_claims": [],
+      "result": "partially_confirmed",
+      "limitations": [
+        "Product description and source repository establish publisher claims, not a successful live event-to-agent run, safety boundaries, or cost reduction.",
+        "No code was cloned, installed, or executed."
+      ],
+      "contradictions": [],
+      "recheck_condition": "Require a pinned repository version and independently inspect a reproducible event-triggered run, policy enforcement, sandbox, and cost evidence.",
+      "duplicate_flags": []
+    },
+    {
+      "selection_index": 8,
+      "claim_id": "NR-20261109-08",
+      "title": "OpenAI did shelve GPT-6.1 Astra over alignment failures, but has published no evaluation of it",
+      "newruntime_url": "https://newruntime.com/analysis/research-openai-did-shelve-gpt-6-1-astra-over-alignment-failures-but-has-published-no/",
+      "publisher_type": "analysis",
+      "rss_published_at_utc": "2026-11-08T17:00:00Z",
+      "primary_event_date": {
+        "value": "2026-09-28 (secondary press-reported only)",
+        "basis": "The New Runtime analysis attributes the date to secondary press reports; no official OpenAI primary report confirming a GPT-6.1 Astra cancellation was found."
+      },
+      "primary_sources": [
+        {
+          "url": "https://openai.com/index/gpt-6-astra/",
+          "kind": "official_model_announcement",
+          "version": "GPT-6 Astra; page later references GPT-6.1 Sol",
+          "source_date": "2026-09-03 / updated 2026-09-29",
+          "support_for_claim": "does_not_confirm_GPT_6_1_Astra_shelving",
+          "capture": "openai_astra_launch.raw",
+          "capture_error": "HTTP 403 to direct capture; official page checked through web search result turn20search2"
+        },
+        {
+          "url": "https://alignment.openai.com/misalignment-reports/",
+          "kind": "official_safety_report_index",
+          "version": "GPT-6.1 Sol and GPT-6 Astra reports are listed; no GPT-6.1 Astra report found",
+          "capture": "openai_alignment_reports.raw",
+          "capture_sha256": "215cfe0522dcd6681da656b2784ebd0bb003b09cf8e36170c2f121b3a90d57d9"
+        },
+        {
+          "url": "https://openai.com/index/safety-overview-gpt-6-astra/",
+          "kind": "official_safety_overview",
+          "version": "GPT-6 Astra",
+          "support_for_claim": "documents_predecessor_only",
+          "source_date": "2026-09-03",
+          "capture": "web search result turn20search1"
+        }
+      ],
+      "reported_facts": [
+        "The New Runtime analysis says secondary outlets reported a decision not to release a planned GPT-6.1 Astra and cites a safety-chief quote; the article itself acknowledges no published evaluation of that named model."
+      ],
+      "publisher_interpretation": [
+        "The analysis treats scope control and accurate reporting as important failure modes for agents with tools."
+      ],
+      "analyst_inference": [
+        {
+          "text": "The exact claim cannot be accepted under the requested official-source rule; official OpenAI pages instead identify GPT-6 Astra and GPT-6.1 Sol, a material model-name/version mismatch.",
+          "label": "inference"
+        }
+      ],
+      "forecast_claims": [],
+      "result": "unverified",
+      "limitations": [
+        "No official OpenAI source was found confirming GPT-6.1 Astra existed, was shelved, or had the quoted evaluation result.",
+        "OpenAI's predecessor materials about GPT-6 Astra do not establish behavior of a supposed GPT-6.1 Astra model; secondary reporting is not substituted as primary evidence."
+      ],
+      "contradictions": [
+        "Official OpenAI material names GPT-6 Astra and GPT-6.1 Sol; the aggregator claim names GPT-6.1 Astra. This is a version mismatch, not an explicit official denial."
+      ],
+      "recheck_condition": "Recheck only if OpenAI publishes a primary announcement, system card, or signed official statement about GPT-6.1 Astra and its evaluation.",
+      "duplicate_flags": []
+    },
+    {
+      "selection_index": 9,
+      "claim_id": "NR-20261109-09",
+      "title": "SuperARIS v0.1.0 preview adds a persistent multi-agent research workbench on ARIS",
+      "newruntime_url": "https://newruntime.com/posts/superaris-v0-1-0-preview-adds-a-persistent-615c33/",
+      "publisher_type": "field_note",
+      "rss_published_at_utc": "2026-11-08T13:00:03Z",
+      "primary_event_date": {
+        "value": "2026-11-08T05:12:40Z repository creation; README revision 92118fef dated 09:54:38Z",
+        "basis": "GitHub repository metadata and README history. The current 504fe48 README revision is later, 2026-11-08T18:08:07Z."
+      },
+      "primary_sources": [
+        {
+          "url": "https://github.com/wanshuiyin/SuperARIS",
+          "kind": "publisher_repository",
+          "version": "Preview badge v0.1.0; repository created 2026-11-08T05:12:40Z; no GitHub release or tag observed",
+          "capture": "superaris_repo.json",
+          "capture_sha256": "6386af8eb05ff08272a4dcb30ea2491ba1474258a7e4790b1e403a619050595a"
+        },
+        {
+          "url": "https://raw.githubusercontent.com/wanshuiyin/SuperARIS/main/README.md",
+          "kind": "publisher_readme",
+          "version": "current audited commit 504fe48892f452a37b027dd5d830e64a001cf32b",
+          "source_date": "2026-11-08T18:08:07Z",
+          "capture": "superaris_readme.raw",
+          "capture_sha256": "b5daa2063dbad39d2cc72f4dcd4efe6e000181835c90f854e2ed6a3059fec6fd"
+        }
+      ],
+      "reported_facts": [
+        "The public MIT repository and README describe a Python research workbench built on ARIS, with a coordinating main role, persistent engineer/writer teammates, task records, and project notes.",
+        "The current README labels the project preview v0.1.0, but GitHub's releases and tags endpoints were empty at the audit observation."
+      ],
+      "publisher_interpretation": [
+        "New Runtime presents persistent roles and recoverable project notes as a shift from one-shot research prompts to ongoing multi-step work."
+      ],
+      "analyst_inference": [
+        {
+          "text": "The design is relevant to durable agent tasks and evidence trails, but the v0.1.0 label is not a tagged release and the current README revision postdates the RSS entry.",
+          "label": "inference"
+        }
+      ],
+      "forecast_claims": [],
+      "result": "partially_confirmed",
+      "limitations": [
+        "First-party repository text verifies the project description, not successful autonomous operation, result quality, or acceptance safeguards.",
+        "Current README commit was published after the 13:00:03Z RSS timestamp, so these exact details cannot all be back-attributed to the selected publication time."
+      ],
+      "contradictions": [
+        "The article calls this v0.1.0 preview; no Git tag or GitHub release for v0.1.0 was found. The README badge alone is not a release artifact."
+      ],
+      "recheck_condition": "Pin a release tag and dated source snapshot before citing current features; verify task completion, evidence checks, cancellation, and recovery behavior independently.",
+      "duplicate_flags": []
+    },
+    {
+      "selection_index": 10,
+      "claim_id": "NR-20261109-10",
+      "title": "EAGLE-4 0.1.2 falls back to plain SGLang decoding at high load and posts TokenSpeed tokens/s",
+      "newruntime_url": "https://newruntime.com/posts/eagle-4-0-1-2-falls-back-to-4d2aee/",
+      "publisher_type": "field_note",
+      "rss_published_at_utc": "2026-11-08T09:00:02Z",
+      "primary_event_date": {
+        "value": "2026-10-23T11:21:39Z",
+        "basis": "GitHub commit daeb41e documents 0.1.2 images; prior 0.1.2 behavior change commit df5a23a is 2026-10-23T01:36:47Z. Version 0.1.3 was released by commit e110d1e on 2026-10-27T03:19:47Z."
+      },
+      "primary_sources": [
+        {
+          "url": "https://github.com/eagle-hq/EAGLE-4/blob/main/docs/release-notes/0.1.2.md",
+          "kind": "official_release_notes",
+          "version": "0.1.2",
+          "source_date": "2026-10-23",
+          "source_commit": "daeb41ecd2fcdc6524db3bf559cfe386152135cc",
+          "capture": "eagle_notes.raw",
+          "capture_sha256": "ebcb247fe41c1887e0952e2c5596a43b132e776870137e969a8fa14c6624c5bc"
+        },
+        {
+          "url": "https://github.com/eagle-hq/EAGLE-4/blob/main/docs/release-notes/0.1.3.md",
+          "kind": "later_official_release_notes",
+          "version": "0.1.3",
+          "source_commit": "e110d1e916518ad9af145e84fc524891314fd78a",
+          "source_date": "2026-10-27T03:19:47Z",
+          "capture": "eagle_release_0.1.3.raw",
+          "capture_sha256": "ddf4f2114251d2bbeaca7f9810eb8d186c7dbbdaa01f583566f4942d7887bad7"
+        }
+      ],
+      "reported_facts": [
+        "The 0.1.2 notes describe per-batch SGLang fallback to plain decoding and list measured throughput conditions.",
+        "Those same notes state the TokenSpeed engine build from that release was withdrawn; the current 0.1.3 notes describe a later TokenSpeed release."
+      ],
+      "publisher_interpretation": [
+        "New Runtime summarizes a near-parity high-load SGLang recipe and low-load speedups; the raw release notes say this requires a four-GPU setup and note the ordinary one-GPU quick-start can be slower above roughly 32–64 concurrency."
+      ],
+      "analyst_inference": [
+        {
+          "text": "The 0.1.2 mechanism is historically supported, but the item is stale as of the Nov 8 publication because 0.1.3 had shipped on Oct 27; EAGLE-4 is an inference-serving system, not an agent harness or message-delivery system.",
+          "label": "inference"
+        }
+      ],
+      "forecast_claims": [],
+      "result": "stale",
+      "limitations": [
+        "Benchmark values are vendor release-note claims, not independently reproduced here.",
+        "TokenSpeed data must not be read as an available 0.1.2 engine build; the release explicitly says that build was withdrawn."
+      ],
+      "contradictions": [
+        "The selected article reports 0.1.2 on Nov 8 despite an official 0.1.3 release on Oct 27; the high-load mechanism may still be present but the version focus is stale."
+      ],
+      "recheck_condition": "Use current release 0.1.3 or newer and its own support matrix; rerun the benchmark only with matched hardware, load, engine, and no-spec baseline.",
+      "duplicate_flags": []
+    }
+  ]
+}

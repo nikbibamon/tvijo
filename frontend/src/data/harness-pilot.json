@@ -1,0 +1,1347 @@
+{
+  "schema_version": 1,
+  "campaign": "TVIJO-EVAL-COMMS-RADAR-20261109",
+  "checked_on": "2026-11-09",
+  "data_url": "/evals/tvijo-eval-comms-radar-20261109/data.json",
+  "csv_url": "/evals/tvijo-eval-comms-radar-20261109/results.csv",
+  "labels": {
+    "en": {
+      "title": "Engineering pilot: two tasks, four coding shells",
+      "scope": "Eight planned slots: 4 PASS, 3 FAIL, 1 pre-model infrastructure failure. Two independent task fixtures, one slot per shell/task. This pilot does not establish a universal winner.",
+      "configuration": "Same official DeepSeek route: deepseek-flash, OpenAI chat API, thinking disabled, output cap 4096 and conservative context bound 65536. Returned alias is recorded; serving revision and quantization remain UNKNOWN. DSHREM includes its installed native adapter and selected Harness, not pure upstream DSH.",
+      "cost": "USD figures are usage × verified tariff, not a reconciled provider invoice. Cached input is included in input once and shown separately. Subscription coordination has no per-call API debit; subscription quota/price is separate and unmeasured.",
+      "limits": "480 seconds and $0.025 per slot; $0.20 root cap. Automatic retries and model/provider fallback disabled. The infrastructure failure remains in ITT; it is not treated as a failed model solution. Quality-pending controller obligations are separate from artifact PASS.",
+      "download": "Public data and provenance",
+      "instructions": "Reproduction and reading guide",
+      "baseline": "Frozen baseline",
+      "tableNote": "Full time includes shell launch, DSHREM package verification and independent artifact tests. On small screens scroll the table.",
+      "columns": [
+        "Shell / version",
+        "Status / Q",
+        "Full time",
+        "API $ estimate",
+        "Requests; input / output / cache",
+        "Human help / reason",
+        "Evidence / checked"
+      ],
+      "aggregateTitle": "Observed totals across these two task fixtures",
+      "aggregateColumns": [
+        "Shell",
+        "PASS / started (ITT)",
+        "Median full time",
+        "API $ total",
+        "API $ / accepted",
+        "Minutes / accepted",
+        "Infra / model-started"
+      ],
+      "undefined": "Undefined",
+      "formulas": "Success = accepted / started slots (ITT). API $/accepted and minutes/accepted include every failed attempt; undefined when no task is accepted. Median includes infrastructure time and should be read with each task row. No p95, significance or equivalence claim is made.",
+      "provenance": "Claims, sources, contrary evidence and recheck rules",
+      "scopeLabel": "Conditions",
+      "limitsLabel": "Limits",
+      "contrary": "Contrary evidence",
+      "recheck": "Recheck when",
+      "source": "Evidence source",
+      "external": "External benchmark scores belong to their original source, version and task distribution. They are not pooled with this pilot. Promptfoo, QM and New Runtime have evaluation, communications and discovery roles; they receive no coding quality score."
+    },
+    "ru": {
+      "title": "Инженерный пилот: две задачи, четыре coding-оболочки",
+      "scope": "Восемь слотов: 4 PASS, 3 FAIL, 1 инфраструктурная ошибка до модели. Две независимые задачи-фикстуры, один слот на оболочку/задачу. Универсального победителя эта выборка не устанавливает.",
+      "configuration": "Единый официальный маршрут DeepSeek: deepseek-flash, OpenAI chat API, thinking выключен, вывод до 4096, консервативная граница контекста 65536. Ответный алиас сохранён; точная обслужившая ревизия и квантование — UNKNOWN. DSHREM включает установленный native-адаптер и выбранный Harness; это не чистый upstream DSH.",
+      "cost": "Доллары рассчитаны как usage × проверенный тариф; сверенного счёта провайдера нет. Кешированный ввод входит во входные токены один раз и показан отдельно. Подписочная координация не создаёт API-списания; цена и квота подписки учитываются отдельно, здесь не измерены.",
+      "limits": "480 секунд и $0.025 на слот; общий предел $0.20. Автоповторы и подмена модели/провайдера выключены. Инфраструктурная ошибка входит в ITT, но не считается провалом решения модели. Ожидающие требования контроллерной приёмки отделены от PASS артефакта.",
+      "download": "Открытые данные и происхождение",
+      "instructions": "Запуск и чтение результатов",
+      "baseline": "Исходный commit",
+      "tableNote": "Полное время включает запуск, проверку пакета DSHREM и независимые тесты. На узком экране прокручивайте таблицу.",
+      "columns": [
+        "Оболочка / версия",
+        "Статус / Q",
+        "Полное время",
+        "API $ оценка",
+        "Запросы; вход / выход / кеш",
+        "Помощь / причина",
+        "Доказательство / дата"
+      ],
+      "aggregateTitle": "Наблюдаемые итоги на этих двух задачах",
+      "aggregateColumns": [
+        "Оболочка",
+        "PASS / начато (ITT)",
+        "Медиана полного времени",
+        "API $ всего",
+        "API $ / принято",
+        "Минут / принято",
+        "Инфра / с вызовом модели"
+      ],
+      "undefined": "Не определено",
+      "formulas": "Успешность = принято / начато (ITT). В API $/принято и минут/принято входят все неудачные попытки; при нуле принятых показатель не определён. Медиана включает время инфраструктурного отказа, сверяйтесь со строками задач. Нет заявлений о p95, значимости или доказанном равенстве.",
+      "provenance": "Утверждения, источники, противоречия и условия перепроверки",
+      "scopeLabel": "Условия",
+      "limitsLabel": "Ограничения",
+      "contrary": "Противоречащие данные",
+      "recheck": "Когда перепроверить",
+      "source": "Источник доказательства",
+      "external": "Внешние рейтинги сохраняют собственный источник, версию и набор задач. С этим пилотом они не объединяются. Promptfoo, QM и New Runtime выполняют роли оценки, коммуникаций и обнаружения новостей; балл coding-качества им не присваивается."
+    }
+  },
+  "tasks": [
+    {
+      "id": "A",
+      "title": {
+        "en": "SQLite queue: stale lease and side effects",
+        "ru": "SQLite-очередь: устаревший lease и побочный эффект"
+      },
+      "scope": {
+        "en": "Bug fix with a reproduced failing public test and private concurrent/restart checks.",
+        "ru": "Исправление воспроизведённой ошибки; закрытые проверки конкуренции и перезапуска."
+      },
+      "baseline_sha": "68e5efbfe55883585870df69a2f463ea7dce7cdf"
+    },
+    {
+      "id": "B",
+      "title": {
+        "en": "Cursor pagination across contract, store and API",
+        "ru": "Курсорная пагинация: контракт, хранилище и API"
+      },
+      "scope": {
+        "en": "Multi-module feature with contract and regression acceptance.",
+        "ru": "Функция в нескольких модулях с приёмкой контракта и регрессий."
+      },
+      "baseline_sha": "ffb2f416dd1fa7021fd70546e5578dc7f97b03f5"
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "A-MiniSWE-01",
+      "task": "A",
+      "harness": "MiniSWE",
+      "status": "PASS",
+      "Q": 100,
+      "full_seconds": 63.778655527999994,
+      "harness_full_seconds": 62.143923066556454,
+      "worker_seconds": 61.2189603112638,
+      "startup_seconds": 9.705912590026855,
+      "package_verification_seconds": 0,
+      "verify_seconds": 0.6572785973548889,
+      "api_requests": 7,
+      "input_tokens": 40511,
+      "output_tokens": 6040,
+      "cache_read_tokens": 33408,
+      "reasoning_tokens": "UNKNOWN",
+      "requested_model": "deepseek-flash",
+      "returned_model": [
+        "deepseek-flash"
+      ],
+      "provider": "deepseek_official",
+      "endpoint": "https://api.deepseek.com/chat/completions",
+      "thinking": "disabled",
+      "effort": "none",
+      "max_output_tokens": 4096,
+      "context_conservative_bound": 65536,
+      "baseline_sha": "68e5efbfe55883585870df69a2f463ea7dce7cdf",
+      "diff_sha256": "a62751d6f1b8589b3a4754b872b84b226cabee283254ef408013dabce50bd63c",
+      "human_assisted": false,
+      "criteria": [
+        {
+          "id": "claim_race",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "stale_fence",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "restart_replay",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "concurrent_finish",
+          "weight": 15,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "value_conflict",
+          "weight": 10,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "timeout_atomicity",
+          "weight": 10,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "invalid_and_expired",
+          "weight": 5,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        }
+      ],
+      "public_regression_pass": true,
+      "violations": [],
+      "new_tests": [
+        "tests/test_lease.py"
+      ],
+      "start_utc": "2026-11-09T05:22:19.379499+00:00",
+      "start_kyiv": "2026-11-09T07:22:19.379499+02:00",
+      "server_load": [
+        4.7802734375,
+        4.240234375,
+        3.6298828125
+      ],
+      "model_tool_calls": 9,
+      "api_errors": 0,
+      "broker_retries": 0,
+      "semantic_retries": "UNKNOWN",
+      "provider_reported_cost": "UNKNOWN",
+      "invoice_cost": "UNKNOWN",
+      "quantization": "UNKNOWN",
+      "model_serving_revision": "UNKNOWN",
+      "reason": null,
+      "version": "2.4.6",
+      "harness_commit": "UNKNOWN wheel; release source tag fixed",
+      "api_cost_usage_tariff_usd": 0.004789674,
+      "claim_id": "PILOT-A-MiniSWE-01",
+      "evidence_url": "/evals/tvijo-eval-comms-radar-20261109/runs/A-MiniSWE-01.json",
+      "classification": "engineering_pilot",
+      "checked_on": "2026-11-09",
+      "limits": "480s; USD0.025 per slot; USD0.20 root",
+      "cost_class": "usage_times_verified_tariff; invoice UNKNOWN"
+    },
+    {
+      "run_id": "A-Hermes-01",
+      "task": "A",
+      "harness": "Hermes",
+      "status": "INFRA_ERROR",
+      "Q": null,
+      "full_seconds": 1.5665656949999975,
+      "harness_full_seconds": "UNKNOWN",
+      "worker_seconds": "UNKNOWN",
+      "startup_seconds": "UNKNOWN",
+      "package_verification_seconds": "UNKNOWN",
+      "verify_seconds": "UNKNOWN",
+      "api_requests": 0,
+      "input_tokens": "UNKNOWN",
+      "output_tokens": "UNKNOWN",
+      "cache_read_tokens": "UNKNOWN",
+      "reasoning_tokens": "UNKNOWN",
+      "requested_model": "deepseek-flash",
+      "returned_model": "UNKNOWN",
+      "provider": "deepseek_official",
+      "endpoint": "UNKNOWN",
+      "thinking": "UNKNOWN",
+      "effort": "UNKNOWN",
+      "max_output_tokens": "UNKNOWN",
+      "context_conservative_bound": "UNKNOWN",
+      "baseline_sha": "68e5efbfe55883585870df69a2f463ea7dce7cdf",
+      "diff_sha256": "UNKNOWN",
+      "human_assisted": false,
+      "criteria": [],
+      "public_regression_pass": false,
+      "violations": [],
+      "new_tests": [],
+      "start_utc": "2026-11-09T05:23:21.826Z",
+      "start_kyiv": "UNKNOWN",
+      "server_load": "UNKNOWN",
+      "model_tool_calls": "UNKNOWN",
+      "api_errors": "UNKNOWN",
+      "broker_retries": "UNKNOWN",
+      "semantic_retries": "UNKNOWN",
+      "provider_reported_cost": "UNKNOWN",
+      "invoice_cost": "UNKNOWN",
+      "quantization": "UNKNOWN",
+      "model_serving_revision": "UNKNOWN",
+      "reason": "controller_writer_not_reconciled_before_launch",
+      "version": "v0.23.0",
+      "harness_commit": "2bd378ed1b8d6bf2192cb26e0a55ff3091e6bd19",
+      "api_cost_usage_tariff_usd": 0.0,
+      "claim_id": "PILOT-A-Hermes-01",
+      "evidence_url": "/evals/tvijo-eval-comms-radar-20261109/runs/A-Hermes-01.json",
+      "classification": "engineering_pilot",
+      "checked_on": "2026-11-09",
+      "limits": "480s; USD0.025 per slot; USD0.20 root",
+      "cost_class": "usage_times_verified_tariff; invoice UNKNOWN"
+    },
+    {
+      "run_id": "A-DSHREM-01",
+      "task": "A",
+      "harness": "DSHREM",
+      "status": "FAIL",
+      "Q": 90,
+      "full_seconds": 178.308120146,
+      "harness_full_seconds": 176.74839016795158,
+      "worker_seconds": 41.44611182063818,
+      "startup_seconds": 136.91407108306885,
+      "package_verification_seconds": 133.92664822191,
+      "verify_seconds": 1.1732757687568665,
+      "api_requests": 8,
+      "input_tokens": 52717,
+      "output_tokens": 6804,
+      "cache_read_tokens": 46336,
+      "reasoning_tokens": "UNKNOWN",
+      "requested_model": "deepseek-flash",
+      "returned_model": [
+        "deepseek-flash"
+      ],
+      "provider": "deepseek_official",
+      "endpoint": "https://api.deepseek.com/chat/completions",
+      "thinking": "disabled",
+      "effort": "none",
+      "max_output_tokens": 4096,
+      "context_conservative_bound": 65536,
+      "baseline_sha": "68e5efbfe55883585870df69a2f463ea7dce7cdf",
+      "diff_sha256": "ba0085d21f03f73f60bd2fad88db9bc57ff89003deab80279f80954ba264639b",
+      "human_assisted": false,
+      "criteria": [
+        {
+          "id": "claim_race",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "stale_fence",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "restart_replay",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "concurrent_finish",
+          "weight": 15,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "value_conflict",
+          "weight": 10,
+          "mandatory": true,
+          "passed": false,
+          "error": "AssertionError: conflicting replay accepted"
+        },
+        {
+          "id": "timeout_atomicity",
+          "weight": 10,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "invalid_and_expired",
+          "weight": 5,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        }
+      ],
+      "public_regression_pass": false,
+      "violations": [],
+      "new_tests": [
+        "tests/test_lease_regression.py",
+        "tests/test_queue_stress.py"
+      ],
+      "start_utc": "2026-11-09T05:32:23.819164+00:00",
+      "start_kyiv": "2026-11-09T07:32:23.819164+02:00",
+      "server_load": [
+        2.91650390625,
+        3.5458984375,
+        3.49951171875
+      ],
+      "model_tool_calls": 8,
+      "api_errors": 0,
+      "broker_retries": 0,
+      "semantic_retries": "UNKNOWN",
+      "provider_reported_cost": "UNKNOWN",
+      "invoice_cost": "UNKNOWN",
+      "quantization": "UNKNOWN",
+      "model_serving_revision": "UNKNOWN",
+      "reason": null,
+      "version": "frontend0.2.0-alpha.2 / Harness0.2.2-rc.1",
+      "harness_commit": "592627ace635cdc9d18249b3750207384340bf14",
+      "api_cost_usage_tariff_usd": 0.005178558,
+      "claim_id": "PILOT-A-DSHREM-01",
+      "evidence_url": "/evals/tvijo-eval-comms-radar-20261109/runs/A-DSHREM-01.json",
+      "classification": "engineering_pilot",
+      "checked_on": "2026-11-09",
+      "limits": "480s; USD0.025 per slot; USD0.20 root",
+      "cost_class": "usage_times_verified_tariff; invoice UNKNOWN"
+    },
+    {
+      "run_id": "A-Pi-01",
+      "task": "A",
+      "harness": "Pi",
+      "status": "FAIL",
+      "Q": 55,
+      "full_seconds": 49.30545330499997,
+      "harness_full_seconds": 45.47754895314574,
+      "worker_seconds": 44.23586970195174,
+      "startup_seconds": 0.8163352012634277,
+      "package_verification_seconds": 0,
+      "verify_seconds": 1.0485169440507889,
+      "api_requests": 14,
+      "input_tokens": 105896,
+      "output_tokens": 5709,
+      "cache_read_tokens": 98944,
+      "reasoning_tokens": "UNKNOWN",
+      "requested_model": "deepseek-flash",
+      "returned_model": [
+        "deepseek-flash"
+      ],
+      "provider": "deepseek_official",
+      "endpoint": "https://api.deepseek.com/chat/completions",
+      "thinking": "disabled",
+      "effort": "none",
+      "max_output_tokens": 4096,
+      "context_conservative_bound": 65536,
+      "baseline_sha": "68e5efbfe55883585870df69a2f463ea7dce7cdf",
+      "diff_sha256": "a850f28998e215905bde8c9be814c9d1175d8b8909ae2790550aa16d45041dca",
+      "human_assisted": false,
+      "criteria": [
+        {
+          "id": "claim_race",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "stale_fence",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "restart_replay",
+          "weight": 20,
+          "mandatory": true,
+          "passed": false,
+          "error": "AssertionError: (False, True)"
+        },
+        {
+          "id": "concurrent_finish",
+          "weight": 15,
+          "mandatory": true,
+          "passed": false,
+          "error": "AssertionError: ([False, False, False, True, False], [True, True, True, True, True])"
+        },
+        {
+          "id": "value_conflict",
+          "weight": 10,
+          "mandatory": true,
+          "passed": false,
+          "error": "AssertionError: conflicting replay accepted"
+        },
+        {
+          "id": "timeout_atomicity",
+          "weight": 10,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "invalid_and_expired",
+          "weight": 5,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        }
+      ],
+      "public_regression_pass": false,
+      "violations": [],
+      "new_tests": [
+        "tests/test_queue_lease.py"
+      ],
+      "start_utc": "2026-11-09T05:35:24.625363+00:00",
+      "start_kyiv": "2026-11-09T07:35:24.625363+02:00",
+      "server_load": [
+        2.73193359375,
+        3.41015625,
+        3.45458984375
+      ],
+      "model_tool_calls": 15,
+      "api_errors": 0,
+      "broker_retries": 0,
+      "semantic_retries": "UNKNOWN",
+      "provider_reported_cost": "UNKNOWN",
+      "invoice_cost": "UNKNOWN",
+      "quantization": "UNKNOWN",
+      "model_serving_revision": "UNKNOWN",
+      "reason": null,
+      "version": "1.5.0",
+      "harness_commit": "UNKNOWN npm artifact; release source tag fixed",
+      "api_cost_usage_tariff_usd": 0.004765032,
+      "claim_id": "PILOT-A-Pi-01",
+      "evidence_url": "/evals/tvijo-eval-comms-radar-20261109/runs/A-Pi-01.json",
+      "classification": "engineering_pilot",
+      "checked_on": "2026-11-09",
+      "limits": "480s; USD0.025 per slot; USD0.20 root",
+      "cost_class": "usage_times_verified_tariff; invoice UNKNOWN"
+    },
+    {
+      "run_id": "B-DSHREM-01",
+      "task": "B",
+      "harness": "DSHREM",
+      "status": "PASS",
+      "Q": 100,
+      "full_seconds": 157.28285081899998,
+      "harness_full_seconds": 155.75686763599515,
+      "worker_seconds": 38.172003511339426,
+      "startup_seconds": 119.87921738624573,
+      "package_verification_seconds": 117.13213655725121,
+      "verify_seconds": 0.2164614200592041,
+      "api_requests": 7,
+      "input_tokens": 43101,
+      "output_tokens": 6190,
+      "cache_read_tokens": 39808,
+      "reasoning_tokens": "UNKNOWN",
+      "requested_model": "deepseek-flash",
+      "returned_model": [
+        "deepseek-flash"
+      ],
+      "provider": "deepseek_official",
+      "endpoint": "https://api.deepseek.com/chat/completions",
+      "thinking": "disabled",
+      "effort": "none",
+      "max_output_tokens": 4096,
+      "context_conservative_bound": 65536,
+      "baseline_sha": "ffb2f416dd1fa7021fd70546e5578dc7f97b03f5",
+      "diff_sha256": "14d405f9ab720fc17699fe857a2a05bec2b44c259d93f23c1eb395546a6bb8c4",
+      "human_assisted": false,
+      "criteria": [
+        {
+          "id": "contract_validation",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "stable_pages",
+          "weight": 25,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "tenant_filter_binding",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "invalid_cursor",
+          "weight": 15,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "concurrent_insert_order",
+          "weight": 10,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "legacy",
+          "weight": 10,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        }
+      ],
+      "public_regression_pass": true,
+      "violations": [],
+      "new_tests": [
+        "tests/test_pagination.py"
+      ],
+      "start_utc": "2026-11-09T05:36:11.786274+00:00",
+      "start_kyiv": "2026-11-09T07:36:11.786274+02:00",
+      "server_load": [
+        3.23095703125,
+        3.47900390625,
+        3.48193359375
+      ],
+      "model_tool_calls": 15,
+      "api_errors": 0,
+      "broker_retries": 0,
+      "semantic_retries": "UNKNOWN",
+      "provider_reported_cost": "UNKNOWN",
+      "invoice_cost": "UNKNOWN",
+      "quantization": "UNKNOWN",
+      "model_serving_revision": "UNKNOWN",
+      "reason": null,
+      "version": "frontend0.2.0-alpha.2 / Harness0.2.2-rc.1",
+      "harness_commit": "592627ace635cdc9d18249b3750207384340bf14",
+      "api_cost_usage_tariff_usd": 0.004327374,
+      "claim_id": "PILOT-B-DSHREM-01",
+      "evidence_url": "/evals/tvijo-eval-comms-radar-20261109/runs/B-DSHREM-01.json",
+      "classification": "engineering_pilot",
+      "checked_on": "2026-11-09",
+      "limits": "480s; USD0.025 per slot; USD0.20 root",
+      "cost_class": "usage_times_verified_tariff; invoice UNKNOWN"
+    },
+    {
+      "run_id": "B-Pi-01",
+      "task": "B",
+      "harness": "Pi",
+      "status": "PASS",
+      "Q": 100,
+      "full_seconds": 40.761372944999955,
+      "harness_full_seconds": 37.63986859843135,
+      "worker_seconds": 37.22897147014737,
+      "startup_seconds": 0.7741687297821045,
+      "package_verification_seconds": 0,
+      "verify_seconds": 0.2214275300502777,
+      "api_requests": 10,
+      "input_tokens": 66108,
+      "output_tokens": 5897,
+      "cache_read_tokens": 62336,
+      "reasoning_tokens": "UNKNOWN",
+      "requested_model": "deepseek-flash",
+      "returned_model": [
+        "deepseek-flash"
+      ],
+      "provider": "deepseek_official",
+      "endpoint": "https://api.deepseek.com/chat/completions",
+      "thinking": "disabled",
+      "effort": "none",
+      "max_output_tokens": 4096,
+      "context_conservative_bound": 65536,
+      "baseline_sha": "ffb2f416dd1fa7021fd70546e5578dc7f97b03f5",
+      "diff_sha256": "1e1dcd1a54aec4fd0e543876359adc747fd258be6d74e76465b3fb761d7e98a2",
+      "human_assisted": false,
+      "criteria": [
+        {
+          "id": "contract_validation",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "stable_pages",
+          "weight": 25,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "tenant_filter_binding",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "invalid_cursor",
+          "weight": 15,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "concurrent_insert_order",
+          "weight": 10,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "legacy",
+          "weight": 10,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        }
+      ],
+      "public_regression_pass": true,
+      "violations": [],
+      "new_tests": [
+        "tests/test_pagination.py"
+      ],
+      "start_utc": "2026-11-09T05:38:50.804831+00:00",
+      "start_kyiv": "2026-11-09T07:38:50.804831+02:00",
+      "server_load": [
+        3.431640625,
+        3.5224609375,
+        3.49755859375
+      ],
+      "model_tool_calls": 12,
+      "api_errors": 0,
+      "broker_retries": 0,
+      "semantic_retries": "UNKNOWN",
+      "provider_reported_cost": "UNKNOWN",
+      "invoice_cost": "UNKNOWN",
+      "quantization": "UNKNOWN",
+      "model_serving_revision": "UNKNOWN",
+      "reason": null,
+      "version": "1.5.0",
+      "harness_commit": "UNKNOWN npm artifact; release source tag fixed",
+      "api_cost_usage_tariff_usd": 0.004291008,
+      "claim_id": "PILOT-B-Pi-01",
+      "evidence_url": "/evals/tvijo-eval-comms-radar-20261109/runs/B-Pi-01.json",
+      "classification": "engineering_pilot",
+      "checked_on": "2026-11-09",
+      "limits": "480s; USD0.025 per slot; USD0.20 root",
+      "cost_class": "usage_times_verified_tariff; invoice UNKNOWN"
+    },
+    {
+      "run_id": "B-MiniSWE-01",
+      "task": "B",
+      "harness": "MiniSWE",
+      "status": "PASS",
+      "Q": 100,
+      "full_seconds": 39.404011049000026,
+      "harness_full_seconds": 37.87874303013086,
+      "worker_seconds": 37.51777912303805,
+      "startup_seconds": 9.045084476470947,
+      "package_verification_seconds": 0,
+      "verify_seconds": 0.19694212451577187,
+      "api_requests": 7,
+      "input_tokens": 31042,
+      "output_tokens": 4518,
+      "cache_read_tokens": 26752,
+      "reasoning_tokens": "UNKNOWN",
+      "requested_model": "deepseek-flash",
+      "returned_model": [
+        "deepseek-flash"
+      ],
+      "provider": "deepseek_official",
+      "endpoint": "https://api.deepseek.com/chat/completions",
+      "thinking": "disabled",
+      "effort": "none",
+      "max_output_tokens": 4096,
+      "context_conservative_bound": 65536,
+      "baseline_sha": "ffb2f416dd1fa7021fd70546e5578dc7f97b03f5",
+      "diff_sha256": "2c8ff554c715af2e6edb4852d1bd0d2e276bf183ce4058262fc5884d9f839ee0",
+      "human_assisted": false,
+      "criteria": [
+        {
+          "id": "contract_validation",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "stable_pages",
+          "weight": 25,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "tenant_filter_binding",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "invalid_cursor",
+          "weight": 15,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "concurrent_insert_order",
+          "weight": 10,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "legacy",
+          "weight": 10,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        }
+      ],
+      "public_regression_pass": true,
+      "violations": [],
+      "new_tests": [
+        "tests/test_pagination.py"
+      ],
+      "start_utc": "2026-11-09T05:39:30.090698+00:00",
+      "start_kyiv": "2026-11-09T07:39:30.090698+02:00",
+      "server_load": [
+        2.87060546875,
+        3.36328125,
+        3.44384765625
+      ],
+      "model_tool_calls": 8,
+      "api_errors": 0,
+      "broker_retries": 0,
+      "semantic_retries": "UNKNOWN",
+      "provider_reported_cost": "UNKNOWN",
+      "invoice_cost": "UNKNOWN",
+      "quantization": "UNKNOWN",
+      "model_serving_revision": "UNKNOWN",
+      "reason": null,
+      "version": "2.4.6",
+      "harness_commit": "UNKNOWN wheel; release source tag fixed",
+      "api_cost_usage_tariff_usd": 0.003434556,
+      "claim_id": "PILOT-B-MiniSWE-01",
+      "evidence_url": "/evals/tvijo-eval-comms-radar-20261109/runs/B-MiniSWE-01.json",
+      "classification": "engineering_pilot",
+      "checked_on": "2026-11-09",
+      "limits": "480s; USD0.025 per slot; USD0.20 root",
+      "cost_class": "usage_times_verified_tariff; invoice UNKNOWN"
+    },
+    {
+      "run_id": "B-Hermes-01",
+      "task": "B",
+      "harness": "Hermes",
+      "status": "FAIL",
+      "Q": 30,
+      "full_seconds": 54.14274201799999,
+      "harness_full_seconds": 52.51838040351868,
+      "worker_seconds": 52.15512063726783,
+      "startup_seconds": 23.128072500228882,
+      "package_verification_seconds": 0,
+      "verify_seconds": 0.20291410759091377,
+      "api_requests": 6,
+      "input_tokens": 50938,
+      "output_tokens": 4754,
+      "cache_read_tokens": 40448,
+      "reasoning_tokens": "UNKNOWN",
+      "requested_model": "deepseek-flash",
+      "returned_model": [
+        "deepseek-flash"
+      ],
+      "provider": "deepseek_official",
+      "endpoint": "https://api.deepseek.com/chat/completions",
+      "thinking": "disabled",
+      "effort": "none",
+      "max_output_tokens": 4096,
+      "context_conservative_bound": 65536,
+      "baseline_sha": "ffb2f416dd1fa7021fd70546e5578dc7f97b03f5",
+      "diff_sha256": "27e627b7010c7073644c0b355e0aa6e24abe19066e17141d54ffa35cac982137",
+      "human_assisted": false,
+      "criteria": [
+        {
+          "id": "contract_validation",
+          "weight": 20,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        },
+        {
+          "id": "stable_pages",
+          "weight": 25,
+          "mandatory": true,
+          "passed": false,
+          "error": "TypeError: can't concat str to bytes"
+        },
+        {
+          "id": "tenant_filter_binding",
+          "weight": 20,
+          "mandatory": true,
+          "passed": false,
+          "error": "TypeError: can't concat str to bytes"
+        },
+        {
+          "id": "invalid_cursor",
+          "weight": 15,
+          "mandatory": true,
+          "passed": false,
+          "error": "TypeError: can't concat str to bytes"
+        },
+        {
+          "id": "concurrent_insert_order",
+          "weight": 10,
+          "mandatory": true,
+          "passed": false,
+          "error": "TypeError: can't concat str to bytes"
+        },
+        {
+          "id": "legacy",
+          "weight": 10,
+          "mandatory": true,
+          "passed": true,
+          "error": null
+        }
+      ],
+      "public_regression_pass": false,
+      "violations": [],
+      "new_tests": [
+        "tests/test_pagination.py"
+      ],
+      "start_utc": "2026-11-09T05:40:09.675845+00:00",
+      "start_kyiv": "2026-11-09T07:40:09.675845+02:00",
+      "server_load": [
+        3.82275390625,
+        3.5458984375,
+        3.50146484375
+      ],
+      "model_tool_calls": 14,
+      "api_errors": 0,
+      "broker_retries": 0,
+      "semantic_retries": "UNKNOWN",
+      "provider_reported_cost": "UNKNOWN",
+      "invoice_cost": "UNKNOWN",
+      "quantization": "UNKNOWN",
+      "model_serving_revision": "UNKNOWN",
+      "reason": null,
+      "version": "v0.23.0",
+      "harness_commit": "2bd378ed1b8d6bf2192cb26e0a55ff3091e6bd19",
+      "api_cost_usage_tariff_usd": 0.004547244,
+      "claim_id": "PILOT-B-Hermes-01",
+      "evidence_url": "/evals/tvijo-eval-comms-radar-20261109/runs/B-Hermes-01.json",
+      "classification": "engineering_pilot",
+      "checked_on": "2026-11-09",
+      "limits": "480s; USD0.025 per slot; USD0.20 root",
+      "cost_class": "usage_times_verified_tariff; invoice UNKNOWN"
+    }
+  ],
+  "summary": [
+    {
+      "harness": "DSHREM",
+      "started": 2,
+      "accepted": 1,
+      "success_rate": 0.5,
+      "median_full_seconds": 167.7954854825,
+      "range_full_seconds": [
+        157.28285081899998,
+        178.308120146
+      ],
+      "api_cost_usage_tariff_usd": 0.009505932,
+      "cost_per_accepted": 0.009505932,
+      "minutes_per_accepted": 5.593182849416666,
+      "infra_errors": 0,
+      "model_started": 2,
+      "Q": [
+        90,
+        100
+      ]
+    },
+    {
+      "harness": "Pi",
+      "started": 2,
+      "accepted": 1,
+      "success_rate": 0.5,
+      "median_full_seconds": 45.03341312499997,
+      "range_full_seconds": [
+        40.761372944999955,
+        49.30545330499997
+      ],
+      "api_cost_usage_tariff_usd": 0.00905604,
+      "cost_per_accepted": 0.00905604,
+      "minutes_per_accepted": 1.5011137708333322,
+      "infra_errors": 0,
+      "model_started": 2,
+      "Q": [
+        55,
+        100
+      ]
+    },
+    {
+      "harness": "MiniSWE",
+      "started": 2,
+      "accepted": 2,
+      "success_rate": 1.0,
+      "median_full_seconds": 51.59133328850001,
+      "range_full_seconds": [
+        39.404011049000026,
+        63.778655527999994
+      ],
+      "api_cost_usage_tariff_usd": 0.00822423,
+      "cost_per_accepted": 0.004112115,
+      "minutes_per_accepted": 0.8598555548083335,
+      "infra_errors": 0,
+      "model_started": 2,
+      "Q": [
+        100,
+        100
+      ]
+    },
+    {
+      "harness": "Hermes",
+      "started": 2,
+      "accepted": 0,
+      "success_rate": 0.0,
+      "median_full_seconds": 27.854653856499993,
+      "range_full_seconds": [
+        1.5665656949999975,
+        54.14274201799999
+      ],
+      "api_cost_usage_tariff_usd": 0.004547244,
+      "cost_per_accepted": null,
+      "minutes_per_accepted": null,
+      "infra_errors": 1,
+      "model_started": 1,
+      "Q": [
+        null,
+        30
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "id": "promptfoo",
+      "name": "Promptfoo",
+      "version": "0.125.1",
+      "source": "https://github.com/promptfoo/promptfoo/releases/tag/0.125.1",
+      "claim_id": "EVAL-01",
+      "role": {
+        "en": "Evaluation layer: offline recorded fixtures and explicitly gated live orchestration; no LLM judge.",
+        "ru": "Слой оценки: офлайн-фикстуры и явно разрешённые live-запуски; без LLM judge."
+      },
+      "scope": {
+        "en": "Four saved-fixture checks; eight pilot slots.",
+        "ru": "Четыре проверки сохранённых фикстур; восемь слотов пилота."
+      }
+    },
+    {
+      "id": "qm",
+      "name": "QM",
+      "version": "a0db618090cd",
+      "source": "https://github.com/yc-software/qm/tree/a0db618090cd73f24482268d02c7fd82763a49a6",
+      "claim_id": "COMMS-01",
+      "role": {
+        "en": "Architecture reference for correlated durable communication. AIOS retains its own controller.",
+        "ru": "Архитектурный образец устойчивой доставки. Контроллер AIOS сохранён."
+      },
+      "scope": {
+        "en": "Synthetic delivery tests; native adapter receipt gaps remain UNKNOWN.",
+        "ru": "Изолированные сценарии доставки; пробелы native-адаптеров — UNKNOWN."
+      }
+    },
+    {
+      "id": "newruntime",
+      "name": "New Runtime",
+      "version": "snapshot 2026-11-09",
+      "source": "https://newruntime.com/rss.xml",
+      "claim_id": "RADAR-01",
+      "role": {
+        "en": "Discovery candidate: 4 confirmed, 3 partial, 2 stale, 1 unverified, 0 duplicate in ten selected items.",
+        "ru": "Кандидат для поиска: 4 подтверждены, 3 частично, 2 устарели, 1 не проверен, 0 дубликатов из десяти."
+      },
+      "scope": {
+        "en": "Not promoted to an automatic source; primary evidence required.",
+        "ru": "В автоматический реестр не включён; нужны первоисточники."
+      }
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "PILOT-A-MiniSWE-01",
+      "checked_on": "2026-11-09",
+      "version": "2.4.6; UNKNOWN wheel; release source tag fixed",
+      "source": "/evals/tvijo-eval-comms-radar-20261109/runs/A-MiniSWE-01.json",
+      "result": {
+        "en": "MiniSWE task A: PASS, Q=100; 63.78s.",
+        "ru": "MiniSWE, задача A: PASS, Q=100; 63.78 с."
+      },
+      "conditions": {
+        "en": "Two isolated fixtures, fixed official deepseek-flash route, fresh native sessions, no human repair.",
+        "ru": "Две изолированные фикстуры, единый официальный маршрут deepseek-flash, свежие сессии, без исправлений человеком."
+      },
+      "limitations": {
+        "en": "One slot per shell/task; infrastructure failures retained in ITT; not a general quality estimate.",
+        "ru": "Один слот на оболочку/задачу; инфраструктурные ошибки входят в ITT; это не общая оценка качества."
+      },
+      "contrary_data": {
+        "en": "Other task outcomes in this same table may differ; previous cohorts use separate conditions.",
+        "ru": "Исход другой задачи в этой таблице может отличаться; прежние когорты имеют иные условия."
+      },
+      "recheck": {
+        "en": "New harness/model version, task distribution, tariff or adapter configuration; new preregistered sample required.",
+        "ru": "Новая версия, распределение задач, тариф или адаптер; нужна новая заранее описанная выборка."
+      }
+    },
+    {
+      "claim_id": "PILOT-A-Hermes-01",
+      "checked_on": "2026-11-09",
+      "version": "v0.23.0; 2bd378ed1b8d6bf2192cb26e0a55ff3091e6bd19",
+      "source": "/evals/tvijo-eval-comms-radar-20261109/runs/A-Hermes-01.json",
+      "result": {
+        "en": "Hermes task A: INFRA_ERROR, Q=None; 1.57s.",
+        "ru": "Hermes, задача A: INFRA_ERROR, Q=None; 1.57 с."
+      },
+      "conditions": {
+        "en": "Two isolated fixtures, fixed official deepseek-flash route, fresh native sessions, no human repair.",
+        "ru": "Две изолированные фикстуры, единый официальный маршрут deepseek-flash, свежие сессии, без исправлений человеком."
+      },
+      "limitations": {
+        "en": "One slot per shell/task; infrastructure failures retained in ITT; not a general quality estimate.",
+        "ru": "Один слот на оболочку/задачу; инфраструктурные ошибки входят в ITT; это не общая оценка качества."
+      },
+      "contrary_data": {
+        "en": "Other task outcomes in this same table may differ; previous cohorts use separate conditions.",
+        "ru": "Исход другой задачи в этой таблице может отличаться; прежние когорты имеют иные условия."
+      },
+      "recheck": {
+        "en": "New harness/model version, task distribution, tariff or adapter configuration; new preregistered sample required.",
+        "ru": "Новая версия, распределение задач, тариф или адаптер; нужна новая заранее описанная выборка."
+      }
+    },
+    {
+      "claim_id": "PILOT-A-DSHREM-01",
+      "checked_on": "2026-11-09",
+      "version": "frontend0.2.0-alpha.2 / Harness0.2.2-rc.1; 592627ace635cdc9d18249b3750207384340bf14",
+      "source": "/evals/tvijo-eval-comms-radar-20261109/runs/A-DSHREM-01.json",
+      "result": {
+        "en": "DSHREM task A: FAIL, Q=90; 178.31s.",
+        "ru": "DSHREM, задача A: FAIL, Q=90; 178.31 с."
+      },
+      "conditions": {
+        "en": "Two isolated fixtures, fixed official deepseek-flash route, fresh native sessions, no human repair.",
+        "ru": "Две изолированные фикстуры, единый официальный маршрут deepseek-flash, свежие сессии, без исправлений человеком."
+      },
+      "limitations": {
+        "en": "One slot per shell/task; infrastructure failures retained in ITT; not a general quality estimate.",
+        "ru": "Один слот на оболочку/задачу; инфраструктурные ошибки входят в ITT; это не общая оценка качества."
+      },
+      "contrary_data": {
+        "en": "Other task outcomes in this same table may differ; previous cohorts use separate conditions.",
+        "ru": "Исход другой задачи в этой таблице может отличаться; прежние когорты имеют иные условия."
+      },
+      "recheck": {
+        "en": "New harness/model version, task distribution, tariff or adapter configuration; new preregistered sample required.",
+        "ru": "Новая версия, распределение задач, тариф или адаптер; нужна новая заранее описанная выборка."
+      }
+    },
+    {
+      "claim_id": "PILOT-A-Pi-01",
+      "checked_on": "2026-11-09",
+      "version": "1.5.0; UNKNOWN npm artifact; release source tag fixed",
+      "source": "/evals/tvijo-eval-comms-radar-20261109/runs/A-Pi-01.json",
+      "result": {
+        "en": "Pi task A: FAIL, Q=55; 49.31s.",
+        "ru": "Pi, задача A: FAIL, Q=55; 49.31 с."
+      },
+      "conditions": {
+        "en": "Two isolated fixtures, fixed official deepseek-flash route, fresh native sessions, no human repair.",
+        "ru": "Две изолированные фикстуры, единый официальный маршрут deepseek-flash, свежие сессии, без исправлений человеком."
+      },
+      "limitations": {
+        "en": "One slot per shell/task; infrastructure failures retained in ITT; not a general quality estimate.",
+        "ru": "Один слот на оболочку/задачу; инфраструктурные ошибки входят в ITT; это не общая оценка качества."
+      },
+      "contrary_data": {
+        "en": "Other task outcomes in this same table may differ; previous cohorts use separate conditions.",
+        "ru": "Исход другой задачи в этой таблице может отличаться; прежние когорты имеют иные условия."
+      },
+      "recheck": {
+        "en": "New harness/model version, task distribution, tariff or adapter configuration; new preregistered sample required.",
+        "ru": "Новая версия, распределение задач, тариф или адаптер; нужна новая заранее описанная выборка."
+      }
+    },
+    {
+      "claim_id": "PILOT-B-DSHREM-01",
+      "checked_on": "2026-11-09",
+      "version": "frontend0.2.0-alpha.2 / Harness0.2.2-rc.1; 592627ace635cdc9d18249b3750207384340bf14",
+      "source": "/evals/tvijo-eval-comms-radar-20261109/runs/B-DSHREM-01.json",
+      "result": {
+        "en": "DSHREM task B: PASS, Q=100; 157.28s.",
+        "ru": "DSHREM, задача B: PASS, Q=100; 157.28 с."
+      },
+      "conditions": {
+        "en": "Two isolated fixtures, fixed official deepseek-flash route, fresh native sessions, no human repair.",
+        "ru": "Две изолированные фикстуры, единый официальный маршрут deepseek-flash, свежие сессии, без исправлений человеком."
+      },
+      "limitations": {
+        "en": "One slot per shell/task; infrastructure failures retained in ITT; not a general quality estimate.",
+        "ru": "Один слот на оболочку/задачу; инфраструктурные ошибки входят в ITT; это не общая оценка качества."
+      },
+      "contrary_data": {
+        "en": "Other task outcomes in this same table may differ; previous cohorts use separate conditions.",
+        "ru": "Исход другой задачи в этой таблице может отличаться; прежние когорты имеют иные условия."
+      },
+      "recheck": {
+        "en": "New harness/model version, task distribution, tariff or adapter configuration; new preregistered sample required.",
+        "ru": "Новая версия, распределение задач, тариф или адаптер; нужна новая заранее описанная выборка."
+      }
+    },
+    {
+      "claim_id": "PILOT-B-Pi-01",
+      "checked_on": "2026-11-09",
+      "version": "1.5.0; UNKNOWN npm artifact; release source tag fixed",
+      "source": "/evals/tvijo-eval-comms-radar-20261109/runs/B-Pi-01.json",
+      "result": {
+        "en": "Pi task B: PASS, Q=100; 40.76s.",
+        "ru": "Pi, задача B: PASS, Q=100; 40.76 с."
+      },
+      "conditions": {
+        "en": "Two isolated fixtures, fixed official deepseek-flash route, fresh native sessions, no human repair.",
+        "ru": "Две изолированные фикстуры, единый официальный маршрут deepseek-flash, свежие сессии, без исправлений человеком."
+      },
+      "limitations": {
+        "en": "One slot per shell/task; infrastructure failures retained in ITT; not a general quality estimate.",
+        "ru": "Один слот на оболочку/задачу; инфраструктурные ошибки входят в ITT; это не общая оценка качества."
+      },
+      "contrary_data": {
+        "en": "Other task outcomes in this same table may differ; previous cohorts use separate conditions.",
+        "ru": "Исход другой задачи в этой таблице может отличаться; прежние когорты имеют иные условия."
+      },
+      "recheck": {
+        "en": "New harness/model version, task distribution, tariff or adapter configuration; new preregistered sample required.",
+        "ru": "Новая версия, распределение задач, тариф или адаптер; нужна новая заранее описанная выборка."
+      }
+    },
+    {
+      "claim_id": "PILOT-B-MiniSWE-01",
+      "checked_on": "2026-11-09",
+      "version": "2.4.6; UNKNOWN wheel; release source tag fixed",
+      "source": "/evals/tvijo-eval-comms-radar-20261109/runs/B-MiniSWE-01.json",
+      "result": {
+        "en": "MiniSWE task B: PASS, Q=100; 39.40s.",
+        "ru": "MiniSWE, задача B: PASS, Q=100; 39.40 с."
+      },
+      "conditions": {
+        "en": "Two isolated fixtures, fixed official deepseek-flash route, fresh native sessions, no human repair.",
+        "ru": "Две изолированные фикстуры, единый официальный маршрут deepseek-flash, свежие сессии, без исправлений человеком."
+      },
+      "limitations": {
+        "en": "One slot per shell/task; infrastructure failures retained in ITT; not a general quality estimate.",
+        "ru": "Один слот на оболочку/задачу; инфраструктурные ошибки входят в ITT; это не общая оценка качества."
+      },
+      "contrary_data": {
+        "en": "Other task outcomes in this same table may differ; previous cohorts use separate conditions.",
+        "ru": "Исход другой задачи в этой таблице может отличаться; прежние когорты имеют иные условия."
+      },
+      "recheck": {
+        "en": "New harness/model version, task distribution, tariff or adapter configuration; new preregistered sample required.",
+        "ru": "Новая версия, распределение задач, тариф или адаптер; нужна новая заранее описанная выборка."
+      }
+    },
+    {
+      "claim_id": "PILOT-B-Hermes-01",
+      "checked_on": "2026-11-09",
+      "version": "v0.23.0; 2bd378ed1b8d6bf2192cb26e0a55ff3091e6bd19",
+      "source": "/evals/tvijo-eval-comms-radar-20261109/runs/B-Hermes-01.json",
+      "result": {
+        "en": "Hermes task B: FAIL, Q=30; 54.14s.",
+        "ru": "Hermes, задача B: FAIL, Q=30; 54.14 с."
+      },
+      "conditions": {
+        "en": "Two isolated fixtures, fixed official deepseek-flash route, fresh native sessions, no human repair.",
+        "ru": "Две изолированные фикстуры, единый официальный маршрут deepseek-flash, свежие сессии, без исправлений человеком."
+      },
+      "limitations": {
+        "en": "One slot per shell/task; infrastructure failures retained in ITT; not a general quality estimate.",
+        "ru": "Один слот на оболочку/задачу; инфраструктурные ошибки входят в ITT; это не общая оценка качества."
+      },
+      "contrary_data": {
+        "en": "Other task outcomes in this same table may differ; previous cohorts use separate conditions.",
+        "ru": "Исход другой задачи в этой таблице может отличаться; прежние когорты имеют иные условия."
+      },
+      "recheck": {
+        "en": "New harness/model version, task distribution, tariff or adapter configuration; new preregistered sample required.",
+        "ru": "Новая версия, распределение задач, тариф или адаптер; нужна новая заранее описанная выборка."
+      }
+    },
+    {
+      "claim_id": "EVAL-01",
+      "checked_on": "2026-11-09",
+      "version": "0.125.1",
+      "source": "https://github.com/promptfoo/promptfoo/releases/tag/0.125.1",
+      "result": {
+        "en": "Evaluation layer: offline recorded fixtures and explicitly gated live orchestration; no LLM judge.",
+        "ru": "Слой оценки: офлайн-фикстуры и явно разрешённые live-запуски; без LLM judge."
+      },
+      "conditions": {
+        "en": "Four saved-fixture checks; eight pilot slots.",
+        "ru": "Четыре проверки сохранённых фикстур; восемь слотов пилота."
+      },
+      "limitations": {
+        "en": "Local engineering evidence; this tool is not ranked as a coding shell.",
+        "ru": "Локальные инженерные данные; инструмент не ранжируется как coding-оболочка."
+      },
+      "contrary_data": {
+        "en": "Incomplete adapter coverage / partial and stale source items are retained in the audit.",
+        "ru": "Неполное покрытие адаптеров / частичные и устаревшие материалы сохранены в аудите."
+      },
+      "recheck": {
+        "en": "Revalidate on version changes and held-out tasks before adopting a reusable skill.",
+        "ru": "Перепроверить при смене версии и на отложенных задачах до принятия нового skill."
+      }
+    },
+    {
+      "claim_id": "COMMS-01",
+      "checked_on": "2026-11-09",
+      "version": "a0db618090cd",
+      "source": "https://github.com/yc-software/qm/tree/a0db618090cd73f24482268d02c7fd82763a49a6",
+      "result": {
+        "en": "Architecture reference for correlated durable communication. AIOS retains its own controller.",
+        "ru": "Архитектурный образец устойчивой доставки. Контроллер AIOS сохранён."
+      },
+      "conditions": {
+        "en": "Synthetic delivery tests; native adapter receipt gaps remain UNKNOWN.",
+        "ru": "Изолированные сценарии доставки; пробелы native-адаптеров — UNKNOWN."
+      },
+      "limitations": {
+        "en": "Local engineering evidence; this tool is not ranked as a coding shell.",
+        "ru": "Локальные инженерные данные; инструмент не ранжируется как coding-оболочка."
+      },
+      "contrary_data": {
+        "en": "Incomplete adapter coverage / partial and stale source items are retained in the audit.",
+        "ru": "Неполное покрытие адаптеров / частичные и устаревшие материалы сохранены в аудите."
+      },
+      "recheck": {
+        "en": "Revalidate on version changes and held-out tasks before adopting a reusable skill.",
+        "ru": "Перепроверить при смене версии и на отложенных задачах до принятия нового skill."
+      }
+    },
+    {
+      "claim_id": "RADAR-01",
+      "checked_on": "2026-11-09",
+      "version": "snapshot 2026-11-09",
+      "source": "/evals/tvijo-eval-comms-radar-20261109/new-runtime-audit.json",
+      "result": {
+        "en": "Discovery candidate: 4 confirmed, 3 partial, 2 stale, 1 unverified, 0 duplicate in ten selected items.",
+        "ru": "Кандидат для поиска: 4 подтверждены, 3 частично, 2 устарели, 1 не проверен, 0 дубликатов из десяти."
+      },
+      "conditions": {
+        "en": "Not promoted to an automatic source; primary evidence required.",
+        "ru": "В автоматический реестр не включён; нужны первоисточники."
+      },
+      "limitations": {
+        "en": "Local engineering evidence; this tool is not ranked as a coding shell.",
+        "ru": "Локальные инженерные данные; инструмент не ранжируется как coding-оболочка."
+      },
+      "contrary_data": {
+        "en": "Incomplete adapter coverage / partial and stale source items are retained in the audit.",
+        "ru": "Неполное покрытие адаптеров / частичные и устаревшие материалы сохранены в аудите."
+      },
+      "recheck": {
+        "en": "Revalidate on version changes and held-out tasks before adopting a reusable skill.",
+        "ru": "Перепроверить при смене версии и на отложенных задачах до принятия нового skill."
+      }
+    }
+  ],
+  "spec_sha256": "200f1537369c96453a8c3ad65fe8c6ce076bfc360aefb47dc19e4ecb73d2ffb0",
+  "API_total_usage_estimate_usd": 0.031333446,
+  "invoice": "UNKNOWN",
+  "additional_sample": "PLANNED_ONLY"
+}

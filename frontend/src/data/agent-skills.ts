@@ -1,6 +1,32 @@
-export const AGENT_SKILL_INDEX_LOCALES = ['en', 'ru', 'uk'] as const;
+export const AGENT_SKILL_INDEX_LOCALES = ['en', 'ru'] as const;
 
 export type AgentSkillsLocale = (typeof AGENT_SKILL_INDEX_LOCALES)[number];
+
+// Explain recorded catalogue labels without upgrading them to proof of outcomes.
+export const agentSkillLabels = {
+  en: {
+    title: 'How to read the labels',
+    entries: [
+      { label: 'verified_core', explanation: 'Core catalogue label. No recorded check: these entries list a version and file count, but no check procedure or result.' },
+      { label: 'community', explanation: 'Community catalogue label. Engineering & Ops is described as audited, but the data records no audit procedure or result: no recorded check.' },
+      { label: 'experimental', explanation: 'Experimental workflow label. No recorded check: the entry describes experimental workflows and lists a version and file count.' },
+    ],
+    limit: 'Reading a Markdown skill is not evidence of saved time or money.',
+    axes: 'Application profiles (policy axes)',
+    research: 'Research',
+  },
+  ru: {
+    title: 'Как читать метки',
+    entries: [
+      { label: 'verified_core', explanation: 'Метка основного каталога. Проверка не записана: указаны версия и число файлов, но нет процедуры проверки и её результата.' },
+      { label: 'community', explanation: 'Метка сообщества. В описании Engineering & Ops сказано о проверке, но её процедура и результат в данных не записаны: зафиксированной проверки нет.' },
+      { label: 'experimental', explanation: 'Метка экспериментальных сценариев. Проверка не записана: есть описание эксперимента, версия и число файлов.' },
+    ],
+    limit: 'Чтение навыка в Markdown само по себе не подтверждает экономию времени или денег.',
+    axes: 'Профили применения (оси политики)',
+    research: 'Исследования',
+  },
+};
 
 export interface AgentSkillPack {
   key:

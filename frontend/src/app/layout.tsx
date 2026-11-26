@@ -61,7 +61,7 @@ export const metadata: Metadata = {
   },
   alternates: (() => {
     const languages: Record<string, string> = {};
-    for (const loc of LOCALES) {
+    for (const loc of ['en', 'ru'] as const) {
       languages[LOCALE_META[loc].hreflang] = `https://tvijo.com/${loc}`;
     }
     languages['x-default'] = `https://tvijo.com/${DEFAULT_LOCALE}`;

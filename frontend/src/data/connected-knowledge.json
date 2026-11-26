@@ -5,7 +5,7 @@
   "relation_semantics": "Explicit editorial article links; backlinks are incoming links.",
   "release_metadata_url": "https://dsh.tvijo.com/api/dshrem/v1/public/extension-release",
   "proof_url": "https://dsh.tvijo.com/api/dshrem/v1/public/proof",
-  "runtime_status": "integration_in_progress",
+  "runtime_status": "host_verified",
   "articles": [
     {
       "id": "tvijo:neovim-terminal-workflow",
@@ -75,7 +75,9 @@
       ],
       "links": [
         "completion-quality-handoffs",
-        "dsh-harness-orchestration"
+        "dsh-harness-orchestration",
+        "settings-explained",
+        "agentroy-teams-and-costs"
       ],
       "sources": [
         {
@@ -173,7 +175,9 @@
       "links": [
         "neovim-terminal-workflow",
         "composable-data-architecture",
-        "completion-quality-handoffs"
+        "completion-quality-handoffs",
+        "settings-explained",
+        "agentroy-teams-and-costs"
       ],
       "sources": [
         {
@@ -270,7 +274,9 @@
       ],
       "links": [
         "dsh-harness-orchestration",
-        "completion-quality-handoffs"
+        "completion-quality-handoffs",
+        "settings-explained",
+        "agentroy-teams-and-costs"
       ],
       "sources": [
         {
@@ -352,7 +358,9 @@
       "links": [
         "neovim-terminal-workflow",
         "dsh-harness-orchestration",
-        "composable-data-architecture"
+        "composable-data-architecture",
+        "settings-explained",
+        "agentroy-teams-and-costs"
       ],
       "sources": [
         {
@@ -368,16 +376,419 @@
         "en": "Quality handoffs",
         "ru": "Передача результата"
       }
+    },
+    {
+      "id": "tvijo:settings-explained",
+      "slug": "settings-explained",
+      "kind": "workflow",
+      "title": {
+        "en": "Settings without jargon",
+        "ru": "Настройки простыми словами"
+      },
+      "summary": {
+        "en": "Choose how Tvijo works, understand what changes, and leave technical paths on automatic discovery.",
+        "ru": "Выберите, как работает Tvijo, поймите последствия и оставьте технические пути автоматическому определению."
+      },
+      "graph_label": {
+        "en": "Settings without jargon",
+        "ru": "Настройки простыми словами"
+      },
+      "verified_at": "2026-10-24",
+      "canonical_url": "https://dsh.tvijo.com/knowledge/settings-explained",
+      "alternatives": {
+        "main": {
+          "en": "https://tvijo.com/en/knowledge/settings-explained",
+          "ru": "https://tvijo.com/ru/knowledge/settings-explained"
+        },
+        "platform": {
+          "en": "https://platform.tvijo.com/knowledge/settings-explained",
+          "ru": "https://platform.tvijo.com/knowledge/settings-explained?lang=ru"
+        }
+      },
+      "sections": [
+        {
+          "heading": {
+            "en": "Three ways to check an answer",
+            "ru": "Три способа проверить ответ"
+          },
+          "paragraphs": [
+            {
+              "en": "Evidence first (evidence-first, default): ask the model to separate facts supported by supplied sources from assumptions and missing information. Use it for unfamiliar code, an investigation or a factual question. Example: before changing an API call, identify the current contract and the failing request. It cannot create evidence that was not supplied.",
+              "ru": "Сначала факты (evidence-first, по умолчанию): модель отделяет подтверждённые сведения от предположений и недостающих данных. Подходит для незнакомого кода, поиска причины ошибки и вопросов о фактах. Пример: перед изменением API найти действующий контракт и неудачный запрос. Режим не создаёт доказательства из ничего."
+            },
+            {
+              "en": "Plan and check (plan-check): ask for a short plan, complete the work, then compare the result with the original request and available evidence. Use it for a change with several dependent steps. Example: add a form, validate fields and check the saved result. It does not add another model or turn automatic editing on.",
+              "ru": "План и проверка (plan-check): сначала короткий план, затем работа и сравнение результата с заданием и доступными доказательствами. Подходит для нескольких связанных действий. Пример: добавить форму, проверить поля и сохранённый результат. Этот выбор не подключает вторую модель и не включает автоматическое редактирование."
+            },
+            {
+              "en": "Review the answer (self-review; setting ID: peer-review): ask for a draft, challenge its assumptions and edge cases, then correct it. This is self-review by the same model unless a separate reviewer is explicitly assigned. Use it to examine a proposed fix; it is not an independent jury and does not guarantee correctness or lower token use.",
+              "ru": "Перепроверка ответа (peer-review): модель готовит вариант, ищет слабые предположения и крайние случаи, затем исправляет результат. Это самопроверка той же модели, если отдельный рецензент не назначен явно. Подходит для проверки предложенного исправления, но не означает независимый суд и не гарантирует качество или экономию токенов."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Chat mode is not a server team",
+            "ru": "Режим чата — не серверная команда"
+          },
+          "paragraphs": [
+            {
+              "en": "Single, Auto and Council describe the extension chat workflow. Auto delegates routine development steps within the selected permissions and limits. Council asks for a bounded review; it is not the switch that installs persistent terminal workers. Auto Apply and command execution permissions remain separate settings. Read the run plan before relying on any mode to execute changes.",
+              "ru": "Single, Auto и Council описывают процесс в чате расширения. Auto выполняет обычные шаги разработки в заданных разрешениях и лимитах. Council запрашивает ограниченный обзор; он не устанавливает постоянных терминальных исполнителей. Автоприменение изменений и разрешение команд — отдельные настройки. Возможность выполнения определяется планом запуска, а не одним названием режима."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Service and task presets",
+            "ru": "Сервис и наборы правил"
+          },
+          "paragraphs": [
+            {
+              "en": "Standard is the ordinary text/chat service identifier, not a quality certification or a premium tier. Coding is a separate server workflow with its own project snapshot and quote. A client must offer only workflows it can actually submit. If there is only one available service, there is no useful choice to make.",
+              "ru": "Standard — техническое имя обычного текстового сервиса, а не сертификат качества и не премиальный тариф. Coding — отдельный серверный процесс со снимком проекта и расчётом стоимости. Клиент должен предлагать только реально поддерживаемые процессы. Если доступен один сервис, выбирать нечего."
+            },
+            {
+              "en": "A pack is a reusable instruction and checklist, not extra model memory. Current IDs are engineer (code changes), osint (open-source research), trading (analysis with paper/live boundaries), gamedev (games), marketer (marketing) and optimizer (optimization). Leave Automatic when unsure. A pack can supply a model default, but an explicitly selected model takes precedence.",
+              "ru": "Pack — готовые инструкции и список проверки, а не дополнительная память модели. Действующие ID: engineer — изменения кода; osint — исследование открытых источников; trading — анализ с разделением учебных и реальных операций; gamedev — игры; marketer — маркетинг; optimizer — оптимизация. Если сомневаетесь, оставьте «Автоматически». Набор может задать модель по умолчанию, но явный выбор модели важнее."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Your computer, your SSH host and private state",
+            "ru": "Ваш компьютер, SSH-сервер и приватное состояние"
+          },
+          "paragraphs": [
+            {
+              "en": "The extension runs on its selected host. In a Remote SSH workspace that is the remote Linux server; otherwise it is the local extension host. The orchestration state directory lives on that host, not automatically in Tvijo cloud storage. Permission 0700 lets only its operating-system owner access the directory. It is not encryption or a backup.",
+              "ru": "Расширение работает на выбранном хосте. В окне Remote SSH это удалённый Linux-сервер, иначе — локальный хост расширения. Каталог состояния оркестратора находится именно там, а не автоматически в облаке Tvijo. Права 0700 дают доступ только владельцу каталога в операционной системе. Это не шифрование и не резервная копия."
+            },
+            {
+              "en": "Python and controller paths are advanced overrides. Leave them empty for discovery from the installed host manifest. A path is not an installer: if the runtime or a subscription is absent, setup must report that prerequisite. Changing apiBase chooses another service endpoint; do it only when connecting a known self-hosted service.",
+              "ru": "Пути Python и контроллера — дополнительные переопределения. Оставьте их пустыми для определения по установленному манифесту хоста. Путь не устанавливает программу: если runtime или подписки нет, настройка должна показать недостающий компонент. apiBase меняет адрес сервиса; это нужно только для подключения известного собственного сервера."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Limits protect a task, not its success",
+            "ru": "Лимиты ограничивают задачу, а не обещают успех"
+          },
+          "paragraphs": [
+            {
+              "en": "The local Agent defaults to a USD2 task cap and 60 steps. A step is one iteration of work, not one completed feature. Near the spending cap, the extension can offer an explicit increase of USD2, USD5 or USD10. Declining does not reset usage. A larger context collection can help with larger projects, but the service still applies its request and model limits.",
+              "ru": "По умолчанию локальный Agent ограничен USD2 на задачу и 60 шагами. Шаг — одна итерация работы, а не готовая функция. При приближении к денежному лимиту расширение может предложить явно добавить USD2, USD5 или USD10. Отказ не обнуляет расход. Больший сбор контекста полезен для крупных проектов, но сервис сохраняет ограничения запроса и модели."
+            }
+          ]
+        }
+      ],
+      "links": [
+        "agentroy-teams-and-costs",
+        "durable-work-and-recovery",
+        "prompt-handoffs"
+      ],
+      "sources": [
+        {
+          "label": "Tvijo extension source and release notes",
+          "url": "https://github.com/nikbibamon/dshrempub"
+        },
+        {
+          "label": "Runtime verification receipt",
+          "url": "https://dsh.tvijo.com/api/dshrem/v1/public/orchestration-verification"
+        }
+      ]
+    },
+    {
+      "id": "tvijo:agentroy-teams-and-costs",
+      "slug": "agentroy-teams-and-costs",
+      "kind": "workflow",
+      "title": {
+        "en": "Agent teams and visible costs",
+        "ru": "Команды агентов и понятные расходы"
+      },
+      "summary": {
+        "en": "Separate roles, paid API usage and subscription tools before starting a team.",
+        "ru": "Перед запуском команды разделите роли, платные API и инструменты по подписке."
+      },
+      "graph_label": {
+        "en": "Agent teams and visible costs",
+        "ru": "Команды агентов и понятные расходы"
+      },
+      "verified_at": "2026-10-24",
+      "canonical_url": "https://dsh.tvijo.com/knowledge/agentroy-teams-and-costs",
+      "alternatives": {
+        "main": {
+          "en": "https://tvijo.com/en/knowledge/agentroy-teams-and-costs",
+          "ru": "https://tvijo.com/ru/knowledge/agentroy-teams-and-costs"
+        },
+        "platform": {
+          "en": "https://platform.tvijo.com/knowledge/agentroy-teams-and-costs",
+          "ru": "https://platform.tvijo.com/knowledge/agentroy-teams-and-costs?lang=ru"
+        }
+      },
+      "sections": [
+        {
+          "heading": {
+            "en": "What the coordinator actually coordinates",
+            "ru": "Что координирует оркестратор"
+          },
+          "paragraphs": [
+            {
+              "en": "AGENTROY describes a team workflow: a coordinator keeps the task contract, workers own separate changes, and reviewers judge a frozen result against evidence. DSHREM provides the host-side task lifecycle. A model name in a menu is not proof that the model is installed, authenticated or available on that host.",
+              "ru": "AGENTROY — процесс работы команды: координатор хранит договорённости по задаче, исполнители получают отдельные области изменений, проверяющие оценивают зафиксированный результат по доказательствам. DSHREM управляет жизненным циклом задачи на хосте. Название модели в меню не подтверждает её установку, авторизацию или доступность на этом сервере."
+            },
+            {
+              "en": "On the reference host, policy is configured to request Codex GPT-6.1 Sol, optionally GPT-6 Astra for architectural escalation and Claude Opus 5.5 for advice. DSHREM ds41f is the configured API coordinator route. Subscription CLI sessions and API workers have different credentials, quotas and billing. Missing access must be visible; it must not silently turn a subscription task into a paid API call. Your host may differ; its verification receipt records actual availability.",
+              "ru": "На эталонном хосте политика настроена запрашивать Codex GPT-6.1 Sol, при необходимости GPT-6 Astra для архитектурных вопросов и Claude Opus 5.5 для консультации. DSHREM ds41f — настроенный API-маршрут координатора. У терминалов по подписке и API-исполнителей разные учётные данные, квоты и расчёт стоимости. Отсутствие доступа должно быть видно; оно не должно молча превращать подписную задачу в платный API-вызов. На вашем хосте набор может отличаться; фактическую доступность фиксирует его отчёт проверки."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Three, four, five or six roles",
+            "ru": "Три, четыре, пять или шесть ролей"
+          },
+          "paragraphs": [
+            {
+              "en": "A triangle can mean coordinator, implementer and reviewer. Four roles can add a test owner; five can separate frontend and backend work; six can add an architect. These are planning examples, not a mathematical quality formula. Every extra participant needs a distinct responsibility, a non-overlapping file scope and a share of the same task budget. A larger polygon does not prove a better answer.",
+              "ru": "Треугольник может означать координатора, исполнителя и проверяющего. Четыре роли — ещё и ответственный за тесты; пять — отдельные frontend и backend; шесть — архитектор. Это примеры организации, а не математическая формула качества. Каждому участнику нужна отдельная ответственность, непересекающаяся область файлов и доля общего бюджета. Больший многоугольник не доказывает лучший ответ."
+            },
+            {
+              "en": "A review report should show the exact artifact version, checks run, failures, missing evidence and actual usage. Stars can summarize a named rubric; they cannot replace failing tests or manufacture an independent review. Light, dark and rainbow are presentation choices and do not change the verdict.",
+              "ru": "Отчёт должен показывать точную версию результата, выполненные проверки, ошибки, недостающие доказательства и фактическое использование. Звёзды допустимы как краткое представление понятных критериев; они не заменяют падающие тесты и не создают независимую проверку. Светлая, тёмная и радужная темы меняют оформление, а не вердикт."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Understand the quote before paying",
+            "ru": "Понимайте расчёт до оплаты"
+          },
+          "paragraphs": [
+            {
+              "en": "Example only: with an 8% managed-service markup, USD1.00 of provider cost would become USD1.08 before separately disclosed taxes or charges. This is an arithmetic example, not a current price offer. The accepted quote and its tariff version are authoritative; a guide does not activate a subscription, payment method or a new provider route.",
+              "ru": "Только пример: при надбавке управляемого сервиса 8% от расхода у провайдера USD1,00 превратится в USD1,08 до отдельно указанных налогов или сборов. Это пример расчёта, а не действующее ценовое предложение. Источник истины — принятый расчёт и его версия тарифа; статья не подключает подписку, оплату или нового провайдера."
+            },
+            {
+              "en": "Reserve the maximum authorized amount before work and reconcile it with provider receipts afterward. Display spent, reserved and remaining amounts separately. An unknown provider outcome must keep the reservation unresolved until reconciliation; a network error is not permission to retry a billable request blindly. Prepaid balance, a task cap and a daily provider cap are different controls.",
+              "ru": "Перед работой резервируется разрешённый максимум, после неё расход сверяется с квитанциями провайдера. Потраченное, зарезервированное и оставшееся показываются отдельно. При неизвестном результате вызова резерв остаётся невыясненным до сверки; сетевая ошибка не разрешает слепо повторять платный запрос. Предоплаченный баланс, лимит задачи и дневной лимит провайдера — разные ограничения."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "When a team helps — and when it does not",
+            "ru": "Когда команда помогает, а когда нет"
+          },
+          "paragraphs": [
+            {
+              "en": "Separate code ownership and an independent review can expose mistakes that one pass misses. Coordination, repeated context and reviews also consume time and tokens. Measure accepted changes, defects found and total verified cost on comparable tasks before claiming savings. Shared model agreement alone is not proof: correlated errors are possible.",
+              "ru": "Разделение кода и независимая проверка могут выявить ошибки, пропущенные за один проход. Но координация, повторная передача контекста и обзоры тоже расходуют время и токены. Прежде чем обещать экономию, сравните принятые изменения, найденные дефекты и полный подтверждённый расход на сопоставимых задачах. Согласие моделей само по себе не доказательство: ошибки могут совпадать."
+            }
+          ]
+        }
+      ],
+      "links": [
+        "settings-explained",
+        "durable-work-and-recovery",
+        "completion-quality-handoffs"
+      ],
+      "sources": [
+        {
+          "label": "Tvijo extension source and release notes",
+          "url": "https://github.com/nikbibamon/dshrempub"
+        },
+        {
+          "label": "Runtime verification receipt",
+          "url": "https://dsh.tvijo.com/api/dshrem/v1/public/orchestration-verification"
+        }
+      ]
+    },
+    {
+      "id": "tvijo:durable-work-and-recovery",
+      "slug": "durable-work-and-recovery",
+      "kind": "workflow",
+      "title": {
+        "en": "Continue after a disconnect",
+        "ru": "Продолжение после обрыва связи"
+      },
+      "summary": {
+        "en": "Keep the task on its configured host, reconnect to the same run and verify saved evidence.",
+        "ru": "Сохраните задачу на настроенном хосте, подключитесь к тому же запуску и проверьте сохранённые результаты."
+      },
+      "graph_label": {
+        "en": "Continue after a disconnect",
+        "ru": "Продолжение после обрыва связи"
+      },
+      "verified_at": "2026-10-24",
+      "canonical_url": "https://dsh.tvijo.com/knowledge/durable-work-and-recovery",
+      "alternatives": {
+        "main": {
+          "en": "https://tvijo.com/en/knowledge/durable-work-and-recovery",
+          "ru": "https://tvijo.com/ru/knowledge/durable-work-and-recovery"
+        },
+        "platform": {
+          "en": "https://platform.tvijo.com/knowledge/durable-work-and-recovery",
+          "ru": "https://platform.tvijo.com/knowledge/durable-work-and-recovery?lang=ru"
+        }
+      },
+      "sections": [
+        {
+          "heading": {
+            "en": "What survives closing a terminal",
+            "ru": "Что переживает закрытие терминала"
+          },
+          "paragraphs": [
+            {
+              "en": "A detached tmux session on a running server can continue when a laptop sleeps, a phone loses power or an SSH client disconnects. The process runs on the server. If the process was on the laptop, turning off that laptop stops it. tmux alone does not survive a server reboot or guarantee that every application buffer has reached durable storage. Host policy can also end a process on logout or under memory pressure.",
+              "ru": "Отсоединённая сессия tmux на работающем сервере может продолжаться, когда ноутбук уснул, телефон разрядился или SSH-клиент отключился. Процесс выполняется на сервере. Если он был на ноутбуке, выключение ноутбука остановит его. Сам по себе tmux не переживает перезагрузку сервера и не гарантирует сохранение каждого буфера приложения. Политика хоста также может завершить процесс при выходе из системы или нехватке памяти."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Reconnect to a run, do not create a duplicate",
+            "ru": "Подключайтесь к запуску, не создавайте дубликат"
+          },
+          "paragraphs": [
+            {
+              "en": "Keep the root task ID, child job IDs and the last event number (the event cursor). Reconnect should read those records and existing artifacts before starting more work. The same submission key must return the same task, and conflicting submissions must be rejected. The ledger belongs to the lifetime of the root task; reconnecting must not restore the original spending allowance.",
+              "ru": "Сохраняйте номера корневой задачи, дочерних работ и последнего полученного события в журнале. При подключении нужно сначала прочитать эти записи и артефакты, а не начинать новую работу. Повтор с тем же ключом отправки должен возвращать ту же задачу, конфликтующий запрос — отклоняться. Расход относится ко всему сроку жизни корневой задачи; переподключение не восстанавливает исходный денежный лимит."
+            },
+            {
+              "en": "There are two different failures: the client cannot reach Tvijo, or the worker cannot reach its model provider. The first may leave work running; the second may leave a billable outcome uncertain. Record each boundary and show the last confirmed event. Never label an uncertain model call free merely because the browser saw no answer.",
+              "ru": "Есть два разных сбоя: клиент не может связаться с Tvijo или исполнитель не может связаться с провайдером модели. В первом случае работа может продолжаться, во втором результат платного вызова может быть неизвестен. Фиксируйте каждую границу и последнее подтверждённое событие. Нельзя считать вызов бесплатным только потому, что браузер не получил ответ."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "Resources and recovery are explicit",
+            "ru": "Ресурсы и восстановление должны быть явными"
+          },
+          "paragraphs": [
+            {
+              "en": "A context window, RAM, disk quota and subscription quota are separate limits. Moving execution to your server needs an installed worker, authorization, enough resources and an explicit host selection. It is not an automatic way to bypass a provider context limit. A recovery plan includes persisted artifacts, backup verification and a controlled restart, not only a terminal session.",
+              "ru": "Контекстное окно, RAM, дисковая квота и квота подписки — разные ограничения. Для переноса выполнения на ваш сервер нужны установленный исполнитель, авторизация, ресурсы и явный выбор хоста. Это не способ автоматически обойти лимит контекста провайдера. План восстановления включает сохранённые артефакты, проверку резервных копий и контролируемый перезапуск, а не только сессию терминала."
+            }
+          ]
+        }
+      ],
+      "links": [
+        "dsh-harness-orchestration",
+        "agentroy-teams-and-costs",
+        "completion-quality-handoffs"
+      ],
+      "sources": [
+        {
+          "label": "Tvijo extension source and release notes",
+          "url": "https://github.com/nikbibamon/dshrempub"
+        },
+        {
+          "label": "Runtime verification receipt",
+          "url": "https://dsh.tvijo.com/api/dshrem/v1/public/orchestration-verification"
+        },
+        {
+          "label": "tmux project documentation",
+          "url": "https://github.com/tmux/tmux/wiki"
+        }
+      ]
+    },
+    {
+      "id": "tvijo:prompt-handoffs",
+      "slug": "prompt-handoffs",
+      "kind": "workflow",
+      "title": {
+        "en": "Take a Tvijo prompt with you",
+        "ru": "Откройте промпт Tvijo в своём инструменте"
+      },
+      "summary": {
+        "en": "Review a task prompt, copy it or open a supported application with the text ready to use.",
+        "ru": "Проверьте текст задания, скопируйте его или откройте поддерживаемое приложение с подготовленным запросом."
+      },
+      "graph_label": {
+        "en": "Take a Tvijo prompt with you",
+        "ru": "Откройте промпт Tvijo в своём инструменте"
+      },
+      "verified_at": "2026-10-24",
+      "canonical_url": "https://dsh.tvijo.com/knowledge/prompt-handoffs",
+      "alternatives": {
+        "main": {
+          "en": "https://tvijo.com/en/knowledge/prompt-handoffs",
+          "ru": "https://tvijo.com/ru/knowledge/prompt-handoffs"
+        },
+        "platform": {
+          "en": "https://platform.tvijo.com/knowledge/prompt-handoffs",
+          "ru": "https://platform.tvijo.com/knowledge/prompt-handoffs?lang=ru"
+        }
+      },
+      "sections": [
+        {
+          "heading": {
+            "en": "One task, a clear handoff",
+            "ru": "Одна задача и понятная передача"
+          },
+          "paragraphs": [
+            {
+              "en": "A useful prompt states the goal, allowed files, acceptance checks and spending limit. The buttons below open the visible text in another tool; they do not copy your repository, account login or private run history. Read the text before sending it. External tools have their own accounts, permissions and charges.",
+              "ru": "Полезный промпт содержит цель, разрешённые файлы, проверки результата и денежный лимит. Кнопки ниже открывают видимый текст в другом инструменте; они не передают ваш репозиторий, вход в аккаунт или приватную историю работы. Прочитайте текст перед отправкой. У внешних инструментов свои аккаунты, разрешения и цены."
+            }
+          ]
+        },
+        {
+          "heading": {
+            "en": "What the links can and cannot do",
+            "ru": "Что умеют ссылки"
+          },
+          "paragraphs": [
+            {
+              "en": "Codex, Claude Code and Cursor document links that prefill a prompt. A desktop link needs an installed and registered application handler on the device where you click. As of 2026-10-24, Lovable documents unsent prompt links and ignores the old autosubmit=true parameter. Web application behavior can change or require login; copying the prompt remains the fallback.",
+              "ru": "Codex, Claude Code и Cursor документируют ссылки с предварительным заполнением запроса. Для ссылки в настольное приложение нужен установленный обработчик на устройстве, где вы нажали кнопку. По документации на 24 октября 2026 года Lovable использует неотправленные запросы и игнорирует старый параметр autosubmit=true. Веб-приложение может потребовать вход, а поведение ссылок может измениться; запасной путь — копирование промпта."
+            },
+            {
+              "en": "URL text may appear in browser history and is transmitted to the chosen destination. Do not put passwords, API keys, private source code or personal customer data in a share link. For a private task, use the authenticated workspace or copy a carefully reviewed prompt into your trusted tool.",
+              "ru": "Текст URL может остаться в истории браузера и передаётся выбранному сервису. Не помещайте в ссылку пароли, API-ключи, приватный исходный код и персональные данные клиентов. Для закрытой задачи используйте авторизованное рабочее пространство или скопируйте проверенный промпт в доверенный инструмент."
+            },
+            {
+              "en": "For ChatGPT and Claude on the web, these buttons copy the visible prompt and open a blank destination. Paste and review it yourself. This avoids relying on an undocumented prefill or immediate-submission behavior.",
+              "ru": "Для ChatGPT и Claude в браузере кнопки копируют видимый промпт и открывают пустое окно сервиса. Вставьте и проверьте его самостоятельно. Так передача не зависит от недокументированного заполнения или мгновенной отправки запроса."
+            }
+          ]
+        }
+      ],
+      "links": [
+        "settings-explained",
+        "agentroy-teams-and-costs"
+      ],
+      "sources": [
+        {
+          "label": "Codex deep links",
+          "url": "https://developers.openai.com/codex/app/commands"
+        },
+        {
+          "label": "Claude Code deep links",
+          "url": "https://code.claude.com/docs/en/deep-links"
+        },
+        {
+          "label": "Cursor deep links",
+          "url": "https://cursor.com/docs/reference/deeplinks"
+        },
+        {
+          "label": "Lovable Build with URL",
+          "url": "https://docs.lovable.dev/integrations/build-with-url"
+        }
+      ]
     }
   ],
   "surface_publication": {
-    "dsh": "prepared",
-    "platform": "prepared",
-    "main": "prepared"
+    "dsh": "published",
+    "platform": "published",
+    "main": "published"
   },
   "runtime_evidence": {
-    "observed_at": null,
+    "observed_at": "2026-10-24T12:46:04.563248+00:00",
     "receipt_url": "https://dsh.tvijo.com/api/dshrem/v1/public/orchestration-verification",
-    "receipt_sha256": null
+    "receipt_sha256": "05d98aaa3cf6e2ccf32b8c5807da044e0e611083190cc8af48a205e515a82291"
   }
 }

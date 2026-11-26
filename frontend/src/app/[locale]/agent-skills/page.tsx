@@ -19,6 +19,7 @@ import {
   AGENT_SKILL_INDEX_LOCALES,
   agentSkillsCopy,
   agentSkillsLocale,
+  agentSkillLabels,
 } from '@/data/agent-skills';
 import {
   breadcrumbJsonLd,
@@ -26,6 +27,7 @@ import {
   normalizeLocale,
 } from '@/lib/seo/marketing';
 import styles from './agent-skills.module.css';
+import { portalNavigation } from '@/components/portal/navigation';
 
 export function generateStaticParams() {
   return LOCALES.map((locale) => ({ locale }));
@@ -53,6 +55,7 @@ const PRIVATE_ICONS = [LockKeyhole, KeyRound, Gauge, ShieldCheck];
 export default function AgentSkillsPage({ params }: { params: { locale: string } }) {
   const locale = normalizeLocale(params.locale);
   const copy = agentSkillsCopy[agentSkillsLocale(locale)];
+  const labels = agentSkillLabels[locale === 'ru' ? 'ru' : 'en'];
   const workspaceHref = `/${locale}/workspace/plugins`;
   const breadcrumb = breadcrumbJsonLd(locale, [
     { name: copy.nav.packs, path: '/agent-skills' },
@@ -88,10 +91,12 @@ export default function AgentSkillsPage({ params }: { params: { locale: string }
             <span>Tvijo</span>
             <i aria-hidden="true" />
           </Link>
-          <nav className={styles.nav} aria-label="Agent skills">
-            <a href="#packs">{copy.nav.packs}</a>
-            <a href="#how">{copy.nav.how}</a>
-            <a href="#trust">{copy.nav.trust}</a>
+          <nav className={styles.nav} aria-label={locale === 'ru' ? 'Разделы Tvijo' : 'Tvijo sections'}>
+            {portalNavigation(locale).groups.map((group) => (
+              <Link key={group.id} href={group.links[0].href} aria-current={group.id === 'skills' ? 'true' : undefined}>
+                {group.label}
+              </Link>
+            ))}
           </nav>
           <div className={styles.headerActions}>
             <Link href={`/${locale}/login`} className={styles.signIn}>
@@ -106,6 +111,11 @@ export default function AgentSkillsPage({ params }: { params: { locale: string }
       </header>
 
       <main>
+        <nav className={`${styles.nav} ${styles.pageNav}`} aria-label={locale === 'ru' ? 'На этой странице' : 'On this page'}>
+          <a href="#packs">{copy.nav.packs}</a>
+          <a href="#how">{copy.nav.how}</a>
+          <a href="#trust">{copy.nav.trust}</a>
+        </nav>
         <section className={styles.hero}>
           <div className={styles.heroGlow} aria-hidden="true" />
           <div className={styles.shell}>
@@ -165,6 +175,19 @@ export default function AgentSkillsPage({ params }: { params: { locale: string }
                 </div>
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className={styles.catalogue} aria-labelledby="skill-labels">
+          <div className={styles.shell}>
+            <div className={styles.sectionLead}><h2 id="skill-labels">{labels.title}</h2><p>{labels.limit}</p></div>
+            <dl className="space-y-4 text-sm leading-7">
+              {labels.entries.map(entry => <div key={entry.label}><dt className="font-semibold"><code>{entry.label}</code></dt><dd>{entry.explanation}</dd></div>)}
+            </dl>
+            <nav className="mt-6 flex flex-wrap gap-5 text-sm underline underline-offset-4" aria-label={labels.title}>
+              <Link href={`/${locale}/agent-skills/axes`}>{labels.axes}</Link>
+              <Link href={`/${locale}/compare`}>{labels.research}</Link>
+            </nav>
           </div>
         </section>
 

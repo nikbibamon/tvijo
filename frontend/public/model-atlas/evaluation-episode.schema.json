@@ -1,0 +1,761 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:tvijo:atlas:evaluation-episode:2.0.0",
+  "title": "Local evaluation episode record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "runId",
+    "taskId",
+    "clusterId",
+    "projectId",
+    "sliceId",
+    "repeatIndex",
+    "dataset",
+    "configuration",
+    "permissions",
+    "timing",
+    "attempts",
+    "outcome",
+    "forecast",
+    "costs",
+    "artifacts",
+    "validity"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "2.0.0"
+    },
+    "runId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "taskId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "clusterId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "projectId": {
+      "enum": [
+        "aios",
+        "hotido",
+        "finedg"
+      ]
+    },
+    "sliceId": {
+      "enum": [
+        "aios_probability",
+        "aios_higher_math",
+        "aios_data_science",
+        "aios_marketing",
+        "aios_economics",
+        "aios_management",
+        "aios_autonomy",
+        "aios_self_improvement",
+        "hotido_probability",
+        "hotido_higher_math",
+        "hotido_data_science",
+        "hotido_marketing",
+        "hotido_economics",
+        "hotido_management",
+        "hotido_autonomy",
+        "hotido_self_improvement",
+        "finedg_probability",
+        "finedg_higher_math",
+        "finedg_data_science",
+        "finedg_marketing",
+        "finedg_economics",
+        "finedg_management",
+        "finedg_autonomy",
+        "finedg_self_improvement"
+      ]
+    },
+    "repeatIndex": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "dataset": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "version",
+        "manifestSha256",
+        "split",
+        "sourceAvailableAt",
+        "labelAvailableAt"
+      ],
+      "properties": {
+        "version": {
+          "type": "string"
+        },
+        "manifestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "split": {
+          "enum": [
+            "development",
+            "calibration",
+            "protected_test",
+            "shadow"
+          ]
+        },
+        "sourceAvailableAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "labelAvailableAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        }
+      }
+    },
+    "configuration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "runner",
+        "runnerVersion",
+        "harness",
+        "harnessVersion",
+        "modelApiId",
+        "modelSnapshot",
+        "providerEndpoint",
+        "reasoningConfig",
+        "toolsetSha256",
+        "systemPromptSha256",
+        "budgetPolicyId",
+        "graderVersion",
+        "seed"
+      ],
+      "properties": {
+        "runner": {
+          "type": "string"
+        },
+        "runnerVersion": {
+          "type": "string"
+        },
+        "harness": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "harnessVersion": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "modelApiId": {
+          "type": "string"
+        },
+        "modelSnapshot": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "providerEndpoint": {
+          "type": "string"
+        },
+        "reasoningConfig": {
+          "type": "object"
+        },
+        "toolsetSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "systemPromptSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "budgetPolicyId": {
+          "type": "string"
+        },
+        "graderVersion": {
+          "type": "string"
+        },
+        "seed": {
+          "type": [
+            "integer",
+            "null"
+          ]
+        }
+      }
+    },
+    "permissions": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scopePolicyId",
+        "allowedActions",
+        "stage",
+        "authorizationReference"
+      ],
+      "properties": {
+        "scopePolicyId": {
+          "type": "string"
+        },
+        "allowedActions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "stage": {
+          "enum": [
+            "sandbox",
+            "shadow",
+            "bounded_pre_authorized",
+            "human_review"
+          ]
+        },
+        "authorizationReference": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      }
+    },
+    "timing": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "queuedAt",
+        "startedAt",
+        "finishedAt",
+        "deadlineAt",
+        "humanReviewMinutes"
+      ],
+      "properties": {
+        "queuedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "startedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "finishedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "deadlineAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "humanReviewMinutes": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        }
+      }
+    },
+    "attempts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "attemptId",
+          "status",
+          "reason",
+          "toolCalls",
+          "receiptIds"
+        ],
+        "properties": {
+          "attemptId": {
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "completed",
+              "failed",
+              "timeout",
+              "cancelled",
+              "invalid_environment"
+            ]
+          },
+          "reason": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "toolCalls": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "receiptIds": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "outcome": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "accepted",
+        "humanInterventionCount",
+        "criticalViolationIds",
+        "measurements",
+        "judgedAt",
+        "judgeEvidence"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "pending",
+            "accepted",
+            "rejected",
+            "timeout",
+            "invalid_environment"
+          ]
+        },
+        "accepted": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "humanInterventionCount": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "criticalViolationIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "measurements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "metricId",
+              "value",
+              "unit",
+              "numerator",
+              "denominator",
+              "undefinedReason"
+            ],
+            "properties": {
+              "metricId": {
+                "enum": [
+                  "accepted_task_rate",
+                  "accepted_without_intervention",
+                  "repeat_all_success",
+                  "brier_binary",
+                  "brier_chosen_answer",
+                  "brier_multiclass",
+                  "calibration_profile",
+                  "critical_violations",
+                  "critical_risk_upper95",
+                  "replay_integrity",
+                  "trace_coverage",
+                  "numeric_case_pass",
+                  "feasible_solution_rate",
+                  "optimality_gap",
+                  "field_exact_match",
+                  "field_macro_f1",
+                  "entity_precision",
+                  "entity_recall",
+                  "support_precision",
+                  "required_fact_recall",
+                  "lineage_coverage",
+                  "leakage_count",
+                  "stale_critical_sources",
+                  "qualified_conversion",
+                  "contribution_per_account",
+                  "srm_p",
+                  "unfounded_claims",
+                  "cost_per_accepted",
+                  "cost_coverage",
+                  "money_reconciliation_error",
+                  "contribution_per_unit",
+                  "cashflow_min",
+                  "worst_scenario_contribution",
+                  "manifest_coverage",
+                  "human_minutes",
+                  "p95_completion",
+                  "missed_deadlines",
+                  "orphaned_episodes",
+                  "protected_holdout_access",
+                  "reproduction_rate",
+                  "material_regressions",
+                  "budget_violations",
+                  "oos_net_return",
+                  "max_drawdown",
+                  "paper_errors"
+                ]
+              },
+              "value": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "unit": {
+                "type": "string"
+              },
+              "numerator": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "denominator": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              },
+              "undefinedReason": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "judgedAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "judgeEvidence": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "forecast": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "targetType",
+            "eventDefinition",
+            "recordedAt",
+            "resolutionAt",
+            "classOrder",
+            "probabilities",
+            "observedClass",
+            "observedCorrectness"
+          ],
+          "properties": {
+            "targetType": {
+              "enum": [
+                "binary_event",
+                "chosen_answer_correctness",
+                "multiclass_vector"
+              ]
+            },
+            "eventDefinition": {
+              "type": "string"
+            },
+            "recordedAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "resolutionAt": {
+              "type": [
+                "string",
+                "null"
+              ],
+              "format": "date-time"
+            },
+            "classOrder": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "probabilities": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            },
+            "observedClass": {
+              "type": [
+                "string",
+                "null"
+              ]
+            },
+            "observedCorrectness": {
+              "type": [
+                "boolean",
+                "null"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "costs": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "currency",
+        "status",
+        "components",
+        "allocationPolicyId",
+        "totalMarginal",
+        "totalFullyLoaded",
+        "missingItems"
+      ],
+      "properties": {
+        "currency": {
+          "type": "string",
+          "pattern": "^[A-Z]{3}$"
+        },
+        "status": {
+          "enum": [
+            "complete",
+            "partial",
+            "unknown"
+          ]
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "amount",
+              "basis",
+              "receiptId"
+            ],
+            "properties": {
+              "kind": {
+                "enum": [
+                  "model",
+                  "tool",
+                  "retry",
+                  "review",
+                  "human_labor",
+                  "infrastructure",
+                  "subscription_allocation",
+                  "other"
+                ]
+              },
+              "amount": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": 0
+              },
+              "basis": {
+                "enum": [
+                  "receipt",
+                  "allocation",
+                  "explicit_assumption",
+                  "unknown"
+                ]
+              },
+              "receiptId": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              }
+            }
+          }
+        },
+        "allocationPolicyId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "totalMarginal": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "totalFullyLoaded": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "missingItems": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "uri",
+          "sha256"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string"
+          },
+          "uri": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          }
+        }
+      }
+    },
+    "validity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "status",
+        "exclusionRuleId",
+        "reason",
+        "countInEndToEnd"
+      ],
+      "properties": {
+        "status": {
+          "enum": [
+            "valid",
+            "pending",
+            "invalid_environment",
+            "invalid_data"
+          ]
+        },
+        "exclusionRuleId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "countInEndToEnd": {
+          "type": "boolean"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "status": {
+                "const": "pending"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "outcome": {
+            "properties": {
+              "accepted": {
+                "const": null
+              },
+              "judgedAt": {
+                "const": null
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "costs": {
+            "properties": {
+              "status": {
+                "enum": [
+                  "partial",
+                  "unknown"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "costs": {
+            "properties": {
+              "totalFullyLoaded": {
+                "const": null
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "$comment": "Application checks still required: unique IDs, timestamp ordering, full-vector probability sum=1 and correct length/class order, one probability for binary/chosen target, horizon maturity, no secret values in artifacts/endpoint, paired cluster alignment, completeness of cost categories/no double counting, value units and denominators, compatibility between slice/project, accepted status consistency. A JSON Schema cannot establish statistical independence or actual authorization."
+}

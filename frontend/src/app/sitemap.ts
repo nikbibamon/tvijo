@@ -1,13 +1,15 @@
 import type { MetadataRoute } from 'next';
 import connectedKnowledge from '@/data/connected-knowledge.json';
 import {fetchPublicRelease} from '@/lib/tvijo-extension-release';
-import { comparisons } from '@/data/compare';
+import { comparisons, agentEvidence } from '@/data/compare';
 import { solutions } from '@/data/solutions';
 import { LOCALES, DEFAULT_LOCALE } from '@/i18n/config';
 import { MARKETING_LOCALES, ENGLISH_ONLY_LOCALES } from '@/lib/seo/marketing';
 import { fetchCatalog } from '@/services/seo-geo-api';
 import { MODULE_SLUGS } from '@/data/module-slugs';
+import { getModules } from '@/services/modules-api';
 import { AGENT_SKILL_INDEX_LOCALES } from '@/data/agent-skills';
+import { ATLAS_RELEASE_LOCALES, ATLAS_PATHS } from '@/lib/model-atlas/routes';
 
 const BASE = 'https://tvijo.com';
 
@@ -100,13 +102,11 @@ const AGENT_FABRIC_KB_SLUGS = [
 
 const STATIC_PATHS: { path: string; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']; priority: number }[] = [
   { path: '', changeFrequency: 'daily', priority: 1.0 },
-  { path: '/kb', changeFrequency: 'daily', priority: 0.9 },
   { path: '/kb/ai-governance', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/kb/ai-governance/metr-agent-risk-monitorability-ai-os', changeFrequency: 'weekly', priority: 0.9 },
   { path: '/kb/ai-governance/agent-risk-score-for-enterprise-ai', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/kb/ai-governance/monitorability-layer-for-frontier-agents', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/kb/ai-governance/ai-productivity-uplift-and-task-substitution', changeFrequency: 'weekly', priority: 0.8 },
-  { path: '/learn', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/tools', changeFrequency: 'weekly', priority: 0.8 },
   { path: '/finai', changeFrequency: 'weekly', priority: 0.7 },
   { path: '/demo', changeFrequency: 'daily', priority: 0.9 },
@@ -118,17 +118,19 @@ const STATIC_PATHS: { path: string; changeFrequency: MetadataRoute.Sitemap[numbe
   { path: '/bundles', changeFrequency: 'weekly', priority: 0.7 },
   { path: '/decmap', changeFrequency: 'weekly', priority: 0.7 },
   { path: '/faq', changeFrequency: 'monthly', priority: 0.6 },
-  { path: '/changelog', changeFrequency: 'weekly', priority: 0.6 },
   { path: '/market-intelligence', changeFrequency: 'daily', priority: 0.8 },
 ];
+
+const SITE_LOCALES: readonly string[] = ['en', 'ru'];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const knowledgePagesPromise = knowledgeSitemap();
 
-  // Generate URLs for all locales
+  // 2026-11-06: публикуются только EN и RU (решение оператора). Остальные
+  // локали редиректятся на /en в middleware, поэтому в карте их быть не должно.
   const staticPages: MetadataRoute.Sitemap = [];
-  for (const locale of LOCALES) {
+  for (const locale of SITE_LOCALES) {
     const isDefault = locale === DEFAULT_LOCALE;
     for (const { path, changeFrequency, priority } of STATIC_PATHS) {
       staticPages.push({
@@ -136,6 +138,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: now,
         changeFrequency,
         priority: isDefault ? priority : priority * 0.6,
+      });
+    }
+  }
+
+  // Self-canonical index pages are listed only in the locales that carry their own
+  // copy; other locales render English under noindex (honest-indexing rule).
+  const OWN_COPY_PAGES: { path: string; locales: readonly string[]; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency']; priority: number }[] = [
+    { path: '/kb', locales: ['en', 'ru'], changeFrequency: 'daily', priority: 0.9 },
+    { path: '/learn', locales: ['en', 'ru'], changeFrequency: 'weekly', priority: 0.8 },
+    { path: '/changelog', locales: ['en', 'ru'], changeFrequency: 'weekly', priority: 0.6 },
+  ];
+  for (const { path, locales, changeFrequency, priority } of OWN_COPY_PAGES) {
+    for (const locale of locales) {
+      staticPages.push({
+        url: `${BASE}/${locale}${path}`,
+        lastModified: now,
+        changeFrequency,
+        priority: locale === DEFAULT_LOCALE ? priority : priority * 0.6,
       });
     }
   }
@@ -187,12 +207,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'weekly',
       priority: 0.8,
     });
-    for (const c of comparisons) {
+    for (const c of [...comparisons, ...agentEvidence.pairs, { slug: 'methodology' }]) {
       comparePages.push({
         url: `${BASE}/${locale}/compare/${c.slug}`,
         lastModified: now,
         changeFrequency: 'weekly',
         priority: 0.8,
+      });
+    }
+  }
+
+  // Model Atlas has distinct English and Russian copy. Keep the existing
+  // English-only comparisons unchanged and add only the new research routes.
+  for (const locale of ATLAS_RELEASE_LOCALES) {
+    for (const path of ATLAS_PATHS) {
+      comparePages.push({
+        url: `${BASE}/${locale}${path}`,
+        lastModified: new Date('2026-11-09T00:00:00Z'),
+        changeFrequency: 'weekly',
+        priority: 0.75,
       });
     }
   }
@@ -265,8 +298,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
+  // SEO-20261103: MODULE_SLUGS — статический список, а страницы строятся по
+  // каталогу из API. Пока каталог пуст, адреса модулей отдавали 404: карта
+  // обещала краулеру 66 несуществующих страниц.
+  const moduleCatalogue = await getModules(DEFAULT_LOCALE).catch(() => []);
+  const publishedModuleSlugs = new Set(moduleCatalogue.map((m) => m.slug));
   const modulePages: MetadataRoute.Sitemap = [];
-  for (const locale of LOCALES) {
+  for (const locale of SITE_LOCALES) {
     const isDefault = locale === DEFAULT_LOCALE;
     modulePages.push({
       url: `${BASE}/${locale}/modules`,
@@ -275,6 +313,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: isDefault ? 0.9 : 0.6,
     });
     for (const slug of MODULE_SLUGS) {
+      if (!publishedModuleSlugs.has(slug)) continue;
       modulePages.push({
         url: `${BASE}/${locale}/modules/${slug}`,
         lastModified: now,

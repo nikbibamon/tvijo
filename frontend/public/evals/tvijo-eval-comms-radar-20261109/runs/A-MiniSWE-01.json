@@ -1,0 +1,112 @@
+{
+  "run_id": "A-MiniSWE-01",
+  "task": "A",
+  "harness": "MiniSWE",
+  "status": "PASS",
+  "Q": 100,
+  "full_seconds": 63.778655527999994,
+  "harness_full_seconds": 62.143923066556454,
+  "worker_seconds": 61.2189603112638,
+  "startup_seconds": 9.705912590026855,
+  "package_verification_seconds": 0,
+  "verify_seconds": 0.6572785973548889,
+  "api_requests": 7,
+  "input_tokens": 40511,
+  "output_tokens": 6040,
+  "cache_read_tokens": 33408,
+  "reasoning_tokens": "UNKNOWN",
+  "requested_model": "deepseek-flash",
+  "returned_model": [
+    "deepseek-flash"
+  ],
+  "provider": "deepseek_official",
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "thinking": "disabled",
+  "effort": "none",
+  "max_output_tokens": 4096,
+  "context_conservative_bound": 65536,
+  "baseline_sha": "68e5efbfe55883585870df69a2f463ea7dce7cdf",
+  "diff_sha256": "a62751d6f1b8589b3a4754b872b84b226cabee283254ef408013dabce50bd63c",
+  "human_assisted": false,
+  "criteria": [
+    {
+      "id": "claim_race",
+      "weight": 20,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "stale_fence",
+      "weight": 20,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "restart_replay",
+      "weight": 20,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "concurrent_finish",
+      "weight": 15,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "value_conflict",
+      "weight": 10,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "timeout_atomicity",
+      "weight": 10,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "invalid_and_expired",
+      "weight": 5,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    }
+  ],
+  "public_regression_pass": true,
+  "violations": [],
+  "new_tests": [
+    "tests/test_lease.py"
+  ],
+  "start_utc": "2026-11-09T05:22:19.379499+00:00",
+  "start_kyiv": "2026-11-09T07:22:19.379499+02:00",
+  "server_load": [
+    4.7802734375,
+    4.240234375,
+    3.6298828125
+  ],
+  "model_tool_calls": 9,
+  "api_errors": 0,
+  "broker_retries": 0,
+  "semantic_retries": "UNKNOWN",
+  "provider_reported_cost": "UNKNOWN",
+  "invoice_cost": "UNKNOWN",
+  "quantization": "UNKNOWN",
+  "model_serving_revision": "UNKNOWN",
+  "reason": null,
+  "version": "2.4.6",
+  "harness_commit": "UNKNOWN wheel; release source tag fixed",
+  "api_cost_usage_tariff_usd": 0.004789674,
+  "claim_id": "PILOT-A-MiniSWE-01",
+  "evidence_url": "/evals/tvijo-eval-comms-radar-20261109/runs/A-MiniSWE-01.json",
+  "classification": "engineering_pilot",
+  "checked_on": "2026-11-09",
+  "limits": "480s; USD0.025 per slot; USD0.20 root",
+  "cost_class": "usage_times_verified_tariff; invoice UNKNOWN"
+}

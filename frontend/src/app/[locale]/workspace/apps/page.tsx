@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import WorkspaceSolutionsLive from '@/components/workspace/features/catalog/WorkspaceSolutionsLive';
+import WorkspaceDownloads from '@/components/workspace/features/catalog/WorkspaceDownloads';
 import { workspaceMetadata } from '@/lib/seo/workspace';
 
 export function generateMetadata({ params }: { params: { locale: string } }): Metadata {
@@ -7,5 +8,10 @@ export function generateMetadata({ params }: { params: { locale: string } }): Me
 }
 
 export default function WorkspaceAppsPage() {
-  return <WorkspaceSolutionsLive />;
+  return (
+    <>
+      <WorkspaceSolutionsLive />
+      <WorkspaceDownloads />
+    </>
+  );
 }

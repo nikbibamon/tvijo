@@ -7,6 +7,7 @@ export type ArticleGraphData = {
   schema: 'tvijo.article-graph/v1'; selected: string;
   nodes: { id: string; title: string; summary: string; href: string; kind: string; label?: string }[];
   edges: { source: string; target: string; kind: string }[];
+  coverage?: {status:string;observed_at:string|null;source:string};
 };
 declare global {
   interface Window {
@@ -84,6 +85,28 @@ async function withPublishedLinks(base: ArticleGraphData, article: KBArticleDeta
       ...(backlink ? [{source:node.id,target:base.selected,kind:'article-content-backlink'}] : [])])]};
 }
 
+/** Public shared snapshot: no cookies, private history or source code. */
+async function withUnifiedGraph(base:ArticleGraphData, locale:string, signal:AbortSignal):Promise<ArticleGraphData> {
+  try {
+    const response=await fetch('https://dsh.tvijo.com/api/dshrem/v1/public/knowledge/graph?lang='+(locale==='ru'?'ru':'en'), {signal,credentials:'omit',headers:{Accept:'application/json'}});
+    if(!response.ok)return base;
+    const text=await response.text();if(text.length>1048576)return base;
+    const graph=JSON.parse(text) as ArticleGraphData;
+    if(graph.schema!=='tvijo.article-graph/v1'||!Array.isArray(graph.nodes)||graph.nodes.length>512||!Array.isArray(graph.edges)||graph.edges.length>4096)return base;
+    const lang=locale==='ru'?'ru':'en';
+    const nodes=new Map(base.nodes.map(n=>[n.id,n]));
+    for(const n of graph.nodes) {
+      if(typeof n.id!=='string'||typeof n.title!=='string'||n.title.length>300||typeof n.href!=='string')continue;
+      let href=n.href;
+      if(/^\/knowledge\/[a-z0-9-]+(?:\?lang=ru)?#article-top$/.test(href))href='/'+lang+href.replace('?lang=ru','');
+      else if(!/^https:\/\/tvijo\.com\/(en|ru)\/kb\/[a-z0-9-]+\/[a-z0-9-]+#article-top$/.test(href))continue;
+      if(!nodes.has(n.id))nodes.set(n.id,{...n,href});
+    }
+    const edges=new Map([...base.edges,...graph.edges].filter(e=>e&&nodes.has(e.source)&&nodes.has(e.target)&&typeof e.kind==='string').map(e=>[e.source+'>'+e.target+':'+e.kind,e]));
+    return {...base,nodes:Array.from(nodes.values()),edges:Array.from(edges.values()),coverage:graph.coverage};
+  } catch {return base;}
+}
+
 /** One shared renderer, lazy near the viewport. Native anchors survive JS failure. */
 export default function ConnectedArticleGraph({ article, graph, locale = 'en' }: {
   article?: KBArticleDetail; graph?: ArticleGraphData; locale?: string;
@@ -100,7 +123,8 @@ export default function ConnectedArticleGraph({ article, graph, locale = 'en' }:
       if (!entries.some(e => e.isIntersecting)) return;
       observer.disconnect();
       deadline = setTimeout(() => requests.abort(), 4000);
-      const ready = article ? withPublishedLinks(data, article, locale, requests.signal) : Promise.resolve(data);
+      const ready = (article ? withPublishedLinks(data, article, locale, requests.signal) : Promise.resolve(data))
+        .then(local => withUnifiedGraph(local, locale, requests.signal));
       Promise.all([loadGraph().catch(() => {}), ready]).then(([, validated]) => {
         if (!cancelled) {
           setVerified(validated);
@@ -117,7 +141,7 @@ export default function ConnectedArticleGraph({ article, graph, locale = 'en' }:
     <link rel="stylesheet" href="/knowledge-assets/graph.css?v=1" />
     <h2>{ru ? 'Связи статей' : 'Article connections'}</h2>
     <p>{ru ? 'Ссылки на опубликованные статьи. Узел открывает статью у заголовка.' : 'Published article links. Select a node to open its article at the heading.'}</p>
-    {article && <p><a href={`/${locale}/knowledge#article-top`}>{ru ? 'Neovim и оркестрация: связанные руководства' : 'Neovim & orchestration: connected guides'}</a></p>}
+    {article && <p><a href={`/${locale}/knowledge#article-top`}>{ru ? 'Все статьи и руководства Tvijo' : 'All Tvijo articles and guides'}</a></p>}
     <div className="tg-mount" />
     <details className="tg-fallback" open><summary>{ru ? 'Ссылки · клавиатура / текстовый вид' : 'Article links · keyboard / text view'}</summary>
       <ul>{(verified || data).nodes.map(n => <li key={n.id}><a href={n.href}>{n.title}</a></li>)}</ul>

@@ -1600,7 +1600,7 @@ function Footer({ locale }: { locale: Locale }) {
         { label: locale === 'ru' ? 'Расширение и терминал' : 'Extension & terminal', href: 'https://dsh.tvijo.com/download' },
         { label: locale === 'ru' ? 'Рабочая область DSH' : 'DSH workspace', href: 'https://dsh.tvijo.com/' },
         { label: locale === 'ru' ? 'Ключи платформы' : 'Platform keys', href: 'https://platform.tvijo.com/keys' },
-        { label: locale === 'ru' ? 'Предпросмотр исходников Cursortvijo' : 'Cursortvijo source preview', href: 'https://github.com/nikbibamon/cursortvijo' },
+        { label: locale === 'ru' ? 'Скачать Tvijo для VS Code' : 'Download Tvijo for VS Code', href: 'https://dsh.tvijo.com/download#vscode' },
         { label: locale === 'ru' ? 'Центр команд владельца' : 'Owner command center', href: `${prefix}/login?redirect=${encodeURIComponent(`${prefix}/agentroy`)}` },
       ],
     },

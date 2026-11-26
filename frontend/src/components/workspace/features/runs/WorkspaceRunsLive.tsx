@@ -8,6 +8,8 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { parseLocale } from '@/i18n/config';
+import GatewayReceipts from '@/components/workspace/features/receipts/GatewayReceipts';
+import { receiptCopy } from '@/i18n/receipts';
 import { getWorkspaceCopy } from '@/i18n/workspace';
 import { workspaceApi } from '@/lib/workspace-api';
 import { useWorkspaceData } from '@/hooks/use-workspace-data';
@@ -33,6 +35,8 @@ export default function WorkspaceRunsLive() {
         </div>
       </header>
 
+      <GatewayReceipts />
+      <h2>{receiptCopy(locale).local}</h2><p>{receiptCopy(locale).localNote}</p>
       {loading ? <WsSnippet kind="table" rows={4} /> : null}
       {error ? <WsError message={error} onRetry={reload} /> : null}
 

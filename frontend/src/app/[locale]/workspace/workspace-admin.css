@@ -874,6 +874,16 @@
 .twk-run-result dd { margin: 0; color: var(--twk-text); font-size: 12.5px; font-variant-numeric: tabular-nums; }
 .twk-run-reason { margin: 0; color: #fca5a5; font-size: 11.5px; overflow-wrap: anywhere; }
 
+/* Knowledge & learning, Apps & downloads and the billing test-mode note (task 54b7). */
+.twk-link-list { display: grid; gap: 1px; background: var(--twk-border-soft); }
+.twk-link-item { display: grid; gap: 4px; padding: 13px 16px; background: rgba(12, 20, 34, .98); color: inherit; text-decoration: none; }
+.twk-link-item:hover, .twk-link-item:focus-visible { background: rgba(22, 32, 50, .98); }
+.twk-link-item-title { color: #e6edf7; font-size: 12px; font-weight: 650; }
+.twk-link-item-text { color: #9aa6b8; font-size: 11px; line-height: 1.5; }
+.twk-notice-body { margin: 0; padding: 10px 16px 14px; color: #c3ccda; font-size: 12px; line-height: 1.6; }
+.twk-notice-body + .twk-notice-body { padding-top: 0; }
+.twk-notice-body a { color: #5eead4; text-decoration: underline; }
+
 /* Server-access permissions (catalog served by remdesk /permissions). */
 .twk-permissions fieldset { border: 0; padding: 0; margin: 0 0 1rem; }
 .twk-permission { margin: 0 0 .75rem; }

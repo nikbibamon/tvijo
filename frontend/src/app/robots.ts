@@ -2,6 +2,7 @@ import type { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
   const privatePaths = ['/api/', '/_next/', '/directory', '/investment-funds'];
+  const publicStatic = ['/_next/static/'];
   const crawlerUserAgents = ['Googlebot', 'Bingbot', 'Yandex', 'DuckDuckBot'];
 
   return {
@@ -13,7 +14,7 @@ export default function robots(): MetadataRoute.Robots {
       },
       ...crawlerUserAgents.map((userAgent) => ({
         userAgent,
-        allow: '/',
+        allow: ['/', ...publicStatic],
         disallow: privatePaths,
       })),
     ],

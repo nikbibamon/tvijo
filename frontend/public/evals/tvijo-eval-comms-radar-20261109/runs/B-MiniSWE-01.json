@@ -1,0 +1,105 @@
+{
+  "run_id": "B-MiniSWE-01",
+  "task": "B",
+  "harness": "MiniSWE",
+  "status": "PASS",
+  "Q": 100,
+  "full_seconds": 39.404011049000026,
+  "harness_full_seconds": 37.87874303013086,
+  "worker_seconds": 37.51777912303805,
+  "startup_seconds": 9.045084476470947,
+  "package_verification_seconds": 0,
+  "verify_seconds": 0.19694212451577187,
+  "api_requests": 7,
+  "input_tokens": 31042,
+  "output_tokens": 4518,
+  "cache_read_tokens": 26752,
+  "reasoning_tokens": "UNKNOWN",
+  "requested_model": "deepseek-flash",
+  "returned_model": [
+    "deepseek-flash"
+  ],
+  "provider": "deepseek_official",
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "thinking": "disabled",
+  "effort": "none",
+  "max_output_tokens": 4096,
+  "context_conservative_bound": 65536,
+  "baseline_sha": "ffb2f416dd1fa7021fd70546e5578dc7f97b03f5",
+  "diff_sha256": "2c8ff554c715af2e6edb4852d1bd0d2e276bf183ce4058262fc5884d9f839ee0",
+  "human_assisted": false,
+  "criteria": [
+    {
+      "id": "contract_validation",
+      "weight": 20,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "stable_pages",
+      "weight": 25,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "tenant_filter_binding",
+      "weight": 20,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "invalid_cursor",
+      "weight": 15,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "concurrent_insert_order",
+      "weight": 10,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "legacy",
+      "weight": 10,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    }
+  ],
+  "public_regression_pass": true,
+  "violations": [],
+  "new_tests": [
+    "tests/test_pagination.py"
+  ],
+  "start_utc": "2026-11-09T05:39:30.090698+00:00",
+  "start_kyiv": "2026-11-09T07:39:30.090698+02:00",
+  "server_load": [
+    2.87060546875,
+    3.36328125,
+    3.44384765625
+  ],
+  "model_tool_calls": 8,
+  "api_errors": 0,
+  "broker_retries": 0,
+  "semantic_retries": "UNKNOWN",
+  "provider_reported_cost": "UNKNOWN",
+  "invoice_cost": "UNKNOWN",
+  "quantization": "UNKNOWN",
+  "model_serving_revision": "UNKNOWN",
+  "reason": null,
+  "version": "2.4.6",
+  "harness_commit": "UNKNOWN wheel; release source tag fixed",
+  "api_cost_usage_tariff_usd": 0.003434556,
+  "claim_id": "PILOT-B-MiniSWE-01",
+  "evidence_url": "/evals/tvijo-eval-comms-radar-20261109/runs/B-MiniSWE-01.json",
+  "classification": "engineering_pilot",
+  "checked_on": "2026-11-09",
+  "limits": "480s; USD0.025 per slot; USD0.20 root",
+  "cost_class": "usage_times_verified_tariff; invoice UNKNOWN"
+}

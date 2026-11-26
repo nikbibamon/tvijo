@@ -56,6 +56,7 @@ const NAV_ROUTES: ReadonlyArray<{ groupIndex: number; items: NavRoute[] }> = [
     { href: '/workspace/models', icon: 'box', labelIndex: 3 },
     { href: '/workspace/apps', icon: 'plugins', labelIndex: 4, match: ['/workspace/apps', '/workspace/plugins'] },
     { href: '/workspace/reference', icon: 'book', labelIndex: 5 },
+    { href: '/workspace/knowledge', icon: 'book', labelIndex: 7 },
   ] },
   { groupIndex: 2, items: [
     { href: '/workspace/connections', icon: 'connections', labelIndex: 0 },

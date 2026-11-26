@@ -21,7 +21,7 @@ import {
 } from '@/lib/microsoft-auth';
 
 const API = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
-const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '639812511237-ih3lq07nt15shadrkdbnbai6jv8dp30r.apps.googleusercontent.com';
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || '383216921789-aehqalavgh6ubrh16989uk2a50jjt58u.apps.googleusercontent.com';
 
 async function readAuthError(res: Response, fallback: string) {
   try {

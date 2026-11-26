@@ -1078,3 +1078,103 @@ const ru: Translations = {
 };
 
 export default ru;
+
+export const portalNavigationCopy = {
+  "openWorkspace": "Открыть рабочее пространство",
+  "security": "Безопасность",
+  "products": "Продукты",
+  "research": "Исследования",
+  "skills": "Навыки",
+  "knowledge": "Знания",
+  "learn": "Обучение",
+  "overview": "Обзор продуктов",
+  "chat": "Чат Centavra",
+  "workspace": "Рабочее пространство DSHREM",
+  "extension": "Расширение и терминал",
+  "pricing": "Тарифы",
+  "demo": "Демо",
+  "compare": "Сравнение",
+  "atlas": "Model Atlas",
+  "trials": "Наши испытания",
+  "radar": "AI-радар",
+  "method": "Методика оценки",
+  "data": "Открытые данные",
+  "agentSkills": "Навыки агентов",
+  "axes": "Профили применения (оси политики)",
+  "wiki": "Вики",
+  "search": "Поиск по знаниям",
+  "technology": "Карта технологий",
+  "centavraLearn": "Обучение с Centavra",
+  "library": "Библиотека по работе с ИИ",
+  "guides": "Практические руководства",
+  "exercises": "Упражнения по работе с доказательствами",
+  "docs": "Документация терминала",
+  "tools": "Инструменты",
+  "knowledgeLearning": "Знания и обучение",
+  "companyHelp": "Компания и помощь",
+  "solutions": "Решения для команд",
+  "discuss": "Обсудить проект",
+  "faq": "Вопросы и ответы",
+  "login": "Аккаунт / вход",
+  "archive": "Архив дизайна · 18 октября 2026 (исторический)",
+  "changelog": "История изменений"
+};
+
+export const portalTeamLinks = [
+  {
+    "href": "/solutions/centavra/development",
+    "label": "Команды разработки"
+  },
+  {
+    "href": "/solutions/centavra/growth",
+    "label": "Рост и маркетинг"
+  },
+  {
+    "href": "/solutions/centavra/content",
+    "label": "SEO и контент"
+  },
+  {
+    "href": "/solutions/centavra/operations",
+    "label": "Сервисный бизнес"
+  },
+  {
+    "href": "/solutions/centavra/video",
+    "label": "AI Studio · сценарии"
+  },
+  {
+    "href": "/solutions/centavra/games",
+    "label": "Игровые команды"
+  },
+  {
+    "href": "/solutions/centavra/retail",
+    "label": "Розничная торговля"
+  },
+  {
+    "href": "/solutions/centavra/logistics",
+    "label": "Логистика"
+  },
+  {
+    "href": "/solutions/centavra/property",
+    "label": "Недвижимость"
+  },
+  {
+    "href": "/solutions/centavra/clinic",
+    "label": "Регистратура клиники"
+  },
+  {
+    "href": "/solutions/centavra/education",
+    "label": "Образование"
+  },
+  {
+    "href": "/solutions/centavra/agriculture",
+    "label": "Агробизнес"
+  },
+  {
+    "href": "/solutions/centavra/hospitality",
+    "label": "Гостиницы"
+  },
+  {
+    "href": "/solutions/centavra/field-service",
+    "label": "Выездной сервис"
+  }
+];

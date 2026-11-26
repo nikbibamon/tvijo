@@ -1,0 +1,105 @@
+{
+  "run_id": "B-Hermes-01",
+  "task": "B",
+  "harness": "Hermes",
+  "status": "FAIL",
+  "Q": 30,
+  "full_seconds": 54.14274201799999,
+  "harness_full_seconds": 52.51838040351868,
+  "worker_seconds": 52.15512063726783,
+  "startup_seconds": 23.128072500228882,
+  "package_verification_seconds": 0,
+  "verify_seconds": 0.20291410759091377,
+  "api_requests": 6,
+  "input_tokens": 50938,
+  "output_tokens": 4754,
+  "cache_read_tokens": 40448,
+  "reasoning_tokens": "UNKNOWN",
+  "requested_model": "deepseek-flash",
+  "returned_model": [
+    "deepseek-flash"
+  ],
+  "provider": "deepseek_official",
+  "endpoint": "https://api.deepseek.com/chat/completions",
+  "thinking": "disabled",
+  "effort": "none",
+  "max_output_tokens": 4096,
+  "context_conservative_bound": 65536,
+  "baseline_sha": "ffb2f416dd1fa7021fd70546e5578dc7f97b03f5",
+  "diff_sha256": "27e627b7010c7073644c0b355e0aa6e24abe19066e17141d54ffa35cac982137",
+  "human_assisted": false,
+  "criteria": [
+    {
+      "id": "contract_validation",
+      "weight": 20,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    },
+    {
+      "id": "stable_pages",
+      "weight": 25,
+      "mandatory": true,
+      "passed": false,
+      "error": "TypeError: can't concat str to bytes"
+    },
+    {
+      "id": "tenant_filter_binding",
+      "weight": 20,
+      "mandatory": true,
+      "passed": false,
+      "error": "TypeError: can't concat str to bytes"
+    },
+    {
+      "id": "invalid_cursor",
+      "weight": 15,
+      "mandatory": true,
+      "passed": false,
+      "error": "TypeError: can't concat str to bytes"
+    },
+    {
+      "id": "concurrent_insert_order",
+      "weight": 10,
+      "mandatory": true,
+      "passed": false,
+      "error": "TypeError: can't concat str to bytes"
+    },
+    {
+      "id": "legacy",
+      "weight": 10,
+      "mandatory": true,
+      "passed": true,
+      "error": null
+    }
+  ],
+  "public_regression_pass": false,
+  "violations": [],
+  "new_tests": [
+    "tests/test_pagination.py"
+  ],
+  "start_utc": "2026-11-09T05:40:09.675845+00:00",
+  "start_kyiv": "2026-11-09T07:40:09.675845+02:00",
+  "server_load": [
+    3.82275390625,
+    3.5458984375,
+    3.50146484375
+  ],
+  "model_tool_calls": 14,
+  "api_errors": 0,
+  "broker_retries": 0,
+  "semantic_retries": "UNKNOWN",
+  "provider_reported_cost": "UNKNOWN",
+  "invoice_cost": "UNKNOWN",
+  "quantization": "UNKNOWN",
+  "model_serving_revision": "UNKNOWN",
+  "reason": null,
+  "version": "v0.23.0",
+  "harness_commit": "2bd378ed1b8d6bf2192cb26e0a55ff3091e6bd19",
+  "api_cost_usage_tariff_usd": 0.004547244,
+  "claim_id": "PILOT-B-Hermes-01",
+  "evidence_url": "/evals/tvijo-eval-comms-radar-20261109/runs/B-Hermes-01.json",
+  "classification": "engineering_pilot",
+  "checked_on": "2026-11-09",
+  "limits": "480s; USD0.025 per slot; USD0.20 root",
+  "cost_class": "usage_times_verified_tariff; invoice UNKNOWN"
+}

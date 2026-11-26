@@ -1,0 +1,103 @@
+.lab { color: #e8f1fa; background: #07131f; border: 1px solid #2c4358; border-radius: 16px; padding: 30px; margin: 32px auto; max-width: 1440px; min-width: 0; line-height: 1.6; overflow-wrap: anywhere; }
+.lab *, .lab *::before, .lab *::after { box-sizing: border-box; }
+.lab h2, .lab h3, .lab p { margin-top: 0; }
+.lab h2, .lab h3 { color: #f1f7ff; line-height: 1.25; letter-spacing: -.02em; }
+.lab h2 { font-size: clamp(1.4rem, 2.5vw, 2rem); margin-bottom: 15px; }
+.lab h3 { font-size: 1.2rem; margin-bottom: 0; }
+.lab input, .lab button { font: inherit; }
+.lab :focus-visible { outline: 3px solid #a2ecf6; outline-offset: 4px; }
+.lab code { display: block; color: #b9dfe8; font-size: .78rem; line-height: 1.65; white-space: normal; overflow-wrap: anywhere; }
+.header > p { color: #aac3d5; font-size: .88rem; max-width: 1000px; margin-bottom: 25px; }
+.eyebrow { color: #7bd4df; font-weight: 700; font-size: .66rem; letter-spacing: .14em; display: block; margin-bottom: 13px; }
+.panel { padding: 24px; border: 1px solid #2d4b61; background: #0e2030; border-radius: 11px; margin-top: 20px; min-width: 0; }
+.panelHeading { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px; margin-bottom: 18px; }
+.panelHeading > div { min-width: 0; }
+.badge { display: inline-flex; border: 1px solid #6d633b; color: #e3d29a; background: #302b1b; border-radius: 5px; font-weight: 600; font-size: .6rem; letter-spacing: .05em; padding: 4px 7px; margin-bottom: 12px; }
+.unit { font-size: .7rem; color: #9ab7cb; padding-top: 5px; }
+.intro { color: #b8cddd; font-size: .85rem; }
+.lossLayout, .bayesLayout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 26px; align-items: start; }
+.inputs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 15px; }
+.lab label { display: flex; flex-direction: column; gap: 6px; color: #cee0ec; font-size: .79rem; font-weight: 600; min-width: 0; }
+.lab label > span { color: #9fb8cb; font-size: .69rem; font-weight: 400; }
+.lab input:not([type="range"]) { min-height: 43px; width: 100%; min-width: 0; background: #071827; border: 1px solid #3d5b72; border-radius: 7px; color: #edf5fc; padding: 10px; font-size: .9rem; }
+.lab input[aria-invalid="true"] { border-color: #d99e9e; }
+.rangeLabel { padding: 16px; margin-bottom: 20px; border: 1px solid #2f6977; border-radius: 8px; background: #12313e; }
+.rangeLabel > strong { color: #98f0dc; font-size: 1.5rem; }
+.lab input[type="range"] { accent-color: #7ce5c1; min-height: 32px; width: 100%; cursor: pointer; }
+.note { color: #9fb8cc; font-size: .73rem; margin: 17px 0 0; }
+.formulas { border-left: 2px solid #4c8d98; padding: 6px 0 6px 12px; margin-bottom: 18px; }
+.formulas code + code { margin-top: 8px; }
+.lossResults { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 17px; border: 1px solid #386a6d; border-radius: 8px; background: #113238; }
+.lossResults > div { min-width: 0; }
+.lossResults span { display: block; color: #b0d1d8; font-size: .72rem; }
+.lossResults strong { display: block; color: #8aefc5; font-size: 1.7rem; font-weight: 650; }
+.lossResults p { grid-column: 1 / -1; border-top: 1px solid #31585f; padding-top: 12px; margin: 0; color: #c1e0e2; font-size: .79rem; }
+.threshold { margin-top: 19px; padding: 16px; border: 1px solid #39556c; border-radius: 8px; background: #0b1c2b; }
+.threshold > strong { color: #badce8; font-size: .82rem; display: block; margin-bottom: 8px; }
+.threshold > p { color: #b1c8da; font-size: .75rem; margin: 12px 0 0; }
+.threshold .thresholdValue { color: #b2e5ed; font-size: 1.35rem; font-weight: 600; }
+.thresholdValue span { font-size: .8rem; color: #9ebdcc; }
+.error { border: 1px solid #795353; padding: 14px; border-radius: 7px; color: #efb9b5; font-size: .8rem; background: #342224; }
+.figure { padding: 22px 0 0; margin: 24px 0 0; border-top: 1px solid #2f4c63; }
+.figure > figcaption { font-size: .9rem; color: #cce4ef; font-weight: 600; }
+.legend { display: flex; flex-wrap: wrap; gap: 7px 20px; align-items: center; color: #a7c0d1; font-size: .72rem; margin-top: 12px; }
+.legend > span { display: inline-flex; gap: 7px; align-items: center; }
+.legend i { width: 19px; height: 3px; display: inline-block; }
+.autoSwatch { background: #79ddec; }
+.reviewSwatch { background: #8be8b5; }
+.thresholdLegend { color: #e1c58d; }
+.chart { display: block; width: 100%; height: auto; max-height: 350px; margin: 16px auto 0; background: #091a28; border: 1px solid #243e51; border-radius: 8px; }
+.axisText { fill: #9eb9cb; font-size: 11px; font-family: inherit; }
+.axisTitle { fill: #bed9e5; font-size: 11px; font-family: inherit; }
+.gridLine { stroke: #284357; stroke-width: .7; }
+.autoLine { stroke: #79ddec; stroke-width: 2.8; }
+.reviewLine { stroke: #8be8b5; stroke-width: 2.8; stroke-dasharray: 8 4; }
+.thresholdLine { stroke: #e1c58d; stroke-width: 1.3; stroke-dasharray: 3 4; }
+.currentLine { stroke: #c6dbed; stroke-width: 1; stroke-dasharray: 2 5; }
+.autoPoint { fill: #79ddec; stroke: #07131f; stroke-width: 2; }
+.reviewPoint { fill: #8be8b5; stroke: #07131f; stroke-width: 1.5; }
+.tableDetails { margin-top: 16px; }
+.tableDetails summary { cursor: pointer; color: #88dbe7; font-size: .79rem; padding: 7px 0; }
+.tableWrap { overflow-x: auto; }
+.tableWrap table { width: 100%; border-collapse: collapse; text-align: left; font-size: .79rem; margin-top: 8px; }
+.tableWrap caption { text-align: left; color: #96b2c7; font-size: .72rem; padding: 8px 0; }
+.tableWrap th, .tableWrap td { border-bottom: 1px solid #2b465c; padding: 10px 12px; }
+.tableWrap th { color: #c4dde9; font-weight: 600; }
+.tableWrap td { color: #b7d0de; font-variant-numeric: tabular-nums; }
+.tableWrap th span { color: #85dcca; font-size: .68rem; font-weight: 400; }
+.currentRow { background: #12333c; }
+.posterior { border: 1px solid #3b6172; background: #102c39; padding: 20px; border-radius: 9px; }
+.posteriorValue { display: block; color: #a1f0ce; font-size: 1.8rem; margin-top: 12px; line-height: 1.35; }
+.meanRow { margin-top: 19px; }
+.meanRow label { flex-direction: row; align-items: baseline; justify-content: space-between; gap: 12px; font-weight: 500; }
+.meanRow label strong { color: #c9eeec; font-size: 1rem; }
+.meanRow meter { display: block; width: 100%; height: 17px; margin: 7px 0 3px; accent-color: #73d6c5; }
+.meanRow meter::-webkit-meter-bar { background: #071925; border: 1px solid #35566a; border-radius: 4px; }
+.meanRow meter::-webkit-meter-optimum-value { background: #72ccbd; border-radius: 3px; }
+.meanRow meter::-moz-meter-bar { background: #72ccbd; }
+.meanRow code { color: #9fc3d5; font-size: .7rem; }
+.posterior > p { color: #adc9d8; font-size: .77rem; margin: 20px 0 0; }
+.scopeNote { color: #c8c8b7; font-size: .76rem; border-left: 2px solid #a59a64; padding: 9px 13px; margin: 23px 0 0; background: #342f1a1f; }
+@media (max-width: 850px) {
+  .lab { padding: 23px; }
+  .panel { padding: 20px; }
+  .lossLayout, .bayesLayout { grid-template-columns: 1fr; gap: 23px; }
+  .chart { max-height: none; }
+}
+@media (max-width: 430px) {
+  .lab { padding: 20px 12px; margin: 24px auto; border-radius: 12px; }
+  .lab h2 { font-size: 1.4rem; }
+  .lab h3 { font-size: 1.08rem; }
+  .panel { padding: 17px 13px; }
+  .inputs { grid-template-columns: 1fr; gap: 13px; }
+  .lab label > span { font-size: .73rem; }
+  .panelHeading { gap: 7px; }
+  .rangeLabel { padding: 13px; }
+  .posterior { padding: 17px 14px; }
+  .legend { font-size: .68rem; gap: 7px 13px; }
+  .tableWrap th, .tableWrap td { padding: 9px 6px; }
+  .tableWrap th span { display: block; }
+  .tableWrap table { font-size: .74rem; }
+  .lossResults { gap: 8px; padding: 14px; }
+  .lossResults strong { font-size: 1.5rem; }
+}

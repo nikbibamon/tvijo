@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // Bound release-build concurrency on the shared publication hosts.
+  experimental: { cpus: 1 },
   skipTrailingSlashRedirect: true,
   // Allows CI/verification builds to compile without clobbering the live
   // .next directory that the production server is serving from.
