@@ -28,7 +28,27 @@ export async function fetchPublicRelease(fresh=false):Promise<PublicExtensionRel
   try {
     const response = await fetch(RELEASE_URL,{...(fresh?{cache:'no-store' as const}:{next:{revalidate:60}}),signal:AbortSignal.timeout(4000),headers:{Accept:'application/json'}});
     if (!response.ok) return null;
-    const text = await response.text(); if(text.length>65536) return null;
-    return parsePublicRelease(JSON.parse(text));
+    // The upstream includes release history. Measure decoded bytes as they arrive.
+    const maxBytes = 256 * 1024;
+    const reader = response.body?.getReader();
+    if (!reader) return null;
+    const decoder = new TextDecoder();
+    let bytes = 0;
+    let text = '';
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        bytes += value.byteLength;
+        if (bytes > maxBytes) {
+          await reader.cancel();
+          return null;
+        }
+        text += decoder.decode(value, { stream: true });
+      }
+      return parsePublicRelease(JSON.parse(text + decoder.decode()));
+    } finally {
+      reader.releaseLock();
+    }
   } catch { return null; }
 }
