@@ -2,7 +2,6 @@ import type { Metadata } from 'next';
 import { loadPublicPricing, type PublicPricing } from '@/lib/tvijo-public-pricing';
 
 const PATHS = { en: '/en/for-business', ru: '/ru/for-business', uk: '/ua/' } as const;
-const WORKSPACE = 'https://platform.tvijo.com/';
 const HOTIDO_REQUEST = 'https://hotido.com/ua/b2b/it-services';
 type BusinessLocale = keyof typeof PATHS;
 
@@ -87,11 +86,12 @@ const panel = 'rounded-2xl border border-slate-200 bg-white p-5 sm:p-6 dark:bord
 const muted = 'text-slate-600 dark:text-slate-300';
 const link = 'text-blue-700 dark:text-sky-300 underline underline-offset-4';
 
-function Pricing({ rates, locale }: { rates: PublicPricing | null; locale: BusinessLocale }) {
+export function Pricing({ rates, locale, standalone = false }: { rates: PublicPricing | null; locale: BusinessLocale; standalone?: boolean }) {
+  const Heading = standalone ? 'h1' : 'h2';
   const copy = COPY[locale];
   return (
     <section className="py-8" aria-labelledby="token-prices">
-      <h2 id="token-prices" className="text-2xl font-semibold">{copy.pricesTitle}</h2>
+      <Heading id="token-prices" className="text-2xl font-semibold">{locale === 'uk' && !standalone ? <a href="/ua/pricing">{copy.pricesTitle}</a> : copy.pricesTitle}</Heading>
       <p className={`mt-2 ${muted}`}>{copy.pricesBasis}</p>
       {rates && (
         <p className={`mt-1 ${muted}`}>
@@ -145,7 +145,7 @@ export async function BusinessPage({ locale }: { locale: BusinessLocale }) {
           <div>
             <h1 className="break-words text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">{copy.title}</h1>
             <p className={`mt-4 max-w-xl text-lg ${muted}`}>{copy.summary}</p>
-            <a className="mt-6 inline-flex max-w-full rounded-lg bg-blue-700 px-5 py-3 text-center font-semibold text-white hover:bg-blue-800 dark:bg-sky-300 dark:text-slate-950 dark:hover:bg-sky-200" href={WORKSPACE}>
+            <a className="mt-6 inline-flex max-w-full rounded-lg bg-blue-700 px-5 py-3 text-center font-semibold text-white hover:bg-blue-800 dark:bg-sky-300 dark:text-slate-950 dark:hover:bg-sky-200" href={`/login?lang=${locale}`}>
               {copy.signIn}
             </a>
           </div>
