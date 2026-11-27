@@ -1,0 +1,114 @@
+{
+  "release": 14,
+  "deployed_at": "2026-11-27T16:01:43.272080+00:00",
+  "public_origin": "https://tvijo-crew-academy.be9ava.chatgpt.site",
+  "site_source": "6db840304cdf50c77e75022c9265c5a772a28c2b",
+  "version_id": "appgprj_6b08be8d319881918d089d9ce576a41f~appgver_118849970a7481918ff2b5dbebc07f92",
+  "game_commit": "20f42aa1b099572862b2c15fbd1b4ff33c2971f5",
+  "game_subtree": "68b5e0e794a0e538fba3d179c2a3ae932ac08617",
+  "worker_sha256": "b300e96877810b8cac2442cb881c47085e34918b4e9616029f5913876d2ff9b5",
+  "change": "One shared voice setting for campaign and all six rooms; on-screen feedback on a native TTS error; saved scenes restore silently.",
+  "before": {
+    "portrait_field_sound_controls": 0,
+    "landscape_field_sound_controls": 0,
+    "beacon_sound_controls": 0,
+    "clue_audio": "No call to the narrator in the expedition controller."
+  },
+  "browser": {
+    "preview": "Chrome, same running iframe resized from 390×844 to 844×390 and back (CSS pixels).",
+    "field_landscape_control_px": [
+      44,
+      44
+    ],
+    "beacon": [
+      "echo-power-shutters and power-echo-shutters both finished",
+      "wrong translation for the arcs, feedback, undo, correction, lens and return",
+      "chosen words survived rotation",
+      "reload restored the lens with 11 speech requests before and 11 after",
+      "after mute the request count remained 11 while performing clues"
+    ],
+    "greenhouse": {
+      "world": "Сады разведчиков",
+      "orders": [
+        "Разведать путь",
+        "Сверить сигналы",
+        "Вывести дрон"
+      ],
+      "dome_utterance_requests": 1,
+      "final": "Капсула на борту!",
+      "rotation": "portrait to landscape during autopilot"
+    },
+    "native_audio": {
+      "listed_voices": 0,
+      "browser_error": "synthesis-failed",
+      "physical_device_test": false,
+      "heard_audio": false
+    },
+    "production": [
+      "first-shift direct entry → call robot → get capsule → alphabet link",
+      "three hotspots visible; early shutters; both order sequences; wrong answer, undo and recovery",
+      "lens in Rift with six previously earned items, browser Back and reload retain it",
+      "muting and the actual native engine error message checked"
+    ]
+  },
+  "tests": {
+    "sites_node": {
+      "passed": 55,
+      "failed": 0
+    },
+    "git_node": {
+      "passed": 58,
+      "failed": 0
+    },
+    "local_fastapi": {
+      "passed": 3,
+      "failed": 0
+    },
+    "local_tvijor": {
+      "passed": 6,
+      "failed": 0
+    },
+    "server_fastapi": {
+      "ok": true,
+      "output": "3 passed, 1 warning in 3.38s",
+      "exit_code": 0
+    }
+  },
+  "server": {
+    "directory": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v14/game",
+    "receipt": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v14/VERIFIED.json",
+    "verified_at": "2026-11-27T16:03:17.106569+00:00",
+    "source_files": 156,
+    "worker_sha256": "b300e96877810b8cac2442cb881c47085e34918b4e9616029f5913876d2ff9b5",
+    "node": "v20.20.0",
+    "test_files": [
+      "tests/narration.test.mjs",
+      "tests/expedition.test.mjs",
+      "tests/expedition-grid.test.mjs",
+      "tests/expedition-machines.test.mjs"
+    ],
+    "worker_routes": {
+      "/": 200,
+      "/first-shift.html": 200,
+      "/expedition.html": 200,
+      "/voiceControls.js": 200,
+      "/expedition/main.js": 200,
+      "/expedition/art/beacon-idle.webp": 200,
+      "/expedition/art/beacon-open.webp": 200,
+      "/mailrun.html": 200,
+      "/tide-beacon.html": 200,
+      "/style.css": 200
+    }
+  },
+  "human_pilot": {
+    "sessions_recorded": 0,
+    "target": 5,
+    "source": "tvijor/releases/m1/evidence.json and tvijor/playtest-m1.md"
+  },
+  "open": [
+    "Actual acoustic playback through a Russian voice on a physical phone",
+    "Audio fallback when the browser cannot provide a voice",
+    "Two independent participants on actual devices, with consent",
+    "Separate biba2 public HTTPS and real Telegram launch"
+  ]
+}
