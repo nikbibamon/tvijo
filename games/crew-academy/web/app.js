@@ -17,6 +17,7 @@ const group=(cls,...children)=>{const g=el('div',cls);g.append(...children);retu
 const para=(t,cls='')=>el('p',cls,t);
 const modal=$('#modal'),body=$('#modal-body'),radio=$('#radio');
 let page='hq',mapId=state.level,busy=false,voiceDraft=false,spokenInto='',toastTimer,scoreText='',lastHint='',lastShownStage='',lastMessageList=null,activeModal='';
+let pilotEntry=false;
 let activeRelay=null,mobileRadio=false,finishedLevel=null,lastHints;
 const notice=$('#toast');
 const phoneLayout=matchMedia('(max-width: 800px), (orientation: landscape) and (max-height: 540px)');
@@ -60,6 +61,28 @@ function showMessages(){if(lastMessageList===chat)return;const oldCount=lastMess
 function crew(){const wrap=$('#crew');if(!wrap.children.length)for(const id of heroOrder){const h=heroes[id],b=el('button','crew-card');b.dataset.hero=id;b.type='button';b.style.setProperty('--hero-color',h.color);b.title=h.name+' · '+h.ability;b.setAttribute('aria-label','Выбрать: '+h.name+'. '+h.ability);b.append(picture('./art/crew/'+id+'.webp'),el('strong','',h.short||h.name),el('small','',h.role));b.onclick=async()=>{await setHero(id);field.setHero(id);};wrap.append(b);}
   [...wrap.children].forEach(b=>{const chosen=b.dataset.hero===state.hero;b.classList.toggle('selected',chosen);b.setAttribute('aria-pressed',chosen);});
   const h=heroes[state.hero];$('#selected-skill').replaceChildren(ii('zap'),group('',el('b','',h.name+' · '),document.createTextNode(h.ability)));}
+function choosePilot(){
+ const choices=group('pilot-choices');
+ for(const id of heroOrder){
+   const h=heroes[id],choice=action('',async()=>{await setHero(id);field.setHero(id);close();$('#pick-hero').focus();},'pilot-choice');
+   choice.setAttribute('aria-pressed',String(id===state.hero));choice.append(picture('./art/crew/'+id+'.webp'),group('',el('strong','',h.name),el('small','',h.ability)));
+   choices.append(choice);
+ }
+ openModal('Кто выходит на смену?',choices,'pilot-hero');
+}
+function homeBrief(){
+ const first=pilotEntry||(!state.completed.includes('dock')&&state.level==='dock');
+ const location=first?levels[0]:levels.find(l=>isOpen(l)&&!state.completed.includes(l.id))||currentLevel();
+ const level=first?location:state.completed.includes(state.level)?location:currentLevel(),hero=heroes[state.hero];
+ $('#replay-shift').hidden=first||!state.completed.includes('dock');
+ $('#mission-kicker').textContent=first?'Солнечный причал':'Экспедиция экипажа';
+ $('#mission-title').textContent=first?'Первая смена':level.name;
+ $('#mission-summary').textContent=first?'Грузовая капсула за поднятым мостом. Выбери героя и вызови Робота на переправу.':level.desc;
+ $('#cover-stop').textContent=levels.includes(level)?'Локация '+(levels.indexOf(level)+1)+' из '+levels.length:'Авторский мир';
+ $('#start-mission span').textContent=first?(doneFor('dock').length&&!state.completed.includes('dock')?'Вернуться на причал':'Начать смену'):'Продолжить вылазку';
+ $('#pick-portrait').src='./art/crew/'+state.hero+'.webp';$('#pick-name').textContent=hero.name;
+ $('#pick-hero').setAttribute('aria-label','Выбрать героя. Сейчас '+hero.name);
+}
 function routeCard(l){const here=state.level===l.id,cleared=state.completed.includes(l.id),opened=isOpen(l);const b=el('button','route-card'+(here?' current':''));b.append(picture('./art/'+l.art+'.webp'),group('',el('strong','',l.name),el('small','',cleared?'Пройдено':here?'Текущая локация':opened?'Доступно':'Разведка')),ii(cleared?'check':opened?'chev':'lock'));b.onclick=()=>{mapId=l.id;go('map');};return b;}
 function suggestions(){
   const l=currentLevel(),ready=readyTasks(l,doneFor()),box=$('#suggestions');box.replaceChildren();
@@ -96,6 +119,18 @@ function journal(){
  drawGraph();const filter=$('#log-filter').value;const list=state.log.filter(x=>filter==='all'||x.type===filter).slice(-20).reverse();const target=$('#log-list');if(!list.length)target.replaceChildren(el('li','','Здесь появятся выполненные приказы и найденные капсулы.'));else target.replaceChildren(...list.map(row=>{const li=el('li');li.append(el('time','',new Date(row.at).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})),document.createTextNode(row.text));return li;}));
  const scene=state.stages[state.level],digest=scene?.digest;$('#digest-text').textContent=digest?'Сводка после '+digest.turn+' приказов. Из последних пяти '+digest.blocks+' потребовали уточнения. '+digest.hint:'После пяти приказов появится сводка по реальным ходам этой миссии. Сейчас '+(scene?.turns||0)+' из 5.';}
 function fieldHud(){
+ const dock=!activeRelay&&state.level==='dock';
+ $('#field').classList.toggle('dock-run',dock);$('#dock-objective').hidden=!dock||!!finishedLevel;
+ if(dock){
+   const locked=!doneFor('dock').includes('bridge'),bar=$('#dock-objective');
+   bar.classList.toggle('bridge-online',!locked);
+   if(bar.dataset.phase!==(locked?'order':'pickup')){
+    bar.dataset.phase=locked?'order':'pickup';
+    $('#dock-state').textContent=locked?'Мост поднят':'Мост закреплён';
+    $('#dock-next').textContent=locked?'Робот ждёт твоего приказа.':'Возьми капсулу на другом берегу.';
+    $('#dock-radio').textContent=locked?'Закрепить мост':'Взять капсулу';
+   }
+ }
  $('#field-sparks').hidden=!!activeRelay;
  $('#mic-field').setAttribute('aria-label',activeRelay?'Канал напарника':'Открыть рацию экипажа');
  $('#mic-field span').textContent=activeRelay?'Напарник':'Рация';
@@ -109,7 +144,7 @@ function render(){
  $('#balance').textContent=state.balance;$('#wallet').setAttribute('aria-label','Кошелёк: '+state.balance+' демо-кредитов');const sound=$('#sound');sound.replaceChildren(ii(state.voice?'sound':'mute'));sound.setAttribute('aria-label',state.voice?'Выключить озвучку':'Включить озвучку');sound.setAttribute('aria-pressed',state.voice);
  const info=page==='field'?[fieldLevel().name,fieldLevel().tag+' · '+heroes[state.hero].name]:maps[page];$('#page-title').textContent=info[0];$('#page-sub').textContent=info[1];
  for(const nav of document.querySelectorAll('[data-page]')){const on=nav.dataset.page===page;nav.classList.toggle('active',on);if(on)nav.setAttribute('aria-current','page');else nav.removeAttribute('aria-current');}
- if(page==='hq'){crew();$('#home-route').replaceChildren(...levels.map(routeCard));$('#start-mission span').textContent=state.completed.length||doneFor().length?'Продолжить вылазку':'Начать вылазку';}
+ if(page==='hq'){crew();homeBrief();$('#home-route').replaceChildren(...levels.map(routeCard));}
  if(page==='map')renderMap();
  if(page==='field'){
    if(!activeRelay&&field.stageId&&field.stageId!==state.level)field.start(currentLevel(),state.hero);
@@ -119,19 +154,28 @@ function render(){
  if(page==='hq'||page==='field'){radioHud();showMessages();}
 }
 function go(next,hash=true){
+ if(hash)pilotEntry=false;
  if(!['hq','map','field','journal'].includes(next))next='hq';if(modal.open)close();if(page==='field'&&next!=='field'){field.leave();activeRelay=null;mobileRadio=false;}document.body.classList.toggle('in-field',next==='field');document.body.classList.toggle('field-radio-open',next==='field'&&mobileRadio);document.body.classList.toggle('pair-running',next==='field'&&!!activeRelay);if(next!==page){stopVoice();status('');voiceDraft=false;}
  finishedLevel=null;$('#field-result').hidden=true;$('#field').classList.remove('compact-result');
  page=next;for(const n of ['hq','map','field','journal'])$('#'+n).hidden=n!==page;
  if(page==='hq'||page==='field'){const dest=page==='hq'?$('#radio-home'):$('#radio-field');if(radio.parentElement!==dest)dest.append(radio);radio.hidden=false;}else radio.hidden=true;
- if(page==='map')track('open_map');if(page==='field'){track('field_start');field.start(fieldLevel(),state.hero);field.suspend(mobileRadio||modal.open);if(!mobileRadio&&!modal.open)$('#stage').focus({preventScroll:true});}
+ if(page==='map')track('open_map');if(page==='field'){track('field_start');if(!activeRelay&&state.level==='dock')track('shift_enter');field.start(fieldLevel(),state.hero);field.suspend(mobileRadio||modal.open);if(!mobileRadio&&!modal.open)$('#stage').focus({preventScroll:true});}
  if(hash&&location.hash!=='#'+page){history.pushState(null,'','#'+page);}
  render();window.scrollTo({top:0,behavior:'instant'});
 }
 async function launch(l,replay=false){if(activeRelay){activeRelay=null;field.forget();}if(!isOpen(l)){toast('Сначала пройди предыдущую миссию.');return;}if(replay){await resetStage(l);field.forget();}else if(state.level!==l.id){await setLevel(l);field.forget();}if(lastShownStage!==l.id){lastShownStage=l.id;const completedTasks=doneFor(l.id),remaining=readyTasks(l,completedTasks);const brief=!completedTasks.length?l.desc:remaining.length?'Экипаж уже на маршруте. Следующее поручение — '+moves[remaining[0]].name.toLowerCase()+'.':'Переправа готова. Забирай капсулу!';addLines([{who:l.tasks[0][0]==='bridge'?'robot':'tvijo',text:brief}]);}go('field');}
 function continueGame(){const l=currentLevel();if(state.completed.includes(l.id)){const next=levels.find(x=>isOpen(x)&&!state.completed.includes(x.id));return launch(next||l,!next);}return launch(l);}
-function launchRelay(run){activeRelay=run;mobileRadio=false;field.forget();go('field');}
+function launchRelay(run){activeRelay=run;mobileRadio=false;field.forget();go('field',!run.beaconCode);if(run.beaconCode)history.replaceState(null,'','#beacon/'+run.beaconCode);}
 function overlay(title,txt,controls,option){const card=group('',el('h2','',title),para(txt),group('actions',...controls));if(option)card.append(option);$('#field-overlay').replaceChildren(card);$('#field-overlay').hidden=false;}
 function showFinish(l){
+ if(l.id==='dock'){
+   $('#field-overlay').hidden=true;$('#dock-objective').hidden=true;$('#field').classList.add('compact-result');
+   const panel=$('#field-result');panel.hidden=false;
+   const win=group('shift-finish',picture('./art/badges/capsule.webp',''),group('',el('h2','','Капсула на борту!'),para('Следующий маршрут — Кристальный разлом. Или позови друга: один считает три импульса, второй повторит их на маяке.')));
+   const buttons=group('shift-finish-actions',action('Продолжить кампанию',()=>launch(levels[1]),'btn primary','play'),action('Пригласить друга в Парный маяк',()=>club.open('beacon'),'btn secondary','users'));
+   const more=el('details','result-more');more.append(el('summary','','Награды и мастерская'),group('actions',action('Награды экипажа',openAwards,'btn secondary','award'),action('Нарисовать мир',openWorkshop,'btn secondary','spark')));
+   panel.replaceChildren(win,buttons,more);return;
+ }
  const idx=levels.indexOf(l),next=idx>=0?levels[idx+1]:null;
  const title=l.id==='beacon'?'Маяк ответил!':'Капсула на борту!';
  const advance=next?action('Дальше: '+next.name,()=>launch(next),'btn primary','play'):null;
@@ -155,7 +199,7 @@ function showFinish(l){
 }
 const field=createField({
  spark:collectSpark,relayTerminal:()=>terminal.arrive(),order:async(level,id,automatic)=>{const r=await fieldOrder(level,id,automatic);if(r?.reply&&page==='field'&&state.level===level&&!activeRelay)speech(r.reply.lines[0].text);return r;},fell:n=>{write(s=>{s.tallies.falls++;note(s,'field','Возвращение на контрольную точку · бесплатно');});if(n===2)addLines([{who:'plane',text:'Вижу точку посадки! Коснись платформы или подойди и нажми прыжок. Подскажу бесплатно.'}]);},
- won:async id=>{const ok=await complete(id);if(ok)track('capsule');return ok;},
+ won:async id=>{const ok=await complete(id);if(ok){track('capsule');if(id==='dock')track('shift_capsule');}return ok;},
  finish:l=>{finishedLevel=l;showFinish(l);addLines([{who:'captain',text:l.id==='beacon'?'«Станция вызывает экипаж!» Мы всё-таки нашли источник. Хорошая работа.':'Капсула у нас. Следующий маршрут выбираешь ты.'}]);},
  pauseMenu:(resume,warp)=>{const options=[action('Продолжить',resume,'btn primary','play'),action('В штаб',()=>go('hq'))];if(!activeRelay&&!state.completed.includes(state.level))options.push(action('К реле · 10 демо',async e=>{const b=e.currentTarget;b.disabled=true;if(await rewind(state.level))warp();else{toast('Недостаточно демо-кредитов. Продолжить можно бесплатно.');b.disabled=false;}}));overlay('Пауза','Окно связи приостановлено.',options,hintOption());}
 });
@@ -224,7 +268,10 @@ function report(){
  openModal('Отчёт для родителей',[group('report-intro',picture('./art/crew/crew.webp','Семь героев экипажа Tvijo'),para('Результаты этого браузера за все смены. Счётчики растут только после игровых действий.')),row('Приказы с исполнителем, действием и целью',t.clear),row('Шаги с выполненными зависимостями',t.chains),row('Сверки показаний двух агентов',t.verified),row('Приказы голосом',t.voice),row('Собрано капсул в разных локациях',state.completed.length),row('Потрачено учебных кредитов',t.spend),row('Бесплатные ответы из памяти / резервные',t.cache+' / '+t.fallback),group('actions',action('Учебный баланс',wallet,'btn secondary','gem')),group('pilot',el('h3','','Тест первой минуты'),consentControl(showPilot),para(Object.entries(localFunnel()).filter(([,s])=>s<=60).length+' разных действий в первую минуту этой сессии.','subtle'),pilotSummary)],'report');showPilot();
 }
 $('#parent-report').onclick=report;$('#math-details').onclick=()=>{const s=state.stages[state.level],d=s?.digest||tacticalDigest(currentLevel(),doneFor(),[]);openModal('Как экипаж выбирает путь',[para('Граф сверху показывает, какие шаги должны завершиться до следующей команды. Ошибочные приказы остаются в журнале.'),para('Каждые пять приказов компьютер считает число уточнений. В учебной модели есть два маршрута и два состояния помех. Числа в таблице — очки за выбор пути.'),group('mono',document.createTextNode('                 Тихо    Эхо\nПрямой путь       '+d.matrix[0][0]+'       '+d.matrix[0][1]+'\nОбход             '+d.matrix[1][0]+'       '+d.matrix[1][1])),para('Минимакс для этой матрицы: выбрать прямой путь в '+Math.round(d.eq.route*100)+'% раундов при повторной игре. Это доля стратегии, а не вероятность выиграть миссию.'),para(s?.digest?'Наблюдения: '+d.sample+' ходов, '+d.blocks+' уточнений.':'Пока показана исходная матрица, до первого пакета из пяти приказов.','subtle')],'math');};
-$('#log-filter').onchange=journal;$('#start-mission').onclick=continueGame;
+$('#log-filter').onchange=journal;$('#pick-hero').onclick=choosePilot;
+$('#replay-shift').onclick=()=>{pilotEntry=true;history.pushState(null,'','#first-shift');go('hq',false);$('#start-mission').focus({preventScroll:true});};
+$('#start-mission').onclick=()=>{if(pilotEntry){pilotEntry=false;return launch(levels[0],state.completed.includes('dock'));}return continueGame();};
+$('#dock-radio').onclick=()=>{if(doneFor('dock').includes('bridge'))field.pickup();else field.issue('bridge');$('#stage').focus({preventScroll:true});};
 for(const b of document.querySelectorAll('[data-page],[data-goto]'))b.onclick=()=>{const n=b.dataset.page||b.dataset.goto;if(n==='field')continueGame();else go(n);};
 for(const b of document.querySelectorAll('[data-workshop]'))b.onclick=openWorkshop;
 const club=createClub({el,group,para,action,avatar,ii,openModal,isOpen:()=>activeModal==='club'&&modal.open,toast,playRelay:launchRelay,playCampaign:continueGame,showWorld:async code=>{const spec=decodeWorld(code);if(spec){await importWorld(spec);go('map');worldResult({spec,level:worldLevel(spec),cost:0});}}});
@@ -233,10 +280,14 @@ document.querySelectorAll('[data-awards]').forEach(b=>b.onclick=openAwards);
 document.querySelectorAll('[data-invite]').forEach(b=>b.onclick=()=>club.open('invite'));
 $('#crew-link').onclick=$('#league-link').onclick=()=>club.open('rank');$('#duet-link').onclick=()=>club.open('duet');
 function locationPage(){const h=location.hash.slice(1);
+ pilotEntry=h==='first-shift';
+ if(pilotEntry||h==='hq'||!h)track('shift_hq');
+ if(pilotEntry){go('hq',false);return;}
+ if(h==='beacon'||h.startsWith('beacon/')){go('hq',false);club.open('beacon',h==='beacon'?null:h.slice(7));return;}
  if(h==='workshop'||h==='awards'||h==='invite'||/^r\/[0-9a-f]{32}$/.test(h)){
    go('hq',false);if(h==='workshop')openWorkshop();else if(h==='awards')openAwards();else club.open('invite',h.startsWith('r/')?h.slice(2):null);return;
  }
  if(h.startsWith('mission/')){const level=levels.find(l=>l.id===h.slice(8));if(level&&isOpen(level)){launch(level);return;}if(level)mapId=level.id;go('map');return;}
  if(h==='duet'||h==='players'){go('hq',false);club.open(h==='duet'?'duet':'rank');return;}if(/^crew\/[0-9a-f]{32}$/.test(h)){go('hq',false);club.open('peer',h.slice(5));return;}if(h.startsWith('tvijo=')){go('hq',false);club.finish(h.slice(6));return;}if(h.startsWith('w/')){const spec=decodeWorld(h.slice(2));if(!spec){go('map',false);toast('Код мира не распознан.');return;}importWorld(spec).then(()=>{go('map',false);worldResult({spec,level:worldLevel(spec),cost:0});});return;}go(h||'hq',false);}
-window.addEventListener('popstate',locationPage);window.addEventListener('hashchange',()=>{if(!location.hash.startsWith('#w/')&&location.hash.slice(1)!==page)locationPage();});
+window.addEventListener('hashchange',locationPage);
 bus.addEventListener('change',render);bus.addEventListener('chat',showMessages);populate();$('#radio-home').append(radio);locationPage();

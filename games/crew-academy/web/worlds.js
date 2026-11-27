@@ -38,11 +38,11 @@ export function layout(level){
       const half=39+((s.seed>>>(i*4))%13);
       return [center-half,center+half,g-25-i*13-((s.seed>>>(i*3))%9)];
     });
-  }else if(dock)ledges=[[329,417,g-31],[450,658,g-63]];
+  }else if(dock)ledges=[[203,305,g],[505,681,g-28]];
   else if(level.id==='greenhouse')ledges=[[338,427,g-32],[500,609,g-60],[667,752,g-29],[785,899,g-66]];
   else if(level.id==='foundry')ledges=[[320,420,g-34],[674,758,g-36],[785,899,g-72]];
   else ledges=[[677,761,g-30],[785,899,g-58]];
-  const gap=level.art==='rift'?[408,610]:level.art==='foundry'?[449,641]:null;
+  const gap=dock?[305,505]:level.art==='rift'?[408,610]:level.art==='foundry'?[449,641]:null;
   const jumpGap=s?[228,296+((s.seed>>>8)%22)]:level.id==='greenhouse'||level.id==='foundry'?[210,281]:null;
   const ground=[];let start=0;
   for(const cut of [jumpGap,gap].filter(Boolean)){ground.push([start,cut[0],g]);start=cut[1];}ground.push([start,960,g]);

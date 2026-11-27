@@ -102,11 +102,12 @@ export async function turn(raw,voice=false,preset=null,automatic=false){
   });
   if(settled.discarded)return settled;if(!automatic&&(cache||preset)&&reply.changes.length)recordLocalOrder(pkt);addLines(reply.lines);if(state.balance===0||source==='training')track('out_of_credits');
   if(!automatic){
+    if(l.id==='dock'&&reply.changes.includes('bridge'))track('shift_bridge');
     if(!preset)track('command_sent');if(voice)track('voice_command');if(reply.changes.length)track('task_done');
     if(reply.chain)track('dependency_done');if(reply.changes.includes('compare'))track('crosscheck');
   }return settled;
 }
-const allowedEvents=new Set(['open_map','mic_click','command_sent','task_done','dependency_done','crosscheck','voice_command','field_start','capsule','workshop_open','world_created','out_of_credits','wallet_open','buy_click','demo_refill']);
+const allowedEvents=new Set(['open_map','mic_click','command_sent','task_done','dependency_done','crosscheck','voice_command','field_start','capsule','workshop_open','world_created','out_of_credits','wallet_open','buy_click','demo_refill','shift_hq','shift_enter','shift_bridge','shift_capsule','beacon_share_open','beacon_invite_open','beacon_pair_accept']);
 function firsts(){try{return JSON.parse(sessionStorage.getItem('tvijo.crew.funnel')||'{}');}catch{return {};}}
 let first=firsts(),start=performance.timeOrigin;try{const saved=sessionStorage.getItem('tvijo.crew.start');if(saved)start=+saved;else sessionStorage.setItem('tvijo.crew.start',String(start));}catch{}
 let posting=Promise.resolve();const sent=new Set();

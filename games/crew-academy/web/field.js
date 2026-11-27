@@ -1,3 +1,4 @@
+import {drawDockBridge} from './dockBridge.js';
 import {heroes,moves} from './catalog.js';
 import {layout} from './worlds.js';
 import {state,doneFor} from './tvijoService.js';
@@ -10,6 +11,7 @@ export function createField(ui){
   const imgs=new Map(),keys=new Set(),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   let level,route,hero,started=false,paused=false,ended=false,blocking=false,suspended=false,raf,last=0,clock=0,elapsed=0,x=55,y=0,vy=0,grounded=true,target=null,falls=0,shield=false,checkpoint=55,stamp=0,msgTill=0,camera=0,scale=1,camY=0,airGrace=0,jumpBuffer=0,face=1,windowShown=false;
   let stride=0, running=false, relay=false, atTerminal=false, touchDirections=[], sparks=new Set(), motes=[];
+  let bridgeProgress=0,bridgeSignal=0,pickupRequested=false;
   let outing=0,issuing=null,courier=0,pilot=false,nextOrder=0,team=[],aimedSpark=-1;
   const pilotButton=document.querySelector('#pilot-toggle'),pilotCaption=document.querySelector('#pilot-toggle span');
   function setPilot(on){
@@ -43,7 +45,7 @@ export function createField(ui){
   function start(l,h){
     const same=level?.id===l.id&&started&&!ended;
     level=l;hero=h;relay=l.id.startsWith('pair-');route=layout(l);load(l.art);loadRunner(h);team=companionsFor(l);for(const member of team)loadRunner(member);['deck','cell','relay','wraith'].forEach(a=>load(a));
-    if(!same){outing++;issuing=null;courier=0;setPilot(false);nextOrder=0;stride=0;face=1;atTerminal=false;sparks=new Set(relay?[]:state.stages[l.id]?.sparks||[]);clearDust();clock=0;elapsed=0;ended=false;blocking=false;falls=0;checkpoint=55;shield=!!props().shield;windowShown=false;status.textContent='';spawn();}started=true;paused=false;last=0;overlay.hidden=true;run();draw();
+    if(!same){bridgeProgress=l.id==='dock'&&opened()?1:0;bridgeSignal=0;pickupRequested=false;outing++;issuing=null;courier=0;setPilot(false);nextOrder=0;stride=0;face=1;atTerminal=false;sparks=new Set(relay?[]:state.stages[l.id]?.sparks||[]);clearDust();clock=0;elapsed=0;ended=false;blocking=false;falls=0;checkpoint=55;shield=!!props().shield;windowShown=false;status.textContent='';spawn();}started=true;paused=false;last=0;overlay.hidden=true;run();draw();
   }
   function leave(){outing++;issuing=null;courier=0;setPilot(false);blocking=false;clearMovement();paused=true;if(raf)cancelAnimationFrame(raf);raf=0;}
   function suspend(v){suspended=v;clearMovement();last=0;if(!v){if(pilot&&route)target=route.goal;run();}}
@@ -87,7 +89,7 @@ export function createField(ui){
       const next=readyTasks(level,doneFor(level.id))[0];
       speak(next?'Готово. Теперь — '+moves[next].name.toLowerCase()+'.':'Путь открыт. Прыгай к золотой капсуле.');
       if(!next&&level.id==='mine'&&x>=route.ledges.at(-1)[0]-25){requestPickup();return;}
-      if(!next&&Math.abs(x-route.goal)<(props().reach||50)+10){
+      if(level.id!=='dock'&&!next&&Math.abs(x-route.goal)<(props().reach||50)+10){
         if(touchingGoal(true))await collect(true);else autoGoal();
       }
     }catch{if(ticket===outing)speak('Приказ не прошёл. Нажми ещё раз.');}
@@ -128,6 +130,7 @@ export function createField(ui){
   }
   function requestPickup(){
     if(ended||paused||suspended||courier||blocking)return;
+    pickupRequested=true;
     if(touchingGoal(true)){atTerminal=false;collect(true);return;}
     // Once rescued, the scout can retrieve the cell from either side of the last shelf.
     if(level.id==='mine'&&opened()&&x>=route.ledges.at(-1)[0]-25){
@@ -165,6 +168,11 @@ export function createField(ui){
     if(courier){
       courier+=dt;if(courier>=1.05){courier=0;collect(true,true);}return;
     }
+    if(level.id==='dock'&&active&&bridgeProgress<1){
+      if(bridgeProgress===0){bridgeSignal=reduce?0:1;if(!reduce)globalThis.navigator?.vibrate?.(14);}
+      bridgeProgress=reduce?1:Math.min(1,bridgeProgress+dt*1.7);
+    }
+    bridgeSignal=Math.max(0,bridgeSignal-dt);
     if(pilot){
       if(!active&&!issuing&&clock>=nextOrder){
         const next=readyTasks(level,doneFor(level.id))[0];
@@ -181,7 +189,8 @@ export function createField(ui){
     const distance=guided?Math.min(Math.abs(aim-x),220*dt):220*dt;
     x=clamp(x+direction*distance,15,W-15);
     // Only an actual, unbridged drop has a safety stop at its lip. Airborne runners stay free.
-    if(!active&&route.gap&&(guided||grounded&&y>=level.floor-2)){
+    const walkable=active&&(level.id!=='dock'||bridgeProgress>=1);
+    if(!walkable&&route.gap&&(guided||grounded&&y>=level.floor-2)){
       const [left,right]=route.gap;
       if(px<=left-8&&x>left-8)x=left-8;
       if(px>=right+8&&x<right+8)x=right+8;
@@ -192,7 +201,7 @@ export function createField(ui){
       }
     }
     vy+=G*(props().glide&&vy>0?.74:1)*dt;y+=vy*dt;const oldGround=grounded;grounded=false;
-    const platforms=[...route.ground,...route.ledges];if(active&&level.id==='dock')platforms.push([408,458,level.floor-32]);if(active&&route.gap)platforms.push([route.gap[0]-4,route.gap[1]+4,level.floor]);
+    const platforms=[...route.ground,...route.ledges];if(walkable&&route.gap)platforms.push([route.gap[0]-4,route.gap[1]+4,level.floor]);
     if(vy>=0){let top=Infinity;for(const [a,b,t] of platforms)if(x>=a&&x<=b&&py<=t+1&&y>=t)top=Math.min(top,t);
       if(Number.isFinite(top)){y=top;vy=0;grounded=true;airGrace=.1;}}
     running=grounded&&Math.abs(x-px)>.002;
@@ -211,7 +220,9 @@ export function createField(ui){
     if(shadowAwake()&&clock-stamp>1.8&&Math.abs(x-(590+48*Math.sin(clock*.9)))<23&&y>level.floor-23){
       if(guided){vy=-420;grounded=false;stamp=clock;}else {fall();return;}}
     if(y>H+44){fall();return;}
-    if(active&&touchingGoal()&&(!relay||state.showHints||guided))collect();
+    if(active&&level.id==='dock'){
+      if((pilot||pickupRequested)&&touchingGoal(true))collect(true);
+    }else if(active&&touchingGoal()&&(!relay||state.showHints||guided))collect();
   }
   function sprite(key,cx,base,h,w=null){const im=imgs.get(key);if(!im?.complete||!im.naturalWidth)return;const width=w||h*im.naturalWidth/im.naturalHeight;c.drawImage(im,cx-width/2,base-h,width,h);}
   function drawKey(cx,cy){
@@ -225,12 +236,14 @@ export function createField(ui){
     if(!started||!canvas.clientWidth)return;const ratio=Math.min(2,devicePixelRatio||1),sw=canvas.clientWidth,sh=canvas.clientHeight;
     if(Math.abs(canvas.width-sw*ratio)>1||Math.abs(canvas.height-sh*ratio)>1){canvas.width=Math.round(sw*ratio);canvas.height=Math.round(sh*ratio);}
     c.setTransform(canvas.width/sw,0,0,canvas.height/sh,0,0);c.clearRect(0,0,sw,sh);scale=Math.max(sw/W,sh/H);
-    camera=clamp(x-sw/scale*.37,0,Math.max(0,W-sw/scale));camY=Math.max(0,(H-sh/scale)*.57);c.scale(scale,scale);c.translate(-camera,-camY);
+    if(level.id==='dock')scale=Math.min(scale,sw/(route.goal+68));
+    camera=clamp(x-sw/scale*.37,0,Math.max(0,W-sw/scale));camY=level.id==='dock'?(H-sh/scale)*.57:Math.max(0,(H-sh/scale)*.57);c.scale(scale,scale);c.translate(-camera,-camY);
     const bg=imgs.get(level.art);drawBackdrop(c,level,bg);
     const active=opened(),b=reduce?0:Math.sin(clock*3)*2,g=level.floor;
     for(const [a,bx] of [route.jumpGap,level.art==='foundry'?route.gap:null].filter(Boolean)){const pit=c.createLinearGradient(0,g-1,0,H);pit.addColorStop(0,'#322039');pit.addColorStop(.55,'#21182e');pit.addColorStop(1,level.theme==='lava'?'#df804c':'#7253ae');c.fillStyle=pit;c.fillRect(a,g-2,bx-a,H-g+2);c.strokeStyle='#d6a6e8';c.lineWidth=2;c.strokeRect(a+1,g-1,bx-a-2,4);}
-    for(const [a,z,t] of route.ledges)deck(a,z,t);if(route.gap&&active)deck(route.gap[0]-4,route.gap[1]+4,g);if(active&&level.id==='dock')deck(408,458,g-32);
-    if(!active&&route.gap){const gate=route.gate;const beam=c.createLinearGradient(gate-9,0,gate+9,0);beam.addColorStop(0,'#b283fc00');beam.addColorStop(.5,'#edd1ffdc');beam.addColorStop(1,'#b283fc00');c.fillStyle=beam;c.fillRect(gate-9,g-116,18,116);sprite('relay',gate-14,g+1,30);}
+    for(const [a,z,t] of route.ledges)deck(a,z,t);if(level.id==='dock')drawDockBridge(c,route,g,bridgeProgress,bridgeSignal,{x,y});
+    else if(route.gap&&active)deck(route.gap[0]-4,route.gap[1]+4,g);
+    if(!active&&route.gap&&level.id!=='dock'){const gate=route.gate;const beam=c.createLinearGradient(gate-9,0,gate+9,0);beam.addColorStop(0,'#b283fc00');beam.addColorStop(.5,'#edd1ffdc');beam.addColorStop(1,'#b283fc00');c.fillStyle=beam;c.fillRect(gate-9,g-116,18,116);sprite('relay',gate-14,g+1,30);}
     if(shadowAwake())sprite('wraith',590+48*Math.sin(clock*.9),g-2+b,49);
     if(!ended&&(!courier||courier<.53)){
       const glow=c.createRadialGradient(route.goal,route.goalY-18,1,route.goal,route.goalY-18,32);
@@ -241,7 +254,7 @@ export function createField(ui){
     syncActionLabel(nearby);
     if(!courier&&!ended){
       if(active)drawKey(route.goal,route.goalY-(relay?69:54));
-      else if(state.showHints){
+      else if(state.showHints||level.id==='dock'){
         c.save();c.font='bold 11px Rubik, sans-serif';c.textAlign='center';c.textBaseline='middle';
         const label='КАПСУЛА',ly=route.goalY-54,width=c.measureText(label).width+14;
         c.fillStyle='#2d2231';c.fillRect(route.goal-width/2,ly-8,width,16);
@@ -273,6 +286,10 @@ export function createField(ui){
       if(air&&done.includes('scan')&&!following){
         c.fillStyle='#85f0d32e';c.beginPath();c.moveTo(cx,cy);c.lineTo(cx-25,g-3);c.lineTo(cx+25,g-3);c.fill();
       }
+      if(level.id==='dock'){
+        cx=route.gap[0]-22;
+        cy=g;
+      }
       const size=air?43:66,frame=!air&&following&&running?1+Math.floor(stride/20)%2:0;
       c.drawImage(actor,frame*128,0,128,128,cx-size/2,cy-size,size,size);
       if(carrying)sprite('cell',cx,cy+11,20);
@@ -286,6 +303,9 @@ export function createField(ui){
   function tick(t){raf=0;if(paused||ended||suspended||!started)return;let dt=Math.min(.4,(t-(last||t))/1000);last=t;while(dt>0.00001&&!blocking&&!ended){const d=Math.min(dt,1/90);step(d);dt-=d;}draw();run();}
   function key(e,down){
     if(!started||document.querySelector('#field').hidden||document.querySelector('dialog[open]')||e.isComposing||e.target.closest?.('input:not([type=checkbox]),textarea,select,[contenteditable=true]')||e.altKey||e.ctrlKey||e.metaKey)return;
+    if(down&&!e.repeat&&/^Digit[1-3]$/.test(e.code)&&!paused&&!suspended&&!ended&&!relay){
+      const task=readyTasks(level,doneFor(level.id))[Number(e.code.at(-1))-1];if(task){e.preventDefault();issue(task);}return;
+    }
     if(e.code==='Escape'&&down&&!e.repeat){pause();return;}
     const names={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',Space:'jump',ArrowUp:'jump',KeyW:'jump',KeyE:'use'};const move=names[e.code]||(/^[eеу]$/iu.test(e.key||'')?'use':null);
     if(!move||paused||ended||suspended)return;
@@ -302,8 +322,9 @@ export function createField(ui){
     if(ended||paused||suspended||blocking||courier)return;
     canvas.focus({preventScroll:true});const r=canvas.getBoundingClientRect();
     const dest=clamp(camera+(e.clientX-r.left)/scale,16,W-16),yy=camY+(e.clientY-r.top)/scale;
+    if(level.id==='dock'&&!opened()&&dest>=route.gap[0]-60&&dest<=route.gap[1]+8&&yy>=level.floor-120&&yy<=level.floor+10){issue('bridge');return;}
     if(Math.abs(dest-route.goal)<42&&yy>=route.goalY-(relay?87:77)&&yy<=route.goalY+20){
-      if(opened())requestPickup();else {autoGoal();const next=readyTasks(level,doneFor(level.id))[0];if(next)issue(next);}
+      if(opened())requestPickup();else if(level.id==='dock'){speak('Сначала вызови Робота к мосту.');}else {autoGoal();const next=readyTasks(level,doneFor(level.id))[0];if(next)issue(next);}
       return;
     }
     if(!relay){
@@ -319,5 +340,5 @@ export function createField(ui){
   };
   document.querySelector('#pause').onclick=pause;document.querySelector('#field-target').onclick=()=>{stopPilot();if(opened())requestPickup();else autoGoal();};
   pilotButton.onclick=()=>{if(pilot){stopPilot();speak('Управление у тебя.',1);}else startPilot();};
-  new ResizeObserver(draw).observe(canvas);return {start,leave,suspend,draw,resume,warp,issue,startPilot,forget(){started=false;leave();},get stageId(){return started?level.id:null;},get active(){return started&&!ended;},setHero(h){hero=h;loadRunner(h);}};
+  new ResizeObserver(draw).observe(canvas);return {start,leave,suspend,draw,resume,warp,issue,pickup:requestPickup,startPilot,forget(){started=false;leave();},get stageId(){return started?level.id:null;},get active(){return started&&!ended;},setHero(h){hero=h;loadRunner(h);}};
 }
