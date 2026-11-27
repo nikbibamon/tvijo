@@ -6,7 +6,7 @@ import {handleAPI} from '../server/pilot.js';
 const dir=new URL('../web/',import.meta.url),{DB}=await openCrewDB();
 const opt=name=>{const idx=process.argv.indexOf(name);return idx<0?null:process.argv[idx+1];};
 const port=Number(opt('--port')||process.env.PORT||5173),host=opt('--host')||process.env.HOST||'0.0.0.0';
-const mime={html:'text/html',css:'text/css',js:'text/javascript',webp:'image/webp',png:'image/png',woff:'font/woff'};
+const mime={html:'text/html',css:'text/css',js:'text/javascript',webp:'image/webp',png:'image/png',woff:'font/woff',mp3:'audio/mpeg'};
 http.createServer(async(req,res)=>{try{
  const forwarded=req.headers['x-forwarded-proto']||'http';
  const u=new URL(req.url,process.env.TVIJO_PUBLIC_ORIGIN||forwarded+'://'+(req.headers['x-forwarded-host']||req.headers.host));

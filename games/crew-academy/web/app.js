@@ -178,7 +178,7 @@ function go(next,hash=true){
 }
 async function launch(l,replay=false,changeAddress=true){if(activeRelay){activeRelay=null;field.forget();}if(!isOpen(l)){toast('Сначала пройди предыдущую миссию.');return;}if(replay){await resetStage(l);field.forget();}else if(state.level!==l.id){await setLevel(l);field.forget();}if(lastShownStage!==l.id){silenceRadio();lastShownStage=l.id;const completedTasks=doneFor(l.id),remaining=readyTasks(l,completedTasks);const brief=!completedTasks.length?l.desc:remaining.length?'Экипаж уже на маршруте. Следующее поручение — '+moves[remaining[0]].name.toLowerCase()+'.':'Переправа готова. Забирай капсулу!';addLines([{who:l.tasks[0][0]==='bridge'?'robot':'tvijo',text:brief}]);}go('field',changeAddress);}
 function continueGame(){const resume=state.level==='dock'&&resolveLevel(state.resumeAfterShift);if(resume&&isOpen(resume)&&!state.completed.includes(resume.id))return launch(resume);const l=currentLevel();if(state.completed.includes(l.id)){const next=levels.find(x=>isOpen(x)&&!state.completed.includes(x.id));return launch(next||l,!next);}return launch(l);}
-function launchRelay(run){activeRelay=run;mobileRadio=false;field.forget();go('field',!run.beaconCode);if(run.beaconCode)history.replaceState(null,'','#beacon/'+run.beaconCode);}
+function launchRelay(run){silenceRadio();activeRelay=run;mobileRadio=false;field.forget();go('field',!run.beaconCode);if(run.beaconCode)history.replaceState(null,'','#beacon/'+run.beaconCode);}
 function overlay(title,txt,controls,option){const card=group('',el('h2','',title),para(txt),group('actions',...controls));if(option)card.append(option);$('#field-overlay').replaceChildren(card);$('#field-overlay').hidden=false;}
 function showFinish(l){
  if(l.id==='dock'){

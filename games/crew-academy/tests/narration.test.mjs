@@ -57,3 +57,93 @@ test('native audio failures are reported once per failed line and canceled callb
   createNarrator({}, Date.now, value => events.push(value)).say('Шлюз.');
   assert.deepEqual(events, [false, true, false]);
 });
+
+function mockAudio(voices = [], load = async () => new Uint8Array(12).buffer) {
+  const played = [], clips = [], events = [];
+  let requests = 0;
+  const host = {
+    speechSynthesis: {getVoices: () => voices, speak: line => played.push(line), cancel() {}},
+    SpeechSynthesisUtterance: class { constructor(text) { this.text = text; } },
+    fetch: async url => {
+      assert.match(url.pathname, /\/audio\/glass-dome\.mp3$/);
+      requests++;
+      return {ok: true, arrayBuffer: load};
+    },
+    AudioContext: class {
+      state = 'suspended';
+      resume() { this.state = 'running'; return Promise.resolve(); }
+      decodeAudioData(data) { return Promise.resolve(data); }
+      createBufferSource() {
+        return {connect() {}, disconnect() {}, start() { clips.push(this); },
+          stop() { this.stopped = true; }};
+      }
+    }
+  };
+  const radio = createNarrator(host, Date.now, playing => events.push(playing));
+  return {host, radio, played, clips, events, requests: () => requests};
+}
+
+const fullReport = 'Стеклянный купол снова пропускает свет. Разведка завершена.';
+const tick = () => new Promise(resolve => setImmediate(resolve));
+
+test('an empty voice list plays the packaged dome report once and mute stops it', async () => {
+  const {radio, played, clips, events, requests} = mockAudio();
+  radio.prepare();
+  radio.say(fullReport);
+  radio.say(fullReport);
+  radio.say('Следующий приказ выполнен.');
+  await tick();
+  assert.equal(requests(), 1);
+  assert.equal(played.length, 0);
+  assert.equal(clips.length, 1);
+  assert.deepEqual(events, [true]);
+  const lateEnd = clips[0].onended;
+  radio.stop();
+  assert.equal(clips[0].stopped, true);
+  assert.equal(clips[0].onended, null);
+  lateEnd();
+  assert.equal(played.length, 0);
+});
+
+test('a successful native line uses no recording and an engine failure falls back once', async () => {
+  const {radio, played, clips, events, requests} = mockAudio([{lang: 'ru-RU'}]);
+  radio.say(fullReport);
+  played[0].onstart();
+  played[0].onend();
+  assert.equal(requests(), 0);
+  radio.stop();
+  radio.say(fullReport);
+  played[1].onerror({error: 'synthesis-failed'});
+  played[1].onerror({error: 'synthesis-failed'});
+  await tick();
+  assert.deepEqual(events, [true, true]);
+  assert.equal(clips.length, 1);
+  clips[0].onended();
+});
+
+test('changing scene while the recording loads prevents sound from the old scene', async () => {
+  let resolve;
+  const response = new Promise(r => { resolve = r; });
+  const {radio, clips, played} = mockAudio([], () => response);
+  radio.say(fullReport);
+  radio.stop();
+  radio.say('Новое поле.');
+  resolve(new Uint8Array(12).buffer);
+  await tick();
+  assert.equal(played[0].text, 'Новое поле.');
+  assert.equal(clips.length, 0);
+});
+
+test('a stalled native voice is canceled before starting the recording', async () => {
+  const {host, radio, clips, events, played} = mockAudio([{lang: 'ru-RU'}]);
+  let deadline;
+  host.setTimeout = callback => { deadline = callback; return 1; };
+  host.clearTimeout = () => {};
+  host.speechSynthesis.cancel = () => played[0].onerror({error: 'canceled'});
+  radio.say(fullReport);
+  deadline();
+  played[0].onstart();
+  await tick();
+  assert.equal(clips.length, 1);
+  assert.deepEqual(events, [true]);
+});

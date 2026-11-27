@@ -161,8 +161,10 @@ export function toggleVoice() {
   const request = ++voiceRequest;
   pendingVoice = enabled;
   setVoiceProblem(false);
-  // Mobile browsers require the first utterance to start within a tap.
-  if (enabled) narrator.say('Рация Tvijo на связи.');
+  if (enabled) {
+    narrator.prepare();
+    narrator.say('Рация Tvijo на связи.');
+  }
   else silenceRadio();
   return write(s => { s.voice = enabled; }).finally(() => {
     if (request === voiceRequest) pendingVoice = null;
@@ -170,6 +172,12 @@ export function toggleVoice() {
 }
 export function speech(text){ if ((pendingVoice ?? state.voice) && !globalThis.document?.hidden) narrator.say(text); }
 export function silenceRadio(){ narrator.stop(); }
+function prepareRadio() {
+  if (pendingVoice ?? state.voice) narrator.prepare();
+}
+// Saved sound preferences still need a gesture to unlock Web Audio after navigation.
+window.addEventListener('pointerup', prepareRadio, true);
+window.addEventListener('keydown', prepareRadio, true);
 window.addEventListener('pagehide', silenceRadio);
 globalThis.document?.addEventListener('visibilitychange', () => {
   if (document.hidden) silenceRadio();

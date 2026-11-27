@@ -3,7 +3,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const web=path.join(root,'web'), out=path.join(root,'dist/server');
-const mime={html:'text/html; charset=utf-8',js:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8',webp:'image/webp',png:'image/png',woff:'font/woff',txt:'text/plain; charset=utf-8'};
+const mime={html:'text/html; charset=utf-8',js:'text/javascript; charset=utf-8',css:'text/css; charset=utf-8',webp:'image/webp',png:'image/png',woff:'font/woff',mp3:'audio/mpeg',txt:'text/plain; charset=utf-8'};
 const assets={};
 async function walk(dir){for(const child of await readdir(dir,{withFileTypes:true})){const file=path.join(dir,child.name);if(child.isDirectory())await walk(file);else{const rel='/'+path.relative(web,file).split(path.sep).join('/'),ext=child.name.split('.').pop();if(!mime[ext])continue;assets[rel]=[mime[ext],(await readFile(file)).toString('base64')];}}}
 await walk(web);
