@@ -1,0 +1,23 @@
+{
+  "source": "a4e18dbe54204eea0f642494d3c7761dd0383c186a426e4044bab57f849b978a",
+  "studio": "a08318161de1a3b80adf2a25190c77a7242bd8253e3bb38710ec8e8cbb341b30",
+  "candidate": {
+    "summary": "Первая смена, адресный маяк, вход браузером или через Telegram и переносимый сервер с постоянной БД.",
+    "paths": [
+      "package.json",
+      "server/online-db.mjs",
+      "server/online.mjs",
+      "server/social.js",
+      "server/sqlite_worker.py",
+      "server/tvijo-academy.service",
+      "tests/online.test.mjs",
+      "web/app.js",
+      "web/beaconInvite.js",
+      "web/club.js",
+      "web/crewLabels.js",
+      "web/miniApp.js",
+      "web/style.css"
+    ]
+  },
+  "sessions": []
+}

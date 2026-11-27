@@ -1,7 +1,7 @@
 import {heroes,levelById} from '../web/catalog.js';
 import {planTurn} from '../web/strategy.js';
 import {decodeWorld,encodeWorld} from '../web/worlds.js';
-import {interests,radioPhrases,validPixelAvatar,randomTransmission,projectRelay} from '../web/crewLabels.js';
+import {interests,radioPhrases,validPixelAvatar,randomTransmission,projectRelay,validBotName} from '../web/crewLabels.js';
 
 const crewDay=86400;
 const crewClock=()=>Math.floor(Date.now()/1000);
@@ -157,7 +157,8 @@ export async function crewAPI(req,env,path,d){
  const auth=await crewAuth(req,db),me=auth?.me,now=crewClock();
  if(req.method==='GET'&&path==='room'){
    const q=new URL(req.url).searchParams;
-   return crewReply({...await crewRoster(db,auth,q.get('player'),q.get('sort')),invite:await invitationInfo(db,me,q.get('invite')),...(q.has('beacon')?{beacon:await beaconInfo(db,me,q.get('beacon'))}:{}),sso:!!env.CREW_TVIJO_VERIFY_KEY});
+   const telegramBot=env.TVIJO_TELEGRAM_BOT;
+   return crewReply({...await crewRoster(db,auth,q.get('player'),q.get('sort')),invite:await invitationInfo(db,me,q.get('invite')),...(q.has('beacon')?{beacon:await beaconInfo(db,me,q.get('beacon'))}:{}),sso:!!env.CREW_TVIJO_VERIFY_KEY,...(validBotName(telegramBot)?{telegramBot}:{})});
  }
  if(req.method!=='POST')return crewReply({error:'route'},404);
  if(path==='join'){

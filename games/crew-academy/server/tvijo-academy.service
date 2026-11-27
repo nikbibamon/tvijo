@@ -1,0 +1,19 @@
+[Unit]
+Description=Tvijo Crew Academy
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=/srv/remdesk/workspace/tvijo-crew-academy-online/game
+EnvironmentFile=%h/.config/tvijo/academy.env
+Environment=TVIJO_ACADEMY_DB=%S/tvijo-academy/online.sqlite3
+StateDirectory=tvijo-academy
+StateDirectoryMode=0700
+UMask=0077
+ExecStart=/usr/bin/node server/online.mjs
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=yes
+
+[Install]
+WantedBy=default.target

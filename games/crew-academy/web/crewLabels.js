@@ -1,3 +1,4 @@
+export const validBotName = value => typeof value === 'string' && /^[a-z][a-z0-9_]{1,28}bot$/i.test(value);
 export const interests={explore:'Ищу секретные маршруты',build:'Собираю миры',plan:'Придумываю планы для агентов',help:'Помогаю с заданиями'};
 export const radioPhrases={hello:'Привет, напарник! На связи.',plan:'Предлагаю разделить задачи. Я займусь разведкой.',check:'Какой шаг нам стоит перепроверить?',thanks:'Спасибо за помощь экипажу!',world:'Посмотри мой маршрут!'};
 export const crewBadges={start:'Первое дежурство',bridge:'Механик переправы',chain:'Координатор шлюза',check:'Проверил гипотезу',beacon:'Связист маяка'};
