@@ -1,5 +1,6 @@
 import {heroes,heroOrder,tiers,levels,moves} from './catalog.js';
-import {state,chat,bus,write,note,collectSpark,setHero,setLevel,setTier,setShowHints,complete,currentLevel,doneFor,isOpen,resetStage,enterFirstShift,addLines,speech,silenceRadio,dictate,stopVoice,track,pilot,pilotReport,localFunnel,turn,fieldOrder,buildWorld,importWorld,grantDemo,rewind,claimAward} from './tvijoService.js';
+import {state,chat,bus,write,note,collectSpark,setHero,setLevel,setTier,setShowHints,complete,currentLevel,doneFor,isOpen,resetStage,enterFirstShift,addLines,speech,silenceRadio,toggleVoice,dictate,stopVoice,track,pilot,pilotReport,localFunnel,turn,fieldOrder,buildWorld,importWorld,grantDemo,rewind,claimAward} from './tvijoService.js';
+import {bindVoiceControls} from './voiceControls.js';
 import {readyTasks,tacticalDigest,resolveLevel} from './strategy.js';
 import {worldLevel,encodeWorld,decodeWorld} from './worlds.js';
 import {icon,populate} from './icons.js';
@@ -153,7 +154,7 @@ function fieldHud(){
  $('#field-tasks').replaceChildren(...l.tasks.map(([id])=>{const m=moves[id],cls=d.includes(id)?'done':ready.includes(id)?'ready':'locked';const b=action((d.includes(id)?'✓ ':'')+m.name,()=>{if(d.includes(id))toast('Шаг уже подтверждён.');else if(ready.includes(id)){$('#stage').focus({preventScroll:true});field.issue(id);}else toast('Сначала: '+l.tasks.find(t=>t[0]===id)[1].map(n=>moves[n].name).join(', '));},cls);return b;}));}
 function render(){
  syncHints();
- $('#balance').textContent=state.balance;$('#wallet').setAttribute('aria-label','Кошелёк: '+state.balance+' демо-кредитов');const sound=$('#sound');sound.replaceChildren(ii(state.voice?'sound':'mute'));sound.setAttribute('aria-label',state.voice?'Выключить озвучку':'Включить озвучку');sound.setAttribute('aria-pressed',state.voice);
+ $('#balance').textContent=state.balance;$('#wallet').setAttribute('aria-label','Кошелёк: '+state.balance+' демо-кредитов');
  const inFirst=page==='field'&&!activeRelay&&state.level==='dock';
  const info=page==='field'?[inFirst?'Первая смена':fieldLevel().name,(inFirst?'Солнечный причал':fieldLevel().tag)+' · '+heroes[state.hero].name]:maps[page];$('#page-title').textContent=info[0];$('#page-sub').textContent=info[1];
  for(const nav of document.querySelectorAll('[data-page]')){const on=nav.dataset.page===page;nav.classList.toggle('active',on);if(on)nav.setAttribute('aria-current','page');else nav.removeAttribute('aria-current');}
@@ -234,7 +235,7 @@ function startMic(sink='command'){
  openModal('Голосовая рация',[para('Распознавание выполняет браузер. Браузер может отправить звук своей службе распознавания. Игра получает текст, который можно поправить перед отправкой.'),group('actions',action('Включить микрофон',async()=>{await write(s=>{s.micConsent=true;});modal.addEventListener('close',begin,{once:true});close();},'btn primary','mic'),action('Ввести текст',()=>{close();target.focus();}))],'mic');
 }
 $('#mic').onclick=()=>startMic();$('#mic-field').onclick=()=>fieldRadio(true);$('#radio-close').onclick=()=>fieldRadio(false);$('#field-home').onclick=()=>go('hq');
-$('#sound').onclick=async()=>{await write(s=>{s.voice=!s.voice;});if(!state.voice)silenceRadio();else speech('Рация Tvijo на связи.');toast(state.voice?'Озвучка включена':'Озвучка выключена');};
+bindVoiceControls();
 function coreModes(){openModal('Мощность ядра',[para('В демо герои отвечают по сценариям. Цена указана за выполненный приказ в учебных кредитах. Уточнения, повтор из памяти и резервный канал бесплатны.'),...Object.entries(tiers).map(([key,t])=>{const b=el('button','option'+(key===state.tier?' selected':''));b.append(ii('chip'),group('',el('strong','',t.label),el('small','',t.desc)),el('strong','price',String(t.cost)+' кр.'));b.onclick=async()=>{await setTier(key);close();toast('Ядро · '+t.label);};return b;})],'tiers');}
 $('#tier-change').onclick=coreModes;
 function platformLink(label,href,trackName){const a=el('a','btn secondary',label);a.href=href;a.target='_blank';a.rel='noopener noreferrer';if(trackName)a.onclick=()=>track(trackName);return a;}
@@ -243,7 +244,7 @@ $('#wallet').onclick=wallet;
 function consentControl(changed){
  const wrap=el('label','check-line'),input=el('input');input.type='checkbox';input.checked=state.pilot===true;input.onchange=async()=>{await pilot(input.checked);if(changed)changed();};wrap.append(input,document.createTextNode('Участвовать в тесте: передавать названия игровых действий и секунду первого клика. Без текста и аудиозаписей.'));return wrap;
 }
-function settings(){openModal('Настройки',[hintOption(),group('fact-row',document.createTextNode('Озвучка героев'),action(state.voice?'Включена':'Выключена',async()=>{await write(s=>{s.voice=!s.voice;});if(!state.voice)silenceRadio();settings();},'chip')),consentControl(),para('Прогресс и демо-баланс сохраняются на этом устройстве. Ссылкой на мир передаются только параметры ландшафта.','subtle')],'settings');}
+function settings(){openModal('Настройки',[hintOption(),group('fact-row',document.createTextNode('Озвучка героев'),action(state.voice?'Включена':'Выключена',async()=>{await toggleVoice();settings();},'chip')),consentControl(),para('Прогресс и демо-баланс сохраняются на этом устройстве. Ссылкой на мир передаются только параметры ландшафта.','subtle')],'settings');}
 $('#settings').onclick=settings;
 function openWorkshop(){
  track('workshop_open');workshop({el,group,picture,action,openModal,startMic,wallet,onDock:()=>launch(levels[0]),play:async(result,auto)=>{
@@ -314,5 +315,4 @@ async function locationPage(){
  if(h==='duet'||h==='players'){go('hq',false);club.open(h==='duet'?'duet':'rank');return;}if(/^crew\/[0-9a-f]{32}$/.test(h)){go('hq',false);club.open('peer',h.slice(5));return;}if(h.startsWith('tvijo=')){go('hq',false);club.finish(h.slice(6));return;}if(h.startsWith('w/')){const spec=decodeWorld(h.slice(2));if(!spec){go('map',false);toast('Код мира не распознан.');return;}importWorld(spec).then(()=>{go('map',false);worldResult({spec,level:worldLevel(spec),cost:0});});return;}go(h||'hq',false);}
 await enterMiniApp();
 window.addEventListener('hashchange',locationPage);
-window.addEventListener('pagehide',silenceRadio);
 bus.addEventListener('change',render);bus.addEventListener('chat',showMessages);populate();$('#radio-home').append(radio);locationPage();miniAppReady();recoverPrizes().catch(()=>{});

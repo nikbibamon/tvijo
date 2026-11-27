@@ -22,7 +22,13 @@ let queue=Promise.resolve();export function write(fn){
   const go=()=>navigator.locks?.request?navigator.locks.request(lock,async()=>op()):op();
   const result=queue.then(go,go);queue=result.catch(()=>{});return result;
 }
-window.addEventListener('storage',e=>{if(e.key===STORAGE){state=read();bus.dispatchEvent(new Event('change'));}});
+function refreshState() {
+  state=read();
+  if (!state.voice) { silenceRadio(); setVoiceProblem(false); }
+  bus.dispatchEvent(new Event('change'));
+}
+window.addEventListener('storage',e=>{if(e.key===STORAGE)refreshState();});
+window.addEventListener('pageshow',e=>{if(e.persisted)refreshState();});
 export function addLines(lines){chat=chat.concat(lines).slice(-70);bus.dispatchEvent(new Event('chat'));}
 export function setHero(id){return write(s=>{if(heroOrder.includes(id))s.hero=id;});}
 export function setShowHints(on){return write(s=>{s.showHints=on===true;});}
@@ -141,9 +147,33 @@ export async function pilotReport(){
     return data.first_events.filter(x=>allowedEvents.has(x.event)&&Number.isInteger(x.seconds));
   });
 }
-const narrator = createNarrator(globalThis);
-export function speech(text){ if (state.voice) narrator.say(text); }
+export let voiceProblem = false;
+function setVoiceProblem(value) {
+  if (voiceProblem === value) return;
+  voiceProblem = value;
+  bus.dispatchEvent(new Event('voice-status'));
+}
+const narrator = createNarrator(globalThis, Date.now, playing => setVoiceProblem(!playing));
+let pendingVoice = null;
+let voiceRequest = 0;
+export function toggleVoice() {
+  const enabled = !(pendingVoice ?? state.voice);
+  const request = ++voiceRequest;
+  pendingVoice = enabled;
+  setVoiceProblem(false);
+  // Mobile browsers require the first utterance to start within a tap.
+  if (enabled) narrator.say('Рация Tvijo на связи.');
+  else silenceRadio();
+  return write(s => { s.voice = enabled; }).finally(() => {
+    if (request === voiceRequest) pendingVoice = null;
+  });
+}
+export function speech(text){ if ((pendingVoice ?? state.voice) && !globalThis.document?.hidden) narrator.say(text); }
 export function silenceRadio(){ narrator.stop(); }
+window.addEventListener('pagehide', silenceRadio);
+globalThis.document?.addEventListener('visibilitychange', () => {
+  if (document.hidden) silenceRadio();
+});
 let recorder=null;
 export function stopVoice(){if(recorder){try{recorder.abort();}catch{}recorder=null;}}
 export function dictate({onText,onState,onHint,onSpeech=()=>{}}){

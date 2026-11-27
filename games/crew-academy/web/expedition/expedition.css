@@ -16,3 +16,8 @@ button{color:inherit;cursor:pointer}button:disabled{cursor:default;opacity:.5}bu
 @media(max-width:370px){.exp-bar nav{gap:6px;font-size:.8rem}.exp-brand img{width:20px}.orders img{display:none}.sign-entries label>span{font-size:.83rem}}
 @media(max-height:500px) and (orientation:landscape){.exp-bar{min-height:38px}.exp-main{padding-top:6px}.room-heading h1{font-size:1.5rem}.room-heading{margin-bottom:5px}.game-piece:has(.alphabet-stage){display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:7px}.sign-entries{grid-template-columns:1fr;margin:5px 0;gap:3px}.sign-entries label{grid-template-columns:21px 1fr}.sign-entries select{grid-column:1/-1;min-height:29px}.book-heading{display:block}.beacon-book{padding:6px}.orders button{min-height:36px}.book-actions button{min-height:30px;font-size:.8rem}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition-duration:0s!important;animation-duration:.01ms!important;animation-iteration-count:1!important}}
+.room-title { display:flex; align-items:center; gap:12px; }
+#room-sound { display:grid; place-items:center; flex:0 0 44px; height:44px; padding:0; color:#eadfcf; background:#2d2635; border:1px solid #5b4c65; border-radius:9px; }
+#room-sound[aria-pressed=true] { color:#9be4d8; border-color:#789f96; }
+#room-sound svg { width:21px; height:21px; }
+.voice-problem { margin:4px 0 8px; color:#ffda94; font-size:.875rem; }

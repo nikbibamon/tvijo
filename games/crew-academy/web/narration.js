@@ -1,4 +1,4 @@
-export function createNarrator(host, now = Date.now) {
+export function createNarrator(host, now = Date.now, onPlayback = () => {}) {
   const queue = [];
   let active = null;
   let last = '', finishedAt = 0;
@@ -23,10 +23,17 @@ export function createNarrator(host, now = Date.now) {
         finishedAt = now();
         next();
       };
-      line.onend = line.onerror = finish;
+      line.onstart = () => { if (active === line) onPlayback(true); };
+      line.onend = finish;
+      line.onerror = event => {
+        if (active !== line) return;
+        if (!['canceled', 'interrupted'].includes(event?.error)) onPlayback(false);
+        finish();
+      };
       synth.speak(line);
     } catch {
       active = null;
+      onPlayback(false);
       next();
     }
   }
@@ -34,7 +41,8 @@ export function createNarrator(host, now = Date.now) {
   return {
     say(value) {
       const text = String(value || '').replace(/\s+/g, ' ').trim();
-      if (!text || !host?.speechSynthesis || !host.SpeechSynthesisUtterance) return;
+      if (!text) return;
+      if (!host?.speechSynthesis || !host.SpeechSynthesisUtterance) { onPlayback(false); return; }
       if (active?.text === text || queue.includes(text) || (last === text && now() - finishedAt < 1500)) return;
       queue.push(text);
       next();

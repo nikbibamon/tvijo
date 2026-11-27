@@ -177,3 +177,14 @@ body.in-telegram {
   padding-bottom: max(env(safe-area-inset-bottom), var(--tg-content-safe-area-inset-bottom, 0px));
   padding-left: max(env(safe-area-inset-left), var(--tg-content-safe-area-inset-left, 0px));
 }
+#field-sound, #radio-sound, #result-sound { display:none; }
+[data-voice] svg { width:20px; height:20px; }
+.voice-problem { margin:4px 0 8px; color:#ffda94; font-size:.875rem; }
+@media (max-width:800px), (orientation:landscape) and (max-height:540px) {
+  .in-field #field-sound, .in-field.field-radio-open #radio-sound {
+    display:grid; place-items:center; min-width:44px; min-height:44px; padding:5px;
+  }
+}
+@media (orientation:landscape) and (max-height:540px) {
+  .in-field .dock-run.compact-result #result-sound { display:grid; place-items:center; width:44px; height:44px; }
+}

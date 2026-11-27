@@ -1,4 +1,5 @@
-import {state, bus} from '../tvijoService.js';
+import {state, bus, speech, silenceRadio} from '../tvijoService.js';
+import {bindVoiceControls} from '../voiceControls.js';
 import {rooms, roomById, roomHref, packNames} from './rooms.js';
 import {deliverPrize, recoverPrizes, ownsPrize} from './rewards.js';
 import {mountAlphabet} from './beacon.js';
@@ -55,6 +56,7 @@ function showHub() {
 }
 function navigate() {
   const room = roomById(location.hash.slice(1));
+  if (current) silenceRadio();
   release?.(); release = null; $('room-play').replaceChildren();
   current = room || null;
   if (!room) {
@@ -68,10 +70,15 @@ function navigate() {
   $('room-line').textContent = '';
   document.title = room.name + ' · Академия экипажа';
   const id = room.id;
+  let interactive = false;
   const api = {
     load: () => saved(id),
     save: record => keep(id, record),
-    say: message => { if(current?.id === id) $('room-line').textContent = message; },
+    say: message => {
+      if (current?.id !== id) return;
+      $('room-line').textContent = message;
+      if (interactive) speech(message);
+    },
     win: () => {
       transition = deliverPrize(id).then(fresh => {
         inventory();
@@ -80,7 +87,9 @@ function navigate() {
       return transition;
     }
   };
-  release = scenes[id]($('room-play'), api);
+  const unmount = scenes[id]($('room-play'), api);
+  interactive = true;
+  release = () => { interactive = false; unmount?.(); };
   inventory();
   window.scrollTo(0, 0);
 }
@@ -92,4 +101,5 @@ document.addEventListener('click', async event => {
 window.addEventListener('hashchange',navigate);
 window.addEventListener('pageshow',inventory);
 bus.addEventListener('change',inventory);
+bindVoiceControls();
 navigate(); recoverPrizes().catch(() => {});

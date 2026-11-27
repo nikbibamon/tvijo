@@ -15,6 +15,7 @@
     <a class="to-world" href="./#rift" data-world>В Разлом</a>
   </div></header>
   <main class="exp-main">
+    <p data-voice-problem class="voice-problem" role="status" hidden>Браузер не воспроизвёл голос. Реплика доступна на экране.</p>
     <section id="hub">
       <div class="rift-cover"><div><p>Академия экипажа</p><h1>Кристальный разлом</h1><p>Выбери комнату и принеси находку в лагерь.</p></div></div>
       <div class="hub-head"><h2>Комнаты экспедиции</h2><span id="hub-score"></span></div>
@@ -22,7 +23,7 @@
       <p class="hub-pack" id="hub-pack"></p>
     </section>
     <section id="room" hidden>
-      <div class="room-heading"><div><p id="room-place"></p><h1 id="room-name" tabindex="-1"></h1><p id="room-task"></p></div><span id="obtained" hidden></span></div>
+      <div class="room-heading"><div><p id="room-place"></p><div class="room-title"><h1 id="room-name" tabindex="-1"></h1><button type="button" id="room-sound" class="icon-button" data-voice aria-label="Включить озвучку"></button></div><p id="room-task"></p></div><span id="obtained" hidden></span></div>
       <div class="room-log" id="room-line" role="status" aria-live="polite"></div>
       <div class="game-piece" id="room-play"></div>
       <div class="room-finish" id="prize-strip" hidden><div><span>В рюкзаке</span><strong id="prize-name"></strong></div><a href="./#rift" data-world>Вернуться в Разлом</a></div>

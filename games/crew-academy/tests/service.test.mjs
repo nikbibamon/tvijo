@@ -57,3 +57,33 @@ test('opening the direct First Shift keeps a returning pilot’s gear and resume
   assert.deepEqual(service.state.completed,['dock']); assert.equal(service.state.balance,29);
   assert.deepEqual(service.state.expeditionRewards,['alphabet']); assert.equal(service.state.stages.dock.replaying,undefined);
 });
+
+test('radio starts on the tap, persists across screens, and rapid toggles settle muted', async () => {
+  const played = [];
+  let canceled = 0;
+  globalThis.speechSynthesis = {speak: line => played.push(line), cancel: () => canceled++};
+  globalThis.SpeechSynthesisUtterance = class { constructor(text) { this.text = text; } };
+  try {
+    await service.write(s => { s.voice = false; });
+    const first = service.toggleVoice();
+    assert.equal(played[0].text, 'Рация Tvijo на связи.');
+    await first;
+    assert.equal(JSON.parse(localStorage.getItem('tvijo.crew.academy.v1')).voice, true);
+    played[0].onend();
+    service.speech('Антенна отвечает.');
+    assert.equal(played[1].text, 'Антенна отвечает.');
+    played[1].onerror({error:'synthesis-failed'});
+    assert.equal(service.voiceProblem, true);
+    await service.toggleVoice();
+    assert.equal(service.voiceProblem, false);
+    const enable = service.toggleVoice(), disable = service.toggleVoice();
+    await Promise.all([enable, disable]);
+    assert.equal(service.state.voice, false);
+    assert.equal(canceled, 1);
+    service.speech('Эту строку видно в игре.');
+    assert.equal(played.length, 3);
+  } finally {
+    delete globalThis.speechSynthesis;
+    delete globalThis.SpeechSynthesisUtterance;
+  }
+});

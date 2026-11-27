@@ -41,3 +41,19 @@ test('new radio replies finish in order, immediate echoes are dropped and mute c
   radio.say('Новый маршрут.'); radio.say('Новый напарник.');
   played[3].onerror(); assert.equal(played[4].text,'Новый напарник.');
 });
+test('native audio failures are reported once per failed line and canceled callbacks stay silent', () => {
+  const played = [], events = [];
+  const host = {
+    speechSynthesis: {speak: line => played.push(line), cancel() {}},
+    SpeechSynthesisUtterance: class { constructor(text) { this.text = text; } }
+  };
+  const radio = createNarrator(host, Date.now, playing => events.push(playing));
+  radio.say('Антенна.'); radio.say('Рычаг.');
+  played[0].onerror({error:'synthesis-failed'});
+  assert.equal(played[1].text, 'Рычаг.');
+  played[1].onstart(); radio.stop();
+  played[1].onerror({error:'canceled'});
+  assert.deepEqual(events, [false, true]);
+  createNarrator({}, Date.now, value => events.push(value)).say('Шлюз.');
+  assert.deepEqual(events, [false, true, false]);
+});
