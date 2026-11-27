@@ -1,3 +1,4 @@
+import {invitationLinks,openTelegramShare} from './miniApp.js';
 // One address follows both posts from the invitation to the result.
 export function beaconInvitation(room,{el,group,para,action,ii,request,track,share,play,campaign,code}){
  const me=room.me,offer=room.beacon||{status:'unavailable'};
@@ -12,11 +13,11 @@ export function beaconInvitation(room,{el,group,para,action,ii,request,track,sha
  if(offer.status==='done')return [intro,el('h3','','Маяк зажжён!'),para('Смена с пилотом «'+offer.partner+'» завершена.'),group('actions',...(offer.owner?[button('Пригласить ещё одного друга',()=>request('beacon-link',{action:'create'}))]:[]),go())];
  if(offer.status==='active')return [intro,button('На свой пост',()=>play(offer)),go()];
  if(offer.status==='waiting'){
-   const link=new URL(location.pathname,location.origin);link.hash='beacon/'+offer.code;
-   const address=el('input','share-url');address.value=link.href;address.readOnly=true;address.setAttribute('aria-label','Ссылка на второй пост');
-   const telegram=new URL('https://t.me/share/url');telegram.searchParams.set('url',link.href);telegram.searchParams.set('text','Я на посту разведчика в Tvijo. Займёшь второй пост в Парном маяке?');
-   const send=share('Отправить в Telegram',telegram.href);send.className='btn primary';send.onclick=()=>track('beacon_share_open');
-   const copy=action('Скопировать ссылку',async()=>{try{await navigator.clipboard.writeText(link.href);copy.textContent='Ссылка скопирована';}catch{address.focus();address.select();}},'btn secondary');
+   const link=invitationLinks('b',offer.code,location,room.telegramBot);
+   const address=el('input','share-url');address.value=link.browser;address.readOnly=true;address.setAttribute('aria-label','Браузерная ссылка на второй пост');
+   const telegram=new URL('https://t.me/share/url');telegram.searchParams.set('url',link.inTelegram);telegram.searchParams.set('text','Я на посту разведчика в Tvijo. Займёшь второй пост в Парном маяке?');
+   const send=share('Отправить в Telegram',telegram.href);send.className='btn primary';send.onclick=event=>{track('beacon_share_open');openTelegramShare(event,telegram.href);};
+   const copy=action('Скопировать ссылку',async()=>{try{await navigator.clipboard.writeText(link.browser);copy.textContent='Ссылка скопирована';}catch{address.focus();address.select();}},'btn secondary');
    return [intro,para('Это твоё приглашение. Ждём согласия напарника. По этой же ссылке ты вернёшься на пост разведчика.'),address,group('actions',send,copy),action('Отозвать приглашение',()=>request('beacon-link',{action:'cancel',code:offer.code}),'text-btn'),go()];
  }
  const incoming=offer.status==='offer'&&setup;

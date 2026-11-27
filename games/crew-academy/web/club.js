@@ -3,6 +3,7 @@ import {interests,radioPhrases,crewBadges} from './crewLabels.js';
 import {pixelPreview,pixelStudio} from './pixelAvatar.js';
 import {practiceState,relayMap,relayBrief} from './relayMission.js';
 import {beaconInvitation} from './beaconInvite.js';
+import {invitationLinks,openTelegramShare} from './miniApp.js';
 import {state,write,track} from './tvijoService.js';
 import {encodeWorld,worldLevel} from './worlds.js';
 
@@ -141,12 +142,13 @@ export function createClub({el,group,para,action,avatar,ii,openModal,isOpen,show
   }
   if(!m){out.push(action('Получить позывной и ссылку',()=>mutate('join',{hero:state.hero},'Личная ссылка готова.'),'btn primary','users'));return out;}
   if(!info.code){out.push(action('Получить личную ссылку',()=>mutate('invite-link',{},'Личная ссылка готова.'),'btn primary','users'));return out;}
-  const link=new URL(location.pathname,location.origin);link.hash='r/'+info.code;
-  const telegram=new URL('https://t.me/share/url');telegram.searchParams.set('url',link.href);
+  const link=invitationLinks('r',info.code,location,room.telegramBot);
+  const telegram=new URL('https://t.me/share/url');telegram.searchParams.set('url',link.inTelegram);
   telegram.searchParams.set('text','Полетим в экипаже Tvijo? В игре можно управлять дроном, строить миры и зажечь маяк вдвоём.');
-  const address=el('input','share-url');address.readOnly=true;address.value=link.href;address.setAttribute('aria-label','Личная ссылка приглашения');
-  const copy=action('Скопировать',async()=>{try{await navigator.clipboard.writeText(link.href);copy.textContent='Скопировано';}catch{address.focus();address.select();}},'btn secondary');
-  out.push(address,group('actions',namedLink('Пригласить в Telegram',telegram.href),copy),row('Ждём выполнения заданий',info.waiting),row('Успешные приглашения с твоим участием',info.qualified));
+  const address=el('input','share-url');address.readOnly=true;address.value=link.browser;address.setAttribute('aria-label','Личная ссылка приглашения');
+  const copy=action('Скопировать',async()=>{try{await navigator.clipboard.writeText(link.browser);copy.textContent='Скопировано';}catch{address.focus();address.select();}},'btn secondary');
+  const send=namedLink('Пригласить в Telegram',telegram.href);send.onclick=event=>openTelegramShare(event,telegram.href);
+  out.push(address,group('actions',send,copy),row('Ждём выполнения заданий',info.waiting),row('Успешные приглашения с твоим участием',info.qualified));
   if(info.incoming)out.push(para('Ты тоже участвуешь в приглашении. Выполни два разных поручения кампании.'));
   return out;
  }

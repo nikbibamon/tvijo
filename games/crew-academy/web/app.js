@@ -9,6 +9,7 @@ import {crewTerminal} from './relayConsole.js';
 import {flightAwards,awardAvailable} from './flightAwards.js';
 import {workshop} from './workshop.js';
 import {createClub} from './club.js';
+import {enterMiniApp,miniAppReady} from './miniApp.js';
 const $=s=>document.querySelector(s), el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
 const ii=id=>{const n=el('i','ico');n.innerHTML=icon(id);return n;};
 const action=(label,fn,cls='btn secondary',sym)=>{const b=el('button',cls);b.type='button';if(sym)b.append(ii(sym));b.append(document.createTextNode(label));b.onclick=fn;return b;};
@@ -289,5 +290,6 @@ function locationPage(){const h=location.hash.slice(1);
  }
  if(h.startsWith('mission/')){const level=levels.find(l=>l.id===h.slice(8));if(level&&isOpen(level)){launch(level);return;}if(level)mapId=level.id;go('map');return;}
  if(h==='duet'||h==='players'){go('hq',false);club.open(h==='duet'?'duet':'rank');return;}if(/^crew\/[0-9a-f]{32}$/.test(h)){go('hq',false);club.open('peer',h.slice(5));return;}if(h.startsWith('tvijo=')){go('hq',false);club.finish(h.slice(6));return;}if(h.startsWith('w/')){const spec=decodeWorld(h.slice(2));if(!spec){go('map',false);toast('Код мира не распознан.');return;}importWorld(spec).then(()=>{go('map',false);worldResult({spec,level:worldLevel(spec),cost:0});});return;}go(h||'hq',false);}
+await enterMiniApp();
 window.addEventListener('hashchange',locationPage);
-bus.addEventListener('change',render);bus.addEventListener('chat',showMessages);populate();$('#radio-home').append(radio);locationPage();
+bus.addEventListener('change',render);bus.addEventListener('chat',showMessages);populate();$('#radio-home').append(radio);locationPage();miniAppReady();
