@@ -1,7 +1,7 @@
 // Coordinates are percentages of one 16:9 panel. Each entry puts an object at
 // its position in the picture the player sees before taking that action.
-const item = (id, name, x, y, remark) => ({id, name, x, y, remark});
-const move = (use, goal, reply, sound, items) => ({use, goal, reply, sound, items});
+export const item = (id, name, x, y, remark) => ({id, name, x, y, remark});
+export const move = (use, goal, reply, sound, items) => ({use, goal, reply, sound, items});
 
 export const rooms = [
   {

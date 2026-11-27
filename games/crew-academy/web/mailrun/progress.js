@@ -16,7 +16,7 @@ export function visit(state, room, replay = false) {
 }
 
 export function act(state, scene, id) {
-  if (state.room === 1 && state.step === 4 && state.progress >= 14 && id === 'give-sock' && !state.socks) {
+  if (scene.art === 'laundry' && state.room === 1 && state.step === 4 && state.progress >= 14 && id === 'give-sock' && !state.socks) {
     return {...state, socks: true};
   }
   if (scene.steps[state.step]?.use !== id || state.step >= stepsPerRoom) return state;

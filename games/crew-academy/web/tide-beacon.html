@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#182523">
+  <meta name="description" content="Шпуль и Гуманоид идут по складной карте к старому маяку, чтобы вернуть последнюю лодку домой.">
+  <title>Маяк под волной · Tvijo</title>
+  <link rel="icon" href="./art/tvijo.png">
+  <link rel="stylesheet" href="./mailrun/game.css">
+</head>
+<body data-chapter="tide">
+  <main id="game">
+    <header class="mast">
+      <div class="identity"><a href="./#hq" class="home" aria-label="В штаб Tvijo">Tvijo</a><h1>Маяк под волной</h1></div>
+      <div class="tools">
+        <button id="audio" type="button" aria-pressed="false" aria-label="Звук позывного">Звук</button>
+        <button id="map-button" type="button">Маршрут</button>
+        <button id="help-button" type="button" aria-label="Как играть" title="Как играть">?</button>
+      </div>
+    </header>
+    <section class="surface" aria-label="Игровая сцена">
+      <div id="stage" class="stage">
+        <div id="plane" class="plane">
+          <div id="art" class="art" role="img" aria-label="Зал двух отливов"></div>
+          <div id="spots"></div>
+          <div id="socks" class="socks" hidden aria-label="Пара носков на верёвке"><b></b><b></b></div>
+        </div>
+        <span id="spill" aria-hidden="true"></span>
+        <span id="effect" aria-hidden="true"></span>
+      </div>
+    </section>
+    <section class="desk" aria-labelledby="room-name">
+      <div class="story">
+        <div class="roomline"><h2 id="room-name">Зал двух отливов</h2><span id="counter"></span></div>
+        <p id="reply" role="status" aria-live="polite"></p>
+        <p id="goal"></p>
+        <button id="clue" type="button" hidden></button>
+      </div>
+      <div id="choices" class="choices" role="group" aria-label="Предметы и действия"></div>
+    </section>
+  </main>
+  <dialog id="dialog"><div class="dialog-head"><h2 id="dialog-title"></h2><button id="close" type="button" aria-label="Закрыть">×</button></div><div id="dialog-body"></div></dialog>
+  <noscript>Для игры включите JavaScript в браузере.</noscript>
+  <script type="module" src="./mailrun/game.js"></script>
+</body></html>

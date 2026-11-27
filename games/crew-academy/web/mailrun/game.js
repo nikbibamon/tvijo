@@ -1,11 +1,16 @@
-import {rooms} from './scenes.js';
+import {rooms as mailRooms} from './scenes.js';
+import {tideRooms} from './tides.js';
 import {restore, visit, act, resume, stepsPerRoom} from './progress.js';
 
 const $ = (id) => document.getElementById(id);
 const slots = $('choices');
 const stage = $('stage');
 const dialog = $('dialog');
-const saveKey = 'tvijo.mailrun.v1';
+const tide = document.body.dataset.chapter === 'tide';
+const rooms = tide ? tideRooms : mailRooms;
+const saveKey = tide ? 'tvijo.tide-beacon.v1' : 'tvijo.mailrun.v1';
+let audioContext;
+let soundEnabled = false;
 
 function readSave() {
   try { return restore(JSON.parse(localStorage.getItem(saveKey))); }
@@ -48,15 +53,44 @@ function use(id) {
   const next = act(state, room, id);
   if (next === state) {
     const object = currentObjects.find(obj => obj.id === id);
-    if (object?.remark) say(object.remark);
+    if (object?.remark) {
+      say(object.remark);
+      if (room.art === 'locks' && state.step < 3) {
+        pop('Ш-ш-ш…');
+        const stream = $('spill');
+        stream.style.left = object.x + '%';
+        stream.classList.remove('running');
+        void stream.offsetWidth;
+        stream.classList.add('running');
+      }
+    }
     return;
   }
   const keyboard = slots.contains(document.activeElement) || $('spots').contains(document.activeElement);
   const bonus = id === 'give-sock';
+  if (tide && room.art === 'voices') playSignal(state.step);
   save(next);
   render(bonus ? 'Прачка соединила носки одной прищепкой. «Попробуйте теперь улететь по одному!»' : action.reply);
   pop(bonus ? 'В паре!' : action.sound);
   if (keyboard) slots.querySelector('button')?.focus({preventScroll:true});
+}
+function playSignal(step) {
+  if (!soundEnabled || !audioContext || step > 2) return;
+  const t = audioContext.currentTime + .025;
+  const tones = step === 0 ? [[0,.12,575],[.23,.12,575],[.49,.49,230]]
+    : step === 1 ? [[0,.13,690],[.23,.13,690]] : [[0,.66,180]];
+  for (const [delay, length, frequency] of tones) {
+    const tone = audioContext.createOscillator();
+    const volume = audioContext.createGain();
+    tone.type = frequency < 300 ? 'triangle' : 'sine';
+    tone.frequency.value = frequency;
+    volume.gain.setValueAtTime(.0001,t+delay);
+    volume.gain.exponentialRampToValueAtTime(.1,t+delay+.025);
+    volume.gain.exponentialRampToValueAtTime(.0001,t+delay+length);
+    tone.connect(volume).connect(audioContext.destination);
+    tone.start(t+delay);
+    tone.stop(t+delay+length+.02);
+  }
 }
 function highlight(id) {
   for (const el of $('spots').children) el.classList.toggle('lit', el.dataset.id === id);
@@ -64,6 +98,7 @@ function highlight(id) {
 function addObject(obj) {
   const target = addButton($('spots'), '', () => use(obj.id), 'spot');
   target.dataset.id = obj.id;
+  if (rooms[state.room].art === 'paper' && obj.id === 'chalk') target.classList.add('chalk');
   target.style.left = obj.x + '%';
   target.style.top = obj.y + '%';
   target.tabIndex = -1;
@@ -89,18 +124,25 @@ function render(reply) {
   $('art').setAttribute('aria-label', room.name + '. ' + (state.step ? room.steps[state.step - 1].reply : room.intro));
   $('plane').style.setProperty('--origin', room.focal);
   stage.classList.toggle('entry', state.step === 0);
-  $('socks').hidden = !(state.room === 1 && state.socks && state.step === 4);
+  $('socks').hidden = !(!tide && state.room === 1 && state.socks && state.step === 4);
   $('room-name').textContent = room.name;
   $('counter').textContent = state.step + ' / ' + stepsPerRoom;
   say(reply ?? (state.step ? room.steps[state.step - 1].reply : room.intro));
-  $('goal').textContent = step?.goal ?? (state.room === rooms.length - 1 ? 'Письмо с тобой. На карте можно вернуться в любую комнату.' : 'Путь дальше открыт.');
+  $('goal').textContent = step?.goal ?? (state.room === rooms.length - 1
+    ? (tide ? 'Лодка дома. Обе главы открыты для возвращения.' : 'Письмо с тобой. Его маршрут ведёт к подводному маяку.')
+    : 'Путь дальше открыт.');
+  const clue = $('clue');
+  if (clue) {
+    clue.hidden = !(room.art === 'locks' && state.step < 3 || room.art === 'voices' && state.step > 0 && state.step < 4);
+    clue.textContent = room.art === 'locks' ? 'Бумажная карта' : 'Повторить позывной';
+  }
   $('spots').replaceChildren();
   slots.replaceChildren();
   currentObjects = step?.items ?? [];
   focusIndex = 0;
   currentObjects.forEach(addObject);
   if (step) return;
-  if (state.room === 1 && state.progress >= 14 && !state.socks) {
+  if (!tide && state.room === 1 && state.progress >= 14 && !state.socks) {
     const option = {id:'give-sock', name:'Вернуть носок прачке', x:12, y:52};
     currentObjects = [option];
     addObject(option);
@@ -108,11 +150,19 @@ function render(reply) {
   if (state.room + 1 < rooms.length) {
     addButton(slots, room.exit, () => go(visit(state, state.room + 1)), 'next');
   } else {
-    addButton(slots, 'Открыть маршрут', showMap, 'next');
+    if (tide) addButton(slots, 'Открыть маршрут', showMap, 'next');
+    else addChapterLink(slots, 'К маяку под волной', './tide-beacon.html', 'next');
   }
   addButton(slots, 'Сыграть сцену снова', () => go(visit(state, state.room, true)));
 }
 
+function addChapterLink(parent, text, url, css) {
+  const link = document.createElement('a');
+  link.className = 'chapter-link ' + css;
+  link.textContent = text;
+  link.href = url;
+  parent.append(link);
+}
 function openDialog(title, mode) {
   uiMode = mode;
   $('dialog-title').textContent = title;
@@ -121,7 +171,7 @@ function openDialog(title, mode) {
   return $('dialog-body');
 }
 function showMap() {
-  const body = openDialog('Почтовый маршрут', 'map');
+  const body = openDialog(tide ? 'Маршрут к маяку' : 'Почтовый маршрут', 'map');
   const list = document.createElement('div');
   list.className = 'map-list';
   body.append(list);
@@ -132,13 +182,15 @@ function showMap() {
     if (index === state.room) btn.setAttribute('aria-current', 'location');
     const small = document.createElement('small');
     small.textContent = found < 0 ? 'Ещё впереди' : found >= stepsPerRoom ? 'Пройдено' : Math.max(0, found) + ' / 4';
-    if (index === 1 && state.progress >= 14) small.textContent = state.socks ? 'Носки на верёвке' : 'Прачка ищет носок';
+    if (!tide && index === 1 && state.progress >= 14) small.textContent = state.socks ? 'Носки на верёвке' : 'Прачка ищет носок';
     btn.append(small);
   });
   const bar = document.createElement('div');
   bar.className = 'dialog-actions';
   body.append(bar);
-  addButton(bar, state.progress === 20 ? 'К обратному письму' : 'К моей доставке', () => go(resume(state)), 'resume');
+  addButton(bar, state.progress === 20 ? (tide ? 'К лодочнице' : 'К обратному письму') : 'К моей доставке', () => go(resume(state)), 'resume');
+  if (tide) addChapterLink(bar, 'На Нижний остров', './mailrun.html', 'replay');
+  else if (state.progress === 20) addChapterLink(bar, 'К маяку под волной', './tide-beacon.html', 'replay');
   if (state.progress >= (state.room + 1) * stepsPerRoom)
     addButton(bar, 'Переиграть эту комнату', () => go(visit(state, state.room, true)), 'replay');
 }
@@ -149,6 +201,33 @@ function showHelp() {
   text.innerHTML = '<p>Коснись ромба на рисунке или выбери предмет под сценой. Шпуль и Гуманоид действуют вместе. Другие предметы отвечают своими репликами.</p><p><kbd>← →</kbd> или <kbd>Tab</kbd> — выбрать предмет. <kbd>Enter</kbd> или <kbd>E</kbd> — применить. <kbd>Esc</kbd> — маршрут.</p><p>На телефоне удобнее развернуть экран горизонтально. Доставка сохраняется в этом браузере после каждого действия. На карте можно вернуться в открытую комнату.</p>';
   body.append(text);
   addButton(body, 'Вернуться к игре', () => dialog.close(), 'dialog-action');
+}
+if (tide) {
+  $('clue').addEventListener('click', () => {
+    if (rooms[state.room].art === 'locks') {
+      const body = openDialog('Складная карта', 'chart');
+      const p = document.createElement('p');
+      p.className = 'chart-symbols';
+      p.textContent = '1. Раковина　 2. Камыш　 3. Звезда';
+      body.append(p);
+      addButton(body, 'К затворам', () => dialog.close(), 'dialog-action');
+    } else {
+      say('Два коротких, один долгий. Так лодка узнаёт своих на берегу.');
+      pop('● ● ━');
+      playSignal(0);
+    }
+  });
+  $('audio').addEventListener('click', async () => {
+    const Context = window.AudioContext || window.webkitAudioContext;
+    if (!Context) { say('Позывной виден по отметкам над причалом.'); return; }
+    try {
+      if (!audioContext) audioContext = new Context();
+      if (!soundEnabled) await audioContext.resume();
+      soundEnabled = !soundEnabled;
+      $('audio').setAttribute('aria-pressed',String(soundEnabled));
+      $('audio').textContent = soundEnabled ? 'Звук вкл.' : 'Звук';
+    } catch { say('Позывной можно прочитать по отметкам над причалом.'); }
+  });
 }
 $('map-button').addEventListener('click', showMap);
 $('help-button').addEventListener('click', showHelp);
@@ -161,7 +240,7 @@ dialog.addEventListener('click', event => { if (event.target === dialog && !even
 document.addEventListener('keydown', event => {
   if (dialog.open || uiMode || event.ctrlKey || event.metaKey || event.altKey) return;
   if (event.key === 'Escape') { event.preventDefault(); showMap(); return; }
-  const buttons = Array.from(slots.querySelectorAll('button'));
+  const buttons = Array.from(slots.querySelectorAll('button, a'));
   if (!buttons.length) return;
   const current = buttons.indexOf(document.activeElement);
   const delta = {ArrowRight:1, ArrowDown:1, ArrowLeft:-1, ArrowUp:-1}[event.key];
