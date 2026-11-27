@@ -1,0 +1,36 @@
+{
+  "release": "expedition-v16",
+  "date": "2026-11-27",
+  "code_commit": "927cc4c67d108e115fdc283ba1b7cc0fdcb9ea1d",
+  "sites": {
+    "version": 16,
+    "commit": "32b8ac431bae81d06722b692b786bdc362edd7e5",
+    "deployment": "appgdep_6b09d1dd43388191aee87b996105f9f6",
+    "url": "https://tvijo-crew-academy.be9ava.chatgpt.site",
+    "status": "succeeded",
+    "assets": 97
+  },
+  "entrypoints": {
+    "station": "https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#station",
+    "mirrors": "https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#mirrors",
+    "archive": "https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#time-archive"
+  },
+  "verification": {
+    "node_passed": 63,
+    "fastapi_passed": 3,
+    "worker_requests_200": 11,
+    "worker_sha256": "016b7a9f525468f7cd0c1653499fd6a58189e14a013d8f4ae923891dd83b5a0d",
+    "simulated_ui": "8 rooms mounted, both new full routes, undo, saved state after reentry, forward and return links, distinct findings once",
+    "existing_profile": "6 rift rewards and balance preserved",
+    "physical_phone": "pending"
+  },
+  "biba2": {
+    "v14_baseline": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v14/game",
+    "previous_patch": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v15/update.patch",
+    "patch": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v16/update.patch",
+    "sha256": "331a776d75cdb081f71aa8d4bfb0430dfca792c607dfec863235b6b5499e9682",
+    "bytes": 47571,
+    "patch_chain_check": "Downloaded patches v15 and v16 recreate the deployed Worker in a local clean build",
+    "full_server_build": "pending"
+  }
+}
