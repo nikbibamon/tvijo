@@ -60,6 +60,8 @@ def render_report(path, receipt, studio):
     if receipt["steps"].get("brief", {}).get("status") == "passed" and (path.parent / "job.json").is_file():
         resources = [("TASK.md","Бриф Codex","text/markdown"),("job.json","Задание JSON","application/json"),
                      ("evidence-template.json","Форма наблюдений","application/json")]
+        if (path.parent / "PLAYTEST.md").is_file():
+            resources.append(("PLAYTEST.md", "Бланк на пять игроков", "text/markdown"))
         links = [download(name, (path.parent / name).read_bytes(), label, media) for name, label, media in resources]
         attachments = "<p>" + " · ".join(links) + "</p>"
     json_link = download("run.json", json.dumps(receipt, ensure_ascii=False, indent=2).encode(), "Полная квитанция JSON")

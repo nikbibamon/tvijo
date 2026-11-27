@@ -1,6 +1,6 @@
 {
   "name": "tvijor",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "roles": {
     "producer": "Продюсер игрового пилота",
     "artist": "Художник экипажа",
@@ -14,7 +14,7 @@
     "pilot": ["brief", "candidate", "art", "routes", "client", "api", "build", "playtest", "verdict"]
   },
   "steps": {
-    "brief": {"name":"Первая смена за три минуты","role":"producer","mode":"local","skill":"pilot","needs":[],"input":"Принятое ТЗ Академии и критерии M1","output":"Бриф для Codex и форма свидетельств"},
+    "brief": {"name":"Первая смена за три минуты","role":"producer","mode":"local","skill":"pilot","needs":[],"input":"Принятое ТЗ Академии и критерии M1","output":"Бриф и задание для Codex, пустой бланк пяти попыток и форма данных"},
     "candidate": {"name":"Игровой кандидат M1","role":"engineer","mode":"agent","skill":"pilot","needs":["brief"],"input":"Бриф, исходники Академии и ревизия рабочей копии","output":"Описание изменения и пути изменённых игровых файлов"},
     "art": {"name":"Эталон экипажа и графики","role":"artist","mode":"local","skill":"art","needs":[],"input":"Реестр SHA-256 и игровые изображения","output":"Совпадение референса, портретов, кадров и принятого игрового арта"},
     "routes": {"name":"Маршруты и поручения","role":"designer","mode":"local","skill":"field","needs":[],"input":"Каталог миссий, генератор и физика прыжка","output":"Проверенные DAG и геометрия трасс кампании и мастерской"},

@@ -15,6 +15,26 @@ def attempt(device="desktop", seconds=100, helped=False):
 
 
 class StudioTests(unittest.TestCase):
+    def test_pilot_handoff_has_playable_requirements_and_blank_observations(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            folder = Path(tmp)
+            status, result = run.perform("brief", folder, "demo", {}, {}, {})
+            self.assertEqual(status, "passed")
+            job = json.loads((folder / result["job"]).read_text())
+            for path in job["readFirst"]:
+                self.assertTrue((run.GAME / path).is_file(), path)
+            self.assertIn("tvijor/skills/game-feel.md", job["readFirst"])
+            sheet = folder / job["acceptance"]["checklist"]
+            self.assertEqual(sheet.name, result["checklist"])
+            self.assertEqual(sheet.read_bytes(), (run.HERE / "playtest-m1.md").read_bytes())
+            rows = [row.split("|")[1:-1] for row in sheet.read_text().splitlines()
+                    if row.startswith("|") and row.split("|")[1].strip().isdigit()]
+            self.assertEqual([row[0].strip() for row in rows], ["1", "2", "3", "4", "5"])
+            self.assertTrue(all(not cell.strip() for row in rows for cell in row[1:]))
+            form = json.loads((folder / job["acceptance"]["evidence"]).read_text())
+            self.assertIsNone(form["candidate"])
+            self.assertEqual(form["sessions"], [])
+
     def test_registry_and_cycle(self):
         order = run.ordered(run.REGISTRY, "pilot")
         self.assertLess(order.index("candidate"), order.index("playtest"))

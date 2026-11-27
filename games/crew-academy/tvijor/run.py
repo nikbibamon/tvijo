@@ -58,7 +58,7 @@ def snapshot(directory=GAME):
 
 
 def studio_fingerprint():
-    controls = ["studio.json", "baseline.json", "run.py", "report.py", "check-game.mjs"]
+    controls = ["studio.json", "baseline.json", "run.py", "report.py", "check-game.mjs", "playtest-m1.md"]
     controls += sorted(p.relative_to(HERE).as_posix() for p in (HERE / "skills").glob("*.md"))
     lock = {name: digest((HERE / name).read_bytes()) for name in controls}
     return digest(json.dumps(lock, sort_keys=True).encode())
@@ -157,16 +157,18 @@ def perform(key, run_dir, source, files, evidence, previous):
     log = run_dir / (key + ".log")
     if key == "brief":
         (run_dir / "TASK.md").write_bytes((HERE / "skills/pilot.md").read_bytes())
+        (run_dir / "PLAYTEST.md").write_bytes((HERE / "playtest-m1.md").read_bytes())
         save_json(run_dir / "evidence-template.json", template(source))
         job = {"schema": 1, "pipeline": "pilot", "step": "candidate", "executor": "Codex",
                "role": "engineer", "gameSource": source, "brief": "TASK.md",
                "workspace": "games/crew-academy",
-               "readFirst": ["tvijor/START-HERE.md", "tvijor/skills/pilot.md", "SERVER.md"],
+               "readFirst": ["tvijor/START-HERE.md", "tvijor/skills/pilot.md", "tvijor/skills/game-feel.md", "SERVER.md"],
                "acceptance": {"pipeline": "verify", "evidence": "evidence-template.json",
+                              "checklist": "PLAYTEST.md",
                               "candidateFields": ["summary", "paths"]},
                "next": "playtest"}
         save_json(run_dir / "job.json", job)
-        return "passed", {"brief": "TASK.md", "job": "job.json", "form": "evidence-template.json"}
+        return "passed", {"brief": "TASK.md", "job": "job.json", "form": "evidence-template.json", "checklist": "PLAYTEST.md"}
     if key == "candidate":
         result = candidate_evidence(evidence, source, files)
         return ("passed", result) if result else ("waiting", {"needs": "Изменение клиента или сервера и заполненный candidate"})
