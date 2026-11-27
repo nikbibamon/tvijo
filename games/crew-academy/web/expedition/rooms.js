@@ -19,7 +19,8 @@ export const prizes = [...rooms, {id: 'orbital-storm', name: 'Орбитальн
   {id:'echo-mine', name:'Шахта эха', prize:'Чёрный ящик разведчика'},
   {id:'drones-night', name:'Ночная смена в шлюзе', prize:'Фонарь ночной смены'},
   {id:'cargo-express',name:'Экспресс-сортировка',prize:'Марка экспресс-груза'},
-  {id:'chain-pump',name:'Контур охлаждения',prize:'Ключ насоса'}];
+  {id:'chain-pump',name:'Контур охлаждения',prize:'Ключ насоса'},
+  {id:'rescue-pair',name:'Линия спасения',prize:'Знак спасательной связки'}];
 
 export const roomById = id => rooms.find(room => room.id === id);
 export const prizeById = id => prizes.find(item => item.id === id);

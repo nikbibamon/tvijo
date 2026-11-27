@@ -23,9 +23,10 @@
 .rescue-flight{left:22%;top:39%;background-image:url(../art/runners/plane.webp);transition:left .95s ease,top .55s ease;z-index:3}
 .rescue-capsule{left:77%;top:52%;width:clamp(23px,7%,64px);background:url(../art/badges/capsule.webp) center/contain no-repeat;transition:left 1.15s ease,top .65s ease}
 .rescue-view[data-phase=pull] .rescue-flight{left:76%}
-.rescue-view[data-phase=done] :is(.rescue-flight,.rescue-capsule){left:25%}
-.rescue-view[data-lane=lower]:is([data-phase=pull],[data-phase=done]) :is(.rescue-flight,.rescue-capsule){top:59%}
-.rescue-view[data-lane=upper]:is([data-phase=pull],[data-phase=done]) :is(.rescue-flight,.rescue-capsule){top:38%}
+.rescue-view[data-lane=lower][data-phase=pull] :is(.rescue-flight,.rescue-capsule){top:59%}
+.rescue-view[data-lane=upper][data-phase=pull] :is(.rescue-flight,.rescue-capsule){top:38%}
+.rescue-view[data-phase=done] .rescue-flight{left:27%;top:33%}
+.rescue-view[data-phase=done] .rescue-capsule{left:20%;top:47%;z-index:4;filter:drop-shadow(0 0 9px #ffb964c9)}
 .rescue-marker{position:absolute;z-index:1;left:50%;top:38%;height:10px;width:10px;transform:translate(-50%,-50%) rotate(45deg);border:2px solid #bdf8e3;background:#385a60;box-shadow:0 0 14px #73ead8;visibility:hidden}
 .rescue-view[data-lane=lower] .rescue-marker{top:59%}
 .rescue-view[data-lane=upper] .rescue-marker,.rescue-view[data-lane=lower] .rescue-marker{visibility:visible}

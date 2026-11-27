@@ -1,4 +1,5 @@
 import {crewRequest} from '../crewRequest.js';
+import {collectPrize} from '../expedition/rooms.js';
 import {markRoute} from '../crewRoute.js';
 import {note, write} from '../tvijoService.js';
 import {rescueHref,rescueLine,rescueSteps} from './mission.js';
@@ -69,6 +70,7 @@ function listPlayers(session) {
 function recordFinish(run) {
   const entry={mission:run.mission, at:run.finished*1000, lane:run.lane, partner:run.partner, role:run.role};
   return write(profile=>{
+    collectPrize(profile,'rescue-pair');
     const previous=profile.rescueReport;
     if (previous?.mission===entry.mission||previous?.at>entry.at) return;
     profile.rescueReport=entry;
