@@ -20,3 +20,16 @@ test('2.5-second deadline recovers progression and ignores a late success',async
  globalThis.fetch=(p,o)=>new Promise(r=>{arrived=()=>r(online(p,o));});const before=service.state.balance,t=performance.now();const result=await service.turn('Самолётик, проверь путь');
  assert.equal(result.source,'fallback');assert.equal(result.charge,0);assert.ok(performance.now()-t>=2450&&performance.now()-t<3300);assert.deepEqual(service.doneFor(),['scan']);assert.equal(service.state.balance,before);if(arrived)arrived();
 });
+
+test('click-built drawings debit once per seed, award once and can be replayed at zero balance',async()=>{
+  const spec={theme:'greenhouse',path:'duet',steps:4,seed:4321,shadow:true};
+  await service.write(s=>{s.balance=50;s.claimedAwards=[];});
+  const pair=await Promise.all([service.buildWorld('',spec),service.buildWorld('',spec)]);
+  assert.equal(pair[0].cost+pair[1].cost,25);assert.equal(service.state.balance,25);
+  const claim=await Promise.all([service.claimAward('architect'),service.claimAward('architect')]);
+  assert.equal(claim[0]+claim[1],8);assert.equal(service.state.balance,33);
+  assert.equal(await service.claimAward('crew'),0);
+  await service.write(s=>{s.balance=0;});const before=service.state.worlds.length;
+  await assert.rejects(service.buildWorld('',{...spec,seed:4322}),/25/);
+  assert.equal(service.state.worlds.length,before);assert.equal((await service.buildWorld('',spec)).cost,0);
+});

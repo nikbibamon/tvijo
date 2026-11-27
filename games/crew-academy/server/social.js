@@ -15,7 +15,10 @@ const crewOne=async(db,sql,...args)=>(await crewAll(db,sql,...args))[0];
 const crewRun=(db,sql,...args)=>crewQuery(db,sql,...args).run();
 const crewValid=(o,keys)=>o&&typeof o==='object'&&!Array.isArray(o)&&Object.keys(o).every(k=>keys.includes(k));
 const crewID=s=>typeof s==='string'&&/^[0-9a-f]{32}$/.test(s);
-const crewProjection=`p.id,p.callsign,p.hero,p.focus,p.avatar,
+const crewFameSQL=`10*(SELECT COUNT(*) FROM crew_marks WHERE player=p.id)
+  +30*(SELECT COUNT(*) FROM crew_beacons WHERE low=p.id OR high=p.id)
+  +25*(SELECT COUNT(*) FROM crew_referrals WHERE (host=p.id OR guest=p.id) AND qualified IS NOT NULL)`;
+const crewProjection=`p.id,p.callsign,p.hero,p.focus,p.avatar,${crewFameSQL} AS fame,
   (SELECT COUNT(*) FROM crew_beacons b WHERE b.low=p.id OR b.high=p.id) AS beacons,(SELECT COUNT(*) FROM crew_marks m WHERE m.player=p.id) AS points,
   CASE WHEN EXISTS(SELECT 1 FROM crew_marks WHERE player=p.id AND action='signal') THEN 'beacon'
        WHEN EXISTS(SELECT 1 FROM crew_marks WHERE player=p.id AND action='compare') THEN 'check'
@@ -40,11 +43,15 @@ export async function recordCrewOrder(req,db,packet,reply){
  const auth=await crewAuth(req,db);if(!auth)return;
  const stage=packet.level.id,prior=await crewAll(db,'SELECT action FROM crew_marks WHERE player=? AND stage=?',auth.me.id,stage);
  const moves=planTurn({...packet,done:prior.map(x=>x.action),tier:'standard'}).changes.filter(a=>reply.changes.includes(a));
- if(moves.length)await db.batch(moves.map(m=>crewQuery(db,'INSERT OR IGNORE INTO crew_marks(player,stage,action) VALUES(?,?,?)',auth.me.id,stage,m)));
+ if(moves.length){
+   const id=auth.me.id,updates=moves.map(m=>crewQuery(db,'INSERT OR IGNORE INTO crew_marks(player,stage,action) VALUES(?,?,?)',id,stage,m));
+   updates.push(crewQuery(db,'UPDATE crew_referrals SET qualified=? WHERE guest=? AND qualified IS NULL AND (SELECT COUNT(*) FROM crew_marks WHERE player=?)>=2',crewClock(),id,id));
+   await db.batch(updates);
+ }
 }
 async function crewRoster(db,auth,requested,order){
  const id=auth?.me.id||'';
- const sort=order==='beacons'?'beacons DESC,points DESC':'points DESC,beacons DESC';
+ const sort=order==='fame'?'fame DESC,points DESC,beacons DESC':order==='beacons'?'beacons DESC,points DESC':'points DESC,beacons DESC';
  const board=await crewAll(db,'SELECT '+crewProjection+' FROM crew_players p WHERE p.visible=1 AND '+crewNoMute+' ORDER BY '+sort+',p.callsign,p.id LIMIT 50',id,id);
  const card=crewID(requested)?await crewOne(db,'SELECT '+crewProjection+' FROM crew_players p WHERE p.id=? AND p.visible=1 AND '+crewNoMute,requested,id,id):null;
  if(!id)return {board,card:card||null,peers:[],notes:[],me:null,blocked:[],relays:[]};
@@ -53,6 +60,16 @@ async function crewRoster(db,auth,requested,order){
  const blocked=await crewAll(db,'SELECT p.id,p.callsign FROM crew_muted m JOIN crew_players p ON p.id=m.other WHERE m.owner=? AND p.visible=1 ORDER BY p.callsign LIMIT 80',id);
  const relays=await crewAll(db,"SELECT r.* FROM crew_relays r JOIN crew_pairs a ON a.low=r.low AND a.high=r.high AND a.status='accepted' WHERE r.low=? OR r.high=?",id,id);
  return {board,card:card||null,peers,notes,me:auth.me,blocked,relays:relays.map(r=>({...projectRelay(r,id),other:r.low===id?r.high:r.low}))};
+}
+async function invitationInfo(db,me,offer){
+ const valid=crewID(offer)?!!await crewOne(db,'SELECT 1 FROM crew_invite_codes WHERE code=?',offer):false;
+ if(!me)return {valid};
+ const owned=await crewOne(db,'SELECT code FROM crew_invite_codes WHERE owner=?',me.id);
+ const tally=await crewOne(db,`SELECT
+   (SELECT COUNT(*) FROM crew_referrals WHERE host=? AND qualified IS NULL) AS waiting,
+   (SELECT COUNT(*) FROM crew_referrals WHERE (host=? OR guest=?) AND qualified IS NOT NULL) AS qualified,
+   (SELECT COUNT(*) FROM crew_referrals WHERE guest=? AND qualified IS NULL) AS incoming`,me.id,me.id,me.id,me.id);
+ return {valid,code:owned?.code||null,...tally};
 }
 const crewLogin='https://tvijo.com/ru/login';
 const crewIssuer='https://tvijo.com';
@@ -72,16 +89,30 @@ async function verifyCrewTicket(token,jwk){
 export async function crewAPI(req,env,path,d){
  const db=env.DB;if(!db)return crewReply({error:'unavailable'},503);
  const auth=await crewAuth(req,db),me=auth?.me,now=crewClock();
- if(req.method==='GET'&&path==='room')return crewReply({...await crewRoster(db,auth,new URL(req.url).searchParams.get('player'),new URL(req.url).searchParams.get('sort')),sso:!!env.CREW_TVIJO_VERIFY_KEY});
+ if(req.method==='GET'&&path==='room'){
+   const q=new URL(req.url).searchParams;
+   return crewReply({...await crewRoster(db,auth,q.get('player'),q.get('sort')),invite:await invitationInfo(db,me,q.get('invite')),sso:!!env.CREW_TVIJO_VERIFY_KEY});
+ }
  if(req.method!=='POST')return crewReply({error:'route'},404);
  if(path==='join'){
-  if(!crewValid(d,['hero'])||!Object.hasOwn(heroes,d.hero))return crewReply({error:'profile'},422);
-  if(me)return crewReply({joined:true});
+  if(!crewValid(d,['hero','referral'])||!Object.hasOwn(heroes,d.hero)||d.referral!==undefined&&!crewID(d.referral))return crewReply({error:'profile'},422);
+  if(me)return crewReply({joined:true,referralAccepted:false});
+  const host=d.referral?await crewOne(db,'SELECT owner FROM crew_invite_codes WHERE code=?',d.referral):null;
+  if(d.referral&&!host)return crewReply({error:'invite_missing'},422);
   const id=crypto.randomUUID().replaceAll('-',''),raw=crewRandom();
-  await db.batch([crewQuery(db,'INSERT INTO crew_players(id,callsign,hero) VALUES(?,?,?)',id,callsign(id),d.hero),crewQuery(db,'INSERT INTO crew_sessions(digest,player,until) VALUES(?,?,?)',await crewHash(raw),id,now+30*crewDay)]);
-  return crewReply({joined:true},201,crewSetCookie(raw));
+  const entries=[crewQuery(db,'INSERT INTO crew_players(id,callsign,hero) VALUES(?,?,?)',id,callsign(id),d.hero),
+    crewQuery(db,'INSERT INTO crew_sessions(digest,player,until) VALUES(?,?,?)',await crewHash(raw),id,now+30*crewDay),
+    crewQuery(db,'INSERT INTO crew_invite_codes(owner,code) VALUES(?,?)',id,crypto.randomUUID().replaceAll('-',''))];
+  if(host)entries.push(crewQuery(db,'INSERT INTO crew_referrals(guest,host,joined) VALUES(?,?,?)',id,host.owner,now));
+  await db.batch(entries);
+  return crewReply({joined:true,referralAccepted:!!host},201,crewSetCookie(raw));
  }
  if(!me)return crewReply({error:'session'},401);
+ if(path==='invite-link'){
+   if(!crewValid(d,[]))return crewReply({error:'action'},422);
+   await crewRun(db,'INSERT OR IGNORE INTO crew_invite_codes(owner,code) VALUES(?,?)',me.id,crypto.randomUUID().replaceAll('-',''));
+   return crewReply({ok:true});
+ }
  if(path==='logout'){
   await db.batch([crewQuery(db,'DELETE FROM crew_challenges WHERE session=?',auth.digest),crewQuery(db,'DELETE FROM crew_sessions WHERE digest=?',auth.digest)]);
   return crewReply({ok:true},200,crewSetCookie('',0));

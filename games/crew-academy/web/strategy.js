@@ -23,7 +23,11 @@ export function intent(text){
 export function resolveLevel(id){if(typeof id==='string'&&Object.hasOwn(levelById,id))return levelById[id];const spec=typeof id==='string'&&id.startsWith('world.')?decodeWorld(id.slice(6)):null;return spec?worldLevel(spec):null;}
 export function readyTasks(level,done){return level.tasks.filter(([id,pre])=>!done.includes(id)&&pre.every(v=>done.includes(v))).map(row=>row[0]);}
 const voices={captain:'Я замечаю то, что теряется между докладами. Если двое спорят, попрошу третьего проверить.',assistant:'У реактора свой голос. Если он поёт чисто, у друзей есть запас на ошибку.',blue:'Я люблю красивые гипотезы. Но если приборы спорят со мной — проверим ещё раз!',son:'Я бы рванул вперёд! Только сперва скажи, кого забираем на обратном пути.',daughter:'Слышишь три щелчка? Для меня это как азбука. Дай мне частоту, и я открою замок.',robot:'Собираю необычные гайки. Моя любимая сейчас держит мост номер семь.',plane:'Сверху наш корабль похож на маленькую звезду. Подсветить тебе дорогу?'};
-const readings={sun:'Порыв солнечного ветра ушёл.',rift:'Сквозь лёд видно второй контур.',lava:'Жар поднимается. Край платформы выдержит.',beacon:'На тёмной стороне орбиты снова есть окно связи.'};
+const readings={sun:'Порыв солнечного ветра ушёл.',rift:'Сквозь лёд видно второй контур.',lava:'Жар поднимается. Край платформы выдержит.',beacon:'На тёмной стороне орбиты снова есть окно связи.',greenhouse:'Стеклянный купол снова пропускает свет.',foundry:'Магнитные катушки на верфи вышли на режим.'};
+const sceneLines={
+ greenhouse:{scan:'За третьей лилией слабый огонёк. Вижу потерявшийся дрон!',power:'Пускаю ток по зелёной жиле купола. Зарядное гнездо готово.',compare:'Первое эхо от стекла. Второе движется — это наш дрон.',rescue:'Вижу его! Вывожу дрон из листвы прямо к капсуле.',signal:'Купол отвечает зелёным светом. Дрон дома.'},
+ foundry:{scan:'Между катушками свободен нижний пролёт. Передаю разметку Роботу.',power:'Магниты держат ферму. Кран под напряжением.',bridge:'Захваты защёлкнулись. Поднимаю мост к левому двигателю!',compare:'Датчики на обеих опорах совпали. Балка стоит ровно.',gate:'Стыкую ферму с кольцом. Шлюз сборочной линии открыт.',signal:'Двигатель запущен. Первый корабль с нашей верфи готов.'}
+};
 export function planTurn({level,done,tier,parsed,hero,feedback=null}){
   const work=[...done],changes=[],lines=[];let chain=0;const l=(who,text)=>lines.push({who,text});
   for(const id of parsed.orders){
@@ -31,7 +35,7 @@ export function planTurn({level,done,tier,parsed,hero,feedback=null}){
     if(!def){const needed=readyTasks(level,work)[0];l(m.actor,needed?'В этой локации сейчас важно другое: '+moves[needed].name.toLowerCase()+'.':'В этой локации все поручения выполнены. Идём за капсулой!');continue;}
     if(work.includes(id)){l(m.actor,'Этот шаг уже подтверждён. Результат в журнале.');continue;}
     const missing=def[1].filter(n=>!work.includes(n));if(missing.length){l(m.actor,'Жду результат: '+missing.map(n=>moves[n].name.toLowerCase()).join(' и ')+'. Передай приказ исполнителю.');continue;}
-    work.push(id);changes.push(id);l(m.actor,level.spec&&changes.length===1?readings[level.spec.theme]+' '+m.reply:m.reply);if(def[1].length)chain++;
+    work.push(id);changes.push(id);l(m.actor,sceneLines[level.id]?.[id]||(level.spec&&changes.length===1?readings[level.spec.theme]+' '+m.reply:m.reply));if(def[1].length)chain++;
     if(tier!=='standard')l(m.partner,m.ack);
   }
   const next=readyTasks(level,work)[0],nextGuide=next?'Попробуй: «'+moves[next].example+'»':'Теперь переправа открыта. Прыгни на светящуюся платформу и возьми капсулу.';

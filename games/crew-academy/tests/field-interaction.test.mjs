@@ -38,7 +38,7 @@ async function play(level=levels[0],hero='captain'){
   let finish=0,orders=0,falls=0,relay=0;
   if(!level.id.startsWith('pair-'))await service.resetStage(level);
   const field=createField({
-    order:(levelId,id)=>{orders++;return service.fieldOrder(levelId,id);},
+    order:(levelId,id,auto)=>{orders++;return service.fieldOrder(levelId,id,auto);},
     won:service.complete,finish:()=>finish++,spark:service.collectSpark,fell:()=>falls++,
     relayTerminal:()=>relay++,pauseMenu(){}
   });field.start(level,hero);
@@ -125,4 +125,40 @@ test('the two paired terminals still open once on arrival and can be reopened wi
     const p=await play(relayStage(role));p.go();await p.advance(5500);
     assert.equal(p.relay,1);assert.equal(p.finished,0);p.tap('use');await flush();assert.equal(p.relay,2);
   }
+});
+
+test('Echo Mine: release the scout after overshooting the capsule with one thumb still on Right',async()=>{
+  const l=levels.find(l=>l.id==='mine'),p=await play(l);
+  await p.field.issue('scan');await p.field.issue('compare');
+  p.pads.right.pointer('pointerdown',1);await p.advance(4700);
+  assert.equal(p.actor.x,945);assert.equal(p.finished,0);
+  await p.field.issue('rescue');
+  p.tap('use',2);p.go();await p.advance(1700);p.tap('use');await p.advance(100);
+  assert.equal(p.finished,1,'the scout must carry the capsule back exactly once');
+  assert.equal(p.falls,0);assert.deepEqual(service.doneFor(l.id),['scan','compare','rescue']);
+});
+test('Echo Mine: the opposite thumb can take over a held arrow before the scout order',async()=>{
+  const p=await play(levels.find(l=>l.id==='mine'));
+  await p.field.issue('scan');await p.field.issue('compare');
+  p.pads.right.pointer('pointerdown',1);await p.advance(4700);
+  p.pads.left.pointer('pointerdown',2);await p.advance(480);
+  assert.ok(p.actor.x<860);assert.equal(p.falls,0);
+  p.pads.left.pointer('pointerup',2);p.pads.right.pointer('pointerup',1);
+  await p.field.issue('rescue');await p.advance(1700);assert.equal(p.finished,1);
+});
+test('autopilot completes both illustrated missions and all six generated biomes using ordinary orders and jumps',async()=>{
+  const themes=['sun','rift','lava','beacon','greenhouse','foundry'];
+  const corpus=[...levels.slice(4),...themes.map((theme,i)=>worldLevel({theme,path:'duet',steps:4,seed:131+i*7321,shadow:true}))];
+  const base=service.state.tallies.orders;
+  for(const [i,l] of corpus.entries()){
+    const p=await play(l,i%2?'daughter':'plane');p.field.startPilot();await p.advance(12500);
+    assert.equal(p.finished,1,l.id);assert.equal(p.falls,0,l.id);assert.equal(p.orders,l.tasks.length,l.id);
+    assert.equal(service.state.tallies.orders,base,'demonstrations cannot earn personal skill credit');p.field.leave();
+  }
+});
+test('player can take over the demonstration, then resume without repeating a completed task',async()=>{
+  const l=levels.at(-1),p=await play(l);p.field.startPilot();await p.advance(620);
+  p.key('ArrowLeft');p.key('ArrowLeft',false);const before=p.orders;await p.advance(2000);
+  assert.equal(p.orders,before);assert.equal(p.finished,0);
+  p.field.startPilot();await p.advance(12000);assert.equal(p.finished,1);assert.equal(p.orders,l.tasks.length);
 });

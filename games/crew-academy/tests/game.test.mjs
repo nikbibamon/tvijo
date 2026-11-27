@@ -8,7 +8,7 @@ import {makeSpec,worldLevel,encodeWorld,decodeWorld,verifyPlan,routeReachable} f
 import {validateOrder,handleAPI} from '../server/pilot.js';
 const packet=(level,text,tier='standard',done=[])=>({level,done,parsed:intent(text),tier,hero:'captain'});
 const resolve=p=>planTurn(validateOrder(p));
-test('every authored prompt is recognized and the four campaign DAGs can be completed',()=>{
+test('every authored prompt is recognized and all campaign DAGs can be completed',()=>{
  for(const level of levels){const done=[];assert.ok(routeReachable(level));for(const [task] of level.tasks){
   assert.ok(readyTasks(level,done).includes(task),task);const answer=resolve(packet(level.id,moves[task].example,'standard',done));assert.deepEqual(answer.changes,[task]);done.push(...answer.changes);
  }assert.equal(readyTasks(level,done).length,0);}

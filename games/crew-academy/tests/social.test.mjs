@@ -22,7 +22,7 @@ test('two crews privately join, publish, invite, consent, exchange a playable wo
  await a.join();await b.join();const A=(await a.room()).data.me.id,B=(await b.room()).data.me.id;
  assert.equal((await outsider.room()).data.board.length,0);assert.equal((await a.note(B,'hello')).code,403);
  await a.share();await b.share();assert.equal((await outsider.fetch('/api/crew/room?player='+A)).data.card.id,A);const fields=Object.keys((await outsider.room()).data.board[0]).sort();
- assert.deepEqual(fields,['avatar','badge','beacons','callsign','focus','hero','id','points']);assert.equal((await a.note(B,'hello')).code,409);
+ assert.deepEqual(fields,['avatar','badge','beacons','callsign','fame','focus','hero','id','points']);assert.equal((await a.note(B,'hello')).code,409);
  assert.equal((await a.pair(B,'invite')).code,200);assert.equal((await a.pair(B,'accept')).code,409);
  assert.equal((await b.room()).data.peers[0].sender,A);assert.equal((await b.pair(A,'accept')).code,200);
  assert.equal((await a.note(B,'world','lava.build.7.3.0')).code,200);assert.equal((await b.room()).data.notes[0].world,'lava.build.7.3.0');
@@ -114,4 +114,27 @@ test('two accepted pilots exchange a private frequency in order, share a beacon 
   assert.equal((await act(a,B,'send',run.mission)).code,409);
   await b.pair(A,'mute');assert.equal((await act(a,B,'scan',next.mission)).code,404);
  }finally{db.close();}
+});
+
+test('Telegram referral pays both pilots once after two real different campaign orders, with opt-in ranking',async()=>{
+  const {db,DB}=await openCrewDB();try{
+    const a=player({DB}),b=player({DB}),visitor=player({DB}),already=player({DB});
+    await a.join();await already.join();const invite=(await a.room()).data.invite.code;
+    assert.match(invite,/^[0-9a-f]{32}$/);
+    assert.deepEqual((await visitor.fetch('/api/crew/room?invite='+invite)).data.invite,{valid:true});
+    assert.equal((await visitor.fetch('/api/crew/room?invite='+'0'.repeat(32))).data.invite.valid,false);
+    assert.equal((await already.fetch('/api/crew/join',{hero:'plane',referral:invite})).data.referralAccepted,false);
+    assert.equal((await b.fetch('/api/crew/join',{hero:'plane',referral:invite})).data.referralAccepted,true);
+    assert.equal((await a.room()).data.invite.waiting,1);
+    await b.turn('dock','Робот, держи мост');await b.turn('dock','Робот, держи мост');
+    await b.turn('rift','Дочка, введи код в шлюз',['scan','power']);
+    assert.equal((await a.room()).data.me.fame,0);assert.equal((await b.room()).data.me.fame,10);
+    await b.turn('rift','Самолётик, найди частоту');await b.turn('rift','Самолётик, найди частоту');
+    for(const user of [a,b]){const info=(await user.room()).data;assert.equal(info.invite.qualified,1);assert.equal(info.invite.waiting,0);}
+    assert.equal((await a.room()).data.me.fame,25);assert.equal((await b.room()).data.me.fame,45);
+    assert.deepEqual((await visitor.room()).data.board,[]);
+    await a.share();await b.share();const ranked=(await visitor.fetch('/api/crew/room?sort=fame')).data.board;
+    assert.deepEqual(ranked.map(p=>p.fame),[45,25]);assert.equal((await a.fetch('/api/crew/invite-link',{})).code,200);
+    assert.equal((await a.room()).data.invite.code,invite);
+  }finally{db.close();}
 });
