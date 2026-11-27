@@ -1,0 +1,54 @@
+{
+  "recordedAt": "2026-11-27T08:59:27+00:00",
+  "environment": "development VM",
+  "testedSiteCommit": "3127f3673a72ac1d7e9439add56ec233971e4535",
+  "testedGitHubCommit": "a55dde63c7186b5de078f6fd08ad50405e089dc3",
+  "matchedGitHubFiles": 84,
+  "gameSource": "624eeeaae0f11cf0bc7e73cfc3480cea444700e106672aef3eb2185450e71b6d",
+  "studioSource": "ef1f77e7e4d7332153aafc327de6bdaece44627f626df66e7b75490133c02f5b",
+  "verify": {
+    "art": {
+      "lockedAssets": 34,
+      "approvedHeroes": 7,
+      "posesPerHero": 4
+    },
+    "routes": {
+      "campaign": [
+        "Солнечный причал",
+        "Кристальный разлом",
+        "Шахта эха",
+        "Сердце маяка",
+        "Оранжерея дронов",
+        "Кузница орбиты"
+      ],
+      "generated": 900,
+      "seedsPerConfiguration": 5
+    },
+    "client": {
+      "tests": 36,
+      "pass": 36,
+      "fail": 0,
+      "cancelled": 0,
+      "skipped": 0,
+      "todo": 0
+    },
+    "api": {
+      "tests": 3
+    },
+    "build": {
+      "workerBytes": 4348104,
+      "workerSHA256": "2583890ca279c704a92d9a92850da33676eadb3950479102d820b39c530d931e",
+      "homepage": 200,
+      "health": 200,
+      "runner": 200,
+      "billing": "demo"
+    }
+  },
+  "studioTests": 5,
+  "pilot": {
+    "status": "waiting",
+    "next": "candidate",
+    "humanSessionsObserved": 0
+  },
+  "publicDeploymentInThisRun": false
+}
