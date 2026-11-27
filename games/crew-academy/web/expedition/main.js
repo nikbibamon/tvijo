@@ -8,6 +8,8 @@ import {mountChain, mountDrones} from './machines.js';
 import {mountRadio} from './radio.js';
 import {mountMirrors, mountArchive} from './station.js';
 
+import {markRoute} from '../crewRoute.js';
+
 const scenes = {alphabet:mountAlphabet, cargo:mountCargo, chain:mountChain, drones:mountDrones, pulse:mountPulse,
   radio:mountRadio, mirrors:mountMirrors, 'time-archive':mountArchive};
 const $ = id => document.getElementById(id);
@@ -20,6 +22,7 @@ function saved(id) {
   catch { return memory.get(id) ?? null; }
 }
 function keep(id, record) {
+  markRoute('room',id);
   memory.set(id, record);
   try { localStorage.setItem('tvijo.expedition.room.v1.' + id, JSON.stringify(record)); } catch {}
 }

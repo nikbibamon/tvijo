@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ru"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#15111e">
+<title>Шахта эха · Академия экипажа</title>
+<meta name="description" content="Сверь показания экипажа, освободи вагонетку и выведи дрон из нижней штольни.">
+<link rel="icon" href="./art/tvijo.png"><link rel="stylesheet" href="./echo/mine.css"><link rel="preload" as="image" href="./echo/mine.webp">
+</head><body>
+<header class="top"><a class="brand" href="./#hq"><img src="./art/tvijo.png" alt="">Tvijo</a><nav aria-label="Основная навигация"><a href="./#hq">Штаб</a><a href="./#map/mine">Карта</a><a href="./echo-mine.html" aria-current="page">Вылазка</a><a href="./#journal">Журнал</a></nav><button type="button" data-voice aria-label="Включить озвучку"></button></header>
+<main id="mine">
+<div class="viewport" id="scene" tabindex="0" aria-label="Игровая сцена Шахты эха">
+  <div class="scenery" aria-hidden="true"></div>
+  <div class="scene-guide"><span id="act-name">Разведка</span><h1>Шахта эха</h1><p id="goal">Найди сигнал дрона</p></div>
+  <div class="stage-count" id="stage-count" aria-label="Ход вылазки"></div>
+  <div class="ore-rings wave" aria-hidden="true"><i></i></div><div class="call-rings wave" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="mine-gap" aria-hidden="true"></div><div class="crossing" aria-hidden="true"></div>
+  <div class="gate" aria-hidden="true"><i></i></div>
+  <div class="engine" aria-hidden="true"><i class="feeder"></i><i class="chute"></i><i class="bowl"></i><i class="bin"></i><i class="ball"></i></div>
+  <div class="track-points" aria-hidden="true"></div>
+  <img class="drone" src="./echo/drone.webp" alt=""><img class="wagon" src="./echo/cart.webp" alt=""><img class="lever" src="./echo/lever.webp" alt="">
+  <div class="actor pilot" aria-hidden="true"></div><div class="actor scout" aria-hidden="true"></div>
+  <div id="markers" aria-label="Объекты сцены"></div>
+</div>
+<div class="deck">
+  <div id="controls" class="controls" aria-label="Управление сценой"></div>
+  <div class="transmission" role="status" aria-live="polite"><img id="speaker-face" src="./art/crew/captain.webp" alt=""><div><strong id="speaker">Капитан</strong><span id="feedback"></span></div></div>
+  <details id="radio"><summary>Рация смены</summary><ol id="radio-lines"></ol></details>
+  <section id="result" hidden aria-label="Результат вылазки">
+    <div><h2>Дрон на борту</h2><p id="debrief"></p></div>
+    <div class="result-links"><a href="./#journal" class="gold">Открыть журнал</a><a href="./#map/mine">На карту</a></div>
+    <details class="next-games"><summary>Другие задания с механизмами</summary>
+    <a href="./expedition.html#chain">Цепная реакция</a><a href="./expedition.html#cargo">Склад Робота</a><a href="./expedition.html#drones">Ремонтный шлюз</a><a href="./expedition.html#pulse">Импульсный лабиринт</a><a href="./expedition.html#radio">Радиомастерская</a></details>
+    <details><summary>Повторить спасение</summary><button id="restart" type="button">Начать новую попытку</button></details>
+  </section>
+</div>
+<p class="voice-problem" data-voice-problem role="status" hidden>Реплика экипажа доступна на экране.</p>
+</main><noscript>Для управления экипажем включи JavaScript.</noscript><script type="module" src="./echo/main.js"></script></body></html>

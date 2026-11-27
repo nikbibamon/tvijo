@@ -1,5 +1,9 @@
 import {heroes,heroOrder,tiers,levels,moves} from './catalog.js';
 import {state,chat,bus,write,note,collectSpark,setHero,setLevel,setTier,setShowHints,complete,currentLevel,doneFor,isOpen,resetStage,enterFirstShift,addLines,speech,silenceRadio,toggleVoice,dictate,stopVoice,track,pilot,pilotReport,localFunnel,turn,fieldOrder,buildWorld,importWorld,grantDemo,rewind,claimAward} from './tvijoService.js';
+import {readRoute,markRoute,nextRoute,stormKey} from './crewRoute.js';
+import {gearLabel} from './echo/rules.js';
+import {beginRadioAttempt,radioAttempt} from './tvijoService.js';
+import {drawBlueprint} from './sceneArt.js';
 import {bindVoiceControls} from './voiceControls.js';
 import {readyTasks,tacticalDigest,resolveLevel} from './strategy.js';
 import {worldLevel,encodeWorld,decodeWorld} from './worlds.js';
@@ -11,7 +15,7 @@ import {flightAwards,awardAvailable} from './flightAwards.js';
 import {workshop} from './workshop.js';
 import {createClub} from './club.js';
 import {enterMiniApp,miniAppReady} from './miniApp.js';
-import {packNames,roomHref} from './expedition/rooms.js';
+import {packNames,roomHref,riftRooms,stationRooms,hasPrize} from './expedition/rooms.js';
 import {recoverPrizes} from './expedition/rewards.js';
 const $=s=>document.querySelector(s), el=(tag,cls,text)=>{const node=document.createElement(tag);if(cls)node.className=cls;if(text!==undefined)node.textContent=text;return node;};
 const ii=id=>{const n=el('i','ico');n.innerHTML=icon(id);return n;};
@@ -60,7 +64,24 @@ function openModal(title,content,id=''){activeModal=id;$('#modal-title').textCon
 function close(){if(modal.open)modal.close();}
 $('#close-modal').onclick=close;modal.addEventListener('click',e=>{const r=modal.getBoundingClientRect();if(e.target===modal&&(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom))close();});modal.addEventListener('close',()=>{if(modal.open)return;activeModal='';stopVoice();if(page==='field')field.suspend(mobileRadio);});
 function avatar(who){const h=heroes[who],a=el('span','avatar'+(who==='tvijo'?' cpu':''));a.style.setProperty('--hc',h?.color||'#c3a1dd');if(h)a.append(picture('./art/crew/'+who+'.webp'));else if(who==='tvijo')a.append(picture('./art/tvijo.png'));else a.append(ii('person'));return a;}
-function showMessages(){if(lastMessageList===chat)return;const oldCount=lastMessageList?.length||0;lastMessageList=chat;const box=$('#messages');if(!oldCount||chat.length<=oldCount)box.replaceChildren();const visible=oldCount&&chat.length>oldCount?chat.slice(oldCount):chat;box.append(...visible.map(msg=>{const h=heroes[msg.who],wrap=group('message',avatar(msg.who),group('',el('b','',h?.name||(msg.who==='you'?'Ты':'Бортовой Tvijo')),para(msg.text)));wrap.style.setProperty('--hc',h?.color||(msg.who==='you'?'#f3cc8c':'#c5a3e4'));return wrap;}));box.scrollTop=box.scrollHeight;requestAnimationFrame(()=>{box.scrollTop=box.scrollHeight;});}
+let showRadioArchive=false, radioView='';
+function showMessages(){
+ const fieldOnly=page==='field'&&!showRadioArchive;
+ const view=page+'-'+radioAttempt+'-'+showRadioArchive;
+ if(lastMessageList===chat && radioView===view)return;
+ lastMessageList=chat;radioView=view;
+ const history=$('#radio-history');
+ history.hidden=page!=='field';
+ history.textContent=showRadioArchive?'Только текущая реплика':'Вся переписка';
+ history.setAttribute('aria-expanded',String(showRadioArchive));
+ const lines=fieldOnly?chat.filter(msg=>(msg.attempt??0)===radioAttempt).slice(-1):chat;
+ const box=$('#messages');box.replaceChildren(...lines.map(msg=>{
+   const h=heroes[msg.who],wrap=group('message',avatar(msg.who),group('',el('b','',h?.name||(msg.who==='you'?'Ты':'Бортовой Tvijo')),para(msg.text)));
+   wrap.style.setProperty('--hc',h?.color||(msg.who==='you'?'#f3cc8c':'#c5a3e4'));return wrap;
+ }));
+ box.scrollTop=box.scrollHeight;
+}
+$('#radio-history').onclick=()=>{showRadioArchive=!showRadioArchive;showMessages();};
 function crew(){const wrap=$('#crew');if(!wrap.children.length)for(const id of heroOrder){const h=heroes[id],b=el('button','crew-card');b.dataset.hero=id;b.type='button';b.style.setProperty('--hero-color',h.color);b.title=h.name+' · '+h.ability;b.setAttribute('aria-label','Выбрать: '+h.name+'. '+h.ability);b.append(picture('./art/crew/'+id+'.webp'),el('strong','',h.short||h.name),el('small','',h.role));b.onclick=async()=>{await setHero(id);field.setHero(id);};wrap.append(b);}
   [...wrap.children].forEach(b=>{const chosen=b.dataset.hero===state.hero;b.classList.toggle('selected',chosen);b.setAttribute('aria-pressed',chosen);});
   const h=heroes[state.hero];$('#selected-skill').replaceChildren(ii('zap'),group('',el('b','',h.name+' · '),document.createTextNode(h.ability)));}
@@ -75,10 +96,22 @@ function choosePilot(){
 }
 function homeBrief(){
  const hero=heroes[state.hero];
- $('#resume-campaign').hidden=!state.completed.includes('dock')&&state.level==='dock';
- $('#mission-kicker').textContent='Солнечный причал';
- $('#mission-title').textContent='Первая смена';
- $('#cover-stop').textContent='Причал · 1 из '+levels.length;
+ const route=nextRoute(state,readRoute(),readRoute(stormKey));
+ const card=$('.mission-card');card.dataset.route=route.kind;
+ $('.mission-art').style.backgroundImage='url("'+route.art+'")';
+ $('#mission-kicker').textContent=route.place;$('#mission-title').textContent=route.title;
+ $('#mission-summary').textContent=route.text;$('#cover-stop').textContent=route.detail;
+ $('#start-mission').href=route.href;$('#start-mission span').textContent=route.action;
+ $('#resume-campaign').hidden=route.kind==='first'||route.kind==='campaign'||levels.every(l=>state.completed.includes(l.id));
+ $('#pick-hero').hidden=!['first','campaign'].includes(route.kind);
+ const missing=riftRooms.find(def=>!hasPrize(state,def.id));
+ const roomAddress=missing?roomHref(missing.id):roomHref('rift-rooms');
+ $('#next-room').href=roomAddress;$('#bridge-room').href=roomAddress;
+ $('#next-room').textContent=missing?'Играть в «'+missing.name+'»':'Открыть Разлом';
+ $('#bridge-dock').textContent=state.completed.includes('dock')?'Капсула на борту':'Первая смена';
+ $('#bridge-rift').textContent='Находки · '+riftRooms.filter(def=>hasPrize(state,def.id)).length+' / '+riftRooms.length;
+ $('#bridge-station').textContent='Находки · '+stationRooms.filter(def=>hasPrize(state,def.id)).length+' / '+stationRooms.length;
+ $('#bridge-mine').textContent=hasPrize(state,'echo-mine')?'Чёрный ящик в рюкзаке':'Спасение дрона';
  $('#pick-portrait').src='./art/crew/'+state.hero+'.webp';$('#pick-name').textContent=hero.name;
  $('#pick-hero').setAttribute('aria-label','Выбрать героя. Сейчас '+hero.name);
  const pack=packNames(state);
@@ -100,14 +133,20 @@ function radioHud(){const t=tiers[state.tier];$('#tier-label').textContent=t.lab
 function renderMap(){const pins=$('#map-pins'),pos=[[12,73],[31,54],[51,63],[71,45],[82,28],[92,12]];pins.replaceChildren(...levels.map((l,i)=>{const b=action(String(i+1),()=>{mapId=l.id;renderMap();},'pin'+(mapId===l.id?' chosen':''));b.style.left=pos[i][0]+'%';b.style.top=pos[i][1]+'%';b.setAttribute('aria-label',l.name);return b;}));
   const l=resolveLevel(mapId)||levels[0],opened=isOpen(l),idx=levels.indexOf(l),card=$('#map-detail');const items=[picture('./art/'+l.art+'.webp',l.name),el('div','tag',l.tag),el('h2','',l.name),para(l.desc)];
   if(state.hero==='blue')items.push(para('Анализ · '+l.tasks.map(([id,pre])=>moves[id].short+(pre.length?' после '+pre.map(p=>moves[p].short).join(' + '):'')).join(' · '),'subtle'));
-  if(opened)items.push(action(state.completed.includes(l.id)?'Пройти ещё раз':'Войти в локацию',()=>launch(l,state.completed.includes(l.id)),'btn primary','play'));else items.push(para('Откроется после миссии «'+levels[idx-1].name+'».','inline-note'));if(l.id==='rift'){
+  if(opened)items.push(action(l.id==='mine'?'Маршрут за капсулой':state.completed.includes(l.id)?'Пройти ещё раз':'Войти в локацию',()=>launch(l,state.completed.includes(l.id)),l.id==='mine'?'btn secondary':'btn primary','play'));else items.push(para('Откроется после миссии «'+levels[idx-1].name+'».','inline-note'));if(l.id==='rift'){
     const prizes=packNames(state);
     if(prizes.length)items.push(para('В рюкзаке — '+prizes.join(', ')+'.','rift-loot'));
     items.push(group('actions',roomLink('Войти в «Алфавит маяка»','alphabet'),roomLink('Станция времени','station'),roomLink('Все комнаты')));
   }
+  if(l.id==='mine'){
+    const entry=el('a','btn primary',hasPrize(state,'echo-mine')?'Открыть спасение':'Найти дрон в штольне');
+    entry.href='./echo-mine.html';items.splice(4,0,entry);
+    if(hasPrize(state,'echo-mine'))items.push(para('Чёрный ящик разведчика в рюкзаке.','rift-loot'));
+    items.push(roomLink('Импульсный лабиринт','pulse'));
+  }
   card.replaceChildren(...items);
   const worlds=$('#world-list');if(!state.worlds.length){worlds.replaceChildren(group('empty-worlds',ii('spark'),document.createTextNode('Первый свой мир можно построить после Солнечного причала.')));return;}
-  worlds.replaceChildren(group('worlds',...state.worlds.map(spec=>{const w=worldLevel(spec);return group('world-row',ii('orbit'),group('',el('strong','',w.name),el('small','', ' · '+w.spec.steps+' платформы')),action('Играть',()=>launch(w,state.completed.includes(w.id)),'btn secondary'));})));
+  worlds.replaceChildren(group('worlds',...state.worlds.map(spec=>{const w=worldLevel(spec);const thumbnail=el('canvas','world-thumbnail');thumbnail.width=960;thumbnail.height=448;thumbnail.setAttribute('aria-hidden','true');drawBlueprint(thumbnail,spec);return group('world-row',thumbnail,group('',el('strong','',w.name),el('small','', ' · '+w.spec.steps+' платформы')),action('Играть',()=>launch(w,state.completed.includes(w.id)),'btn secondary'));})));
 }
 function drawGraph(){
  const l=currentLevel(),done=doneFor(),list=[['entry',[]],...l.tasks.map(([id,ds])=>[id,ds.length?ds:['entry']]),['exit',l.tasks.filter(([id])=>!l.tasks.some(([,d])=>d.includes(id))).map(([id])=>id)]];
@@ -126,12 +165,15 @@ function drawGraph(){
  $('#plan-json').textContent=JSON.stringify(l.tasks.map(([task,requires])=>({agent:heroes[moves[task].actor].name,task,requires,status:done.includes(task)?'done':readyTasks(l,done).includes(task)?'ready':'waiting'})),null,2);
 }
 function journal(){
+ const report=state.echoMineReport,panel=$('#mine-journal');panel.hidden=!report;
+ if(report)$('#mine-journal-line').textContent=(report.first==='blue'?'Гуманоид первым проверил золотую жилу.':'Самолётик первым запеленговал вагонетку.')+
+   ' Дрон ответил тремя импульсами. Проверок жилы — '+report.ore+'. Пусков шара — '+report.tries+'. Переправа — '+gearLabel(report.tool).toLowerCase()+'.';
  drawGraph();const filter=$('#log-filter').value;const list=state.log.filter(x=>filter==='all'||x.type===filter).slice(-20).reverse();const target=$('#log-list');if(!list.length)target.replaceChildren(el('li','','Здесь появятся выполненные приказы и найденные капсулы.'));else target.replaceChildren(...list.map(row=>{const li=el('li');li.append(el('time','',new Date(row.at).toLocaleTimeString('ru',{hour:'2-digit',minute:'2-digit'})),document.createTextNode(row.text));return li;}));
  const scene=state.stages[state.level],digest=scene?.digest;$('#digest-text').textContent=digest?'Сводка после '+digest.turn+' приказов. Из последних пяти '+digest.blocks+' потребовали уточнения. '+digest.hint:'После пяти приказов появится сводка по реальным ходам этой миссии. Сейчас '+(scene?.turns||0)+' из 5.';}
 function fieldHud(){
  const dock=!activeRelay&&state.level==='dock';
  const atRift=!activeRelay&&state.level==='rift';
- $('#rift-entrance').hidden=!atRift;
+ $('#rift-entrance').hidden=!atRift;$('#mine-entrance').hidden=!!activeRelay||state.level!=='mine';
  if(atRift){const bag=packNames(state);$('#rift-pack').textContent=bag.length?'В рюкзаке — '+bag.join(', ')+'.':'В скале видна антенна боковой станции.';}
  $('#field').classList.toggle('dock-run',dock);$('#dock-objective').hidden=!dock||!!finishedLevel;
  if(dock){
@@ -170,14 +212,26 @@ function render(){
 function go(next,hash=true){
  if(!['hq','map','field','journal'].includes(next))next='hq';if(modal.open)close();if(page==='field'&&next!=='field'){field.leave();activeRelay=null;mobileRadio=false;}document.body.classList.toggle('in-field',next==='field');document.body.classList.toggle('field-radio-open',next==='field'&&mobileRadio);document.body.classList.toggle('pair-running',next==='field'&&!!activeRelay);if(next!==page){silenceRadio();stopVoice();status('');voiceDraft=false;}
  finishedLevel=null;$('#field-result').hidden=true;$('#field').classList.remove('compact-result');
- page=next;for(const n of ['hq','map','field','journal'])$('#'+n).hidden=n!==page;
+ page=next;document.body.classList.toggle('bridge-hq',next==='hq');for(const n of ['hq','map','field','journal'])$('#'+n).hidden=n!==page;
  if(page==='hq'||page==='field'){const dest=page==='hq'?$('#radio-home'):$('#radio-field');if(radio.parentElement!==dest)dest.append(radio);radio.hidden=false;}else radio.hidden=true;
  if(page==='map')track('open_map');if(page==='field'){track('field_start');if(!activeRelay&&state.level==='dock')track('shift_enter');field.start(fieldLevel(),state.hero);field.suspend(mobileRadio||modal.open);if(!mobileRadio&&!modal.open)$('#stage').focus({preventScroll:true});}
  if(hash&&location.hash!=='#'+page){history.pushState(null,'','#'+page);}
  render();window.scrollTo({top:0,behavior:'instant'});
 }
-async function launch(l,replay=false,changeAddress=true){if(activeRelay){activeRelay=null;field.forget();}if(!isOpen(l)){toast('Сначала пройди предыдущую миссию.');return;}if(replay){await resetStage(l);field.forget();}else if(state.level!==l.id){await setLevel(l);field.forget();}if(lastShownStage!==l.id){silenceRadio();lastShownStage=l.id;const completedTasks=doneFor(l.id),remaining=readyTasks(l,completedTasks);const brief=!completedTasks.length?l.desc:remaining.length?'Экипаж уже на маршруте. Следующее поручение — '+moves[remaining[0]].name.toLowerCase()+'.':'Переправа готова. Забирай капсулу!';addLines([{who:l.tasks[0][0]==='bridge'?'robot':'tvijo',text:brief}]);}go('field',changeAddress);}
-function continueGame(){const resume=state.level==='dock'&&resolveLevel(state.resumeAfterShift);if(resume&&isOpen(resume)&&!state.completed.includes(resume.id))return launch(resume);const l=currentLevel();if(state.completed.includes(l.id)){const next=levels.find(x=>isOpen(x)&&!state.completed.includes(x.id));return launch(next||l,!next);}return launch(l);}
+async function launch(l,replay=false,changeAddress=true){if(activeRelay){activeRelay=null;field.forget();}if(!isOpen(l)){toast('Сначала пройди предыдущую миссию.');return;}if(replay){await resetStage(l);field.forget();}else if(state.level!==l.id){await setLevel(l);field.forget();}if(replay||lastShownStage!==l.id){beginRadioAttempt();showRadioArchive=false;silenceRadio();lastShownStage=l.id;const completedTasks=doneFor(l.id),remaining=readyTasks(l,completedTasks);const brief=!completedTasks.length?l.desc:remaining.length?'Экипаж уже на маршруте. Следующее поручение — '+moves[remaining[0]].name.toLowerCase()+'.':'Переправа готова. Забирай капсулу!';addLines([{who:l.tasks[0][0]==='bridge'?'robot':'tvijo',text:brief}]);}markRoute('campaign',l.id);go('field',changeAddress);}
+function campaignStop(l,replay=false){
+ if(l.id==='mine' && !replay && !state.stages.mine?.done?.length && state.echoMine?.phase!==3){
+   location.assign('./echo-mine.html');return;
+ }
+ return launch(l,replay);
+}
+function enterFromNav(){
+ if(page==='field')return continueGame();
+ const choice=nextRoute(state,readRoute(),readRoute(stormKey));
+ if(choice.kind==='campaign'||choice.kind==='first')return continueGame();
+ location.assign(choice.href);
+}
+function continueGame(){const resume=state.level==='dock'&&resolveLevel(state.resumeAfterShift);if(resume&&isOpen(resume)&&!state.completed.includes(resume.id))return campaignStop(resume);const l=currentLevel();if(state.completed.includes(l.id)){const next=levels.find(x=>isOpen(x)&&!state.completed.includes(x.id));return campaignStop(next||l,!next);}return campaignStop(l);}
 function launchRelay(run){silenceRadio();activeRelay=run;mobileRadio=false;field.forget();go('field',!run.beaconCode);if(run.beaconCode)history.replaceState(null,'','#beacon/'+run.beaconCode);}
 function overlay(title,txt,controls,option){const card=group('',el('h2','',title),para(txt),group('actions',...controls));if(option)card.append(option);$('#field-overlay').replaceChildren(card);$('#field-overlay').hidden=false;}
 function showFinish(l){
@@ -192,7 +246,7 @@ function showFinish(l){
  }
  const idx=levels.indexOf(l),next=idx>=0?levels[idx+1]:null;
  const title=l.id==='beacon'?'Маяк ответил!':'Капсула на борту!';
- const advance=next?action('Дальше: '+next.name,()=>launch(next),'btn primary','play'):null;
+ const advance=next?action('Дальше: '+next.name,()=>campaignStop(next),'btn primary','play'):null;
  const make=action('Нарисовать мир',openWorkshop,advance?'btn secondary':'btn primary','spark');
  const extras=[];
  if(!next)extras.push(action('Журнал смены',()=>go('journal'),'btn secondary'));
@@ -285,7 +339,7 @@ $('#parent-report').onclick=report;$('#math-details').onclick=()=>{const s=state
 $('#log-filter').onchange=journal;$('#pick-hero').onclick=choosePilot;
 $('#resume-campaign').onclick=continueGame;
 $('#dock-radio').onclick=()=>{if(doneFor('dock').includes('bridge'))field.pickup();else field.issue('bridge');$('#stage').focus({preventScroll:true});};
-for(const b of document.querySelectorAll('[data-page],[data-goto]'))b.onclick=()=>{const n=b.dataset.page||b.dataset.goto;if(n==='field')continueGame();else go(n);};
+for(const b of document.querySelectorAll('[data-page],[data-goto]'))b.onclick=()=>{const n=b.dataset.page||b.dataset.goto;if(n==='field')enterFromNav();else go(n);};
 for(const b of document.querySelectorAll('[data-workshop]'))b.onclick=openWorkshop;
 const club=createClub({el,group,para,action,avatar,ii,openModal,isOpen:()=>activeModal==='club'&&modal.open,toast,playRelay:launchRelay,playCampaign:continueGame,showWorld:async code=>{const spec=decodeWorld(code);if(spec){await importWorld(spec);go('map');worldResult({spec,level:worldLevel(spec),cost:0});}}});
 const terminal=crewTerminal({el,group,ii,action,para,openModal,read:()=>activeRelay,store:r=>{activeRelay=r;fieldHud();},launch:launchRelay,home:()=>go('hq'),channel:r=>{if(r.practice){go('hq');club.open('duet');}else club.open('peer',r.other);},club:()=>club,visible:()=>activeModal==='relay'&&modal.open&&page==='field'});
@@ -298,11 +352,12 @@ async function locationPage(){
  if(h==='first-shift'){
    const requested=location.href;
    if(activeRelay||state.level!=='dock'||(state.completed.includes('dock')&&!state.stages.dock?.replaying))field.forget();
-   activeRelay=null;
+   activeRelay=null;lastShownStage='';
    await enterFirstShift();
    if(location.href===requested)await launch(levels[0],false,false);
    return;
  }
+ if(h==='map/mine'){mapId='mine';go('map',false);return;}
  if(h==='rift'){
    mapId='rift';
    if(isOpen(levels[1]))await launch(levels[1],false,false);else go('map',false);

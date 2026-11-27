@@ -11,11 +11,12 @@ export const stationRooms = [
   {id: 'mirrors', name: 'Зеркальная станция', place: 'Станция времени', chapter: 'station', next: 'time-archive',
     crew: 'Ассистентка', task: 'Поймай луч тремя зеркалами и открой нишу с призмой.', art: './art/foundry.webp', prize: 'Призма станции'},
   {id: 'time-archive', name: 'Архив двух времён', place: 'Станция времени', chapter: 'station',
-    crew: 'Синий Гуманоид', task: 'Достань печать в прошлом и принеси её к шлюзу в настоящем.', art: './art/relay.webp', prize: 'Печать времени'}
+    crew: 'Синий Гуманоид', task: 'Достань печать в прошлом и принеси её к шлюзу в настоящем.', art: './echo/archive.webp', prize: 'Печать времени'}
 ];
 
 export const rooms = [...riftRooms, ...stationRooms];
-export const prizes = [...rooms, {id: 'orbital-storm', name: 'Орбитальный шторм', prize: 'Знак спасения Светляка'}];
+export const prizes = [...rooms, {id: 'orbital-storm', name: 'Орбитальный шторм', prize: 'Знак спасения Светляка'},
+  {id:'echo-mine', name:'Шахта эха', prize:'Чёрный ящик разведчика'}];
 
 export const roomById = id => rooms.find(room => room.id === id);
 export const prizeById = id => prizes.find(item => item.id === id);

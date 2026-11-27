@@ -29,7 +29,9 @@ function refreshState() {
 }
 window.addEventListener('storage',e=>{if(e.key===STORAGE)refreshState();});
 window.addEventListener('pageshow',e=>{if(e.persisted)refreshState();});
-export function addLines(lines){chat=chat.concat(lines).slice(-70);bus.dispatchEvent(new Event('chat'));}
+export let radioAttempt=0;
+export function beginRadioAttempt(){radioAttempt++;}
+export function addLines(lines){chat=chat.concat(lines.map(msg=>({...msg,attempt:radioAttempt}))).slice(-70);bus.dispatchEvent(new Event('chat'));}
 export function setHero(id){return write(s=>{if(heroOrder.includes(id))s.hero=id;});}
 export function setShowHints(on){return write(s=>{s.showHints=on===true;});}
 export function setTier(t){return write(s=>{if(Object.hasOwn(tiers,t))s.tier=t;});}
@@ -87,7 +89,7 @@ export function fieldOrder(levelId,id,automatic=false){
   return turn(moves[id].example,false,id,automatic);
 }
 export async function turn(raw,voice=false,preset=null,automatic=false){
-  const text=raw.trim().slice(0,450);if(!text)return null;const s=state,l=currentLevel(),pre=doneFor().slice(),parsed=intent(text),tier=preset?'standard':s.tier,hero=s.hero;
+  const text=raw.trim().slice(0,450);if(!text)return null;const attempt=radioAttempt,s=state,l=currentLevel(),pre=doneFor().slice(),parsed=intent(text),tier=preset?'standard':s.tier,hero=s.hero;
   const lastDigest=s.stages[l.id]?.digest,feedback=lastDigest?{blocks:lastDigest.blocks,focus:lastDigest.focus}:null;
   const pkt={level:l.id,done:pre,tier,parsed,hero,feedback};const k=JSON.stringify([l.id,pre.slice().sort(),tier,hero,parsed.orders,parsed.who,parsed.kind,parsed.criteria,feedback]);
   const predicted=planTurn({level:l,done:pre,tier,parsed,hero,feedback});const cache=s.cache.includes(k),requestId=crypto.randomUUID();let source=preset?'preset':cache?'cache':'demo',reply=predicted;const began=now();
@@ -98,7 +100,7 @@ export async function turn(raw,voice=false,preset=null,automatic=false){
   }
   // The public service never debits. One local commit applies the reward and the demo cost together.
   const settled=await write(st=>{
-    if(st.level!==l.id)return {discarded:true};const scene=stageOf(st,l.id);
+    if(st.level!==l.id||attempt!==radioAttempt)return {discarded:true};const scene=stageOf(st,l.id);
     if(st.receipts.includes(requestId)||preset&&!readyTasks(l,scene.done).includes(preset))return {discarded:true};
     const current=planTurn({level:l,done:scene.done,tier,parsed,hero,feedback});
     if(current.changes.join()!==reply.changes.join()){reply=current;source='cache';}

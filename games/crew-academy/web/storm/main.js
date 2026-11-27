@@ -7,7 +7,7 @@ import {
   freshStorm, restoreStorm, sceneIndex, stepStorm
 } from './rules.js';
 
-const SAVE = 'tvijo.crew.storm.v1';
+import {markRoute, stormKey as SAVE} from '../crewRoute.js';
 const PRIZE = 'orbital-storm';
 const $ = id => document.getElementById(id);
 const pulse = ['слабый','средний','сильный'];
@@ -30,6 +30,7 @@ let report = 'drone';
 let awarding = false;
 
 function save() {
+  markRoute('storm');
   try { localStorage.setItem(SAVE,JSON.stringify(mission)); } catch {}
 }
 function award() {
