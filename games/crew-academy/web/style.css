@@ -194,3 +194,14 @@ body.in-telegram {
     url(./storm/orbital-storm.webp) right 56% / cover;
   min-height: 92px;
 }
+
+@media (min-width: 801px) and (max-width: 1000px) {
+  .head-inner {
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    padding-inline: 14px;
+  }
+  .head-inner .brand { padding-right: 10px; }
+  .topbar .nav-item { padding-inline: 6px; gap: 5px; white-space: nowrap; }
+  .head-inner .account { gap: 6px; }
+}
