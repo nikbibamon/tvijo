@@ -103,7 +103,7 @@ function renderMap(){const pins=$('#map-pins'),pos=[[12,73],[31,54],[51,63],[71,
   if(opened)items.push(action(state.completed.includes(l.id)?'Пройти ещё раз':'Войти в локацию',()=>launch(l,state.completed.includes(l.id)),'btn primary','play'));else items.push(para('Откроется после миссии «'+levels[idx-1].name+'».','inline-note'));if(l.id==='rift'){
     const prizes=packNames(state);
     if(prizes.length)items.push(para('В рюкзаке — '+prizes.join(', ')+'.','rift-loot'));
-    items.push(group('actions',roomLink('Войти в «Алфавит маяка»','alphabet'),roomLink('Все 6 головоломок')));
+    items.push(group('actions',roomLink('Войти в «Алфавит маяка»','alphabet'),roomLink('Станция времени','station'),roomLink('Все комнаты')));
   }
   card.replaceChildren(...items);
   const worlds=$('#world-list');if(!state.worlds.length){worlds.replaceChildren(group('empty-worlds',ii('spark'),document.createTextNode('Первый свой мир можно построить после Солнечного причала.')));return;}
@@ -186,7 +186,7 @@ function showFinish(l){
    const panel=$('#field-result');panel.hidden=false;
    const win=group('shift-finish',picture('./art/badges/capsule.webp',''),group('',el('h2','','Капсула на борту!'),para('Следующий маршрут — Кристальный разлом. Или позови друга: один считает три импульса, второй повторит их на маяке.')));
    const buttons=group('shift-finish-actions',roomLink('Играть в «Алфавит маяка»','alphabet','btn primary'),action('Продолжить кампанию',continueGame,'btn secondary','play'),action('Пригласить друга в Парный маяк',()=>club.open('beacon'),'btn secondary','users'));
-   const more=el('details','result-more');more.append(el('summary','','Награды и мастерская'),group('actions',action('Награды экипажа',openAwards,'btn secondary','award'),action('Нарисовать мир',openWorkshop,'btn secondary','spark')));
+   const more=el('details','result-more');more.append(el('summary','','Ещё маршруты и награды'),group('actions',roomLink('Станция времени','station'),action('Награды экипажа',openAwards,'btn secondary','award'),action('Нарисовать мир',openWorkshop,'btn secondary','spark')));
    panel.replaceChildren(win,buttons,more);return;
  }
  const idx=levels.indexOf(l),next=idx>=0?levels[idx+1]:null;

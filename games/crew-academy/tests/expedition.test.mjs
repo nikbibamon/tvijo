@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {beaconAction, restoreBeacon} from '../web/expedition/beacon.js';
-import {rooms, collectPrize, packNames} from '../web/expedition/rooms.js';
+import {riftRooms, collectPrize, packNames} from '../web/expedition/rooms.js';
 import {radioStep, resolveRadioItem} from '../web/expedition/radio.js';
 import {miniAppRoute, telegramLaunch} from '../web/miniApp.js';
 
@@ -36,11 +36,11 @@ for (const orders of [['echo','power'],['power','echo']]) {
   });
 }
 test('six distinct rewards and recovery from an incomplete notebook', () => {
-  assert.equal(new Set(rooms.map(room=>room.id)).size,6);
+  assert.equal(new Set(riftRooms.map(room=>room.id)).size,6);
   const corrupted=restoreBeacon({taken:true,verified:true,words:[null],shutters:true});
   assert.equal(corrupted.taken,false);
   const save={}; assert.equal(collectPrize(save,'not-a-room'),false);
-  for (const room of rooms) collectPrize(save,room.id);
+  for (const room of riftRooms) collectPrize(save,room.id);
   assert.equal(packNames(save).length,6);
 });
 test('radio request accepts synonyms, both cable ends and the different ramp solution',()=>{
