@@ -188,3 +188,9 @@ body.in-telegram {
 @media (orientation:landscape) and (max-height:540px) {
   .in-field .dock-run.compact-result #result-sound { display:grid; place-items:center; width:44px; height:44px; }
 }
+
+.storm-entry {
+  background: linear-gradient(90deg,#20162ae8,#281d36ac 66%,#24163344),
+    url(./storm/orbital-storm.webp) right 56% / cover;
+  min-height: 92px;
+}

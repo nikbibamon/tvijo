@@ -186,7 +186,8 @@ function showFinish(l){
    const panel=$('#field-result');panel.hidden=false;
    const win=group('shift-finish',picture('./art/badges/capsule.webp',''),group('',el('h2','','Капсула на борту!'),para('Следующий маршрут — Кристальный разлом. Или позови друга: один считает три импульса, второй повторит их на маяке.')));
    const buttons=group('shift-finish-actions',roomLink('Играть в «Алфавит маяка»','alphabet','btn primary'),action('Продолжить кампанию',continueGame,'btn secondary','play'),action('Пригласить друга в Парный маяк',()=>club.open('beacon'),'btn secondary','users'));
-   const more=el('details','result-more');more.append(el('summary','','Ещё маршруты и награды'),group('actions',roomLink('Станция времени','station'),action('Награды экипажа',openAwards,'btn secondary','award'),action('Нарисовать мир',openWorkshop,'btn secondary','spark')));
+   const stormLink=el('a','btn secondary','Орбитальный шторм');stormLink.href='./storm.html';
+   const more=el('details','result-more');more.append(el('summary','','Ещё маршруты и награды'),group('actions',roomLink('Станция времени','station'),stormLink,action('Награды экипажа',openAwards,'btn secondary','award'),action('Нарисовать мир',openWorkshop,'btn secondary','spark')));
    panel.replaceChildren(win,buttons,more);return;
  }
  const idx=levels.indexOf(l),next=idx>=0?levels[idx+1]:null;

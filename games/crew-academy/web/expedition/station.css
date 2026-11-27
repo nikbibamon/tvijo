@@ -22,6 +22,7 @@
 }
 .station-result strong { color: var(--mint); }
 .station-result a { background: #2c4943; border-color: #597f75; }
+.station-follow { display: flex; flex-wrap: wrap; gap: 7px; }
 
 .station-game {
   display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(220px, .85fr);

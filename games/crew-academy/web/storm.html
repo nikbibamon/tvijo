@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#15101e">
+  <meta name="description" content="Орбитальный шторм Академии экипажа. Найди потерянный дрон, спаси его и приведи шаттл к станции.">
+  <title>Орбитальный шторм · Академия экипажа</title>
+  <link rel="icon" href="./art/tvijo.png">
+  <link rel="stylesheet" href="./expedition/expedition.css">
+  <link rel="stylesheet" href="./storm/storm.css">
+  <link rel="preload" as="image" href="./storm/orbital-storm.webp">
+</head>
+<body class="storm-page">
+  <header class="exp-nav"><div class="exp-bar">
+    <a class="exp-brand" href="./#hq"><img src="./art/tvijo.png" alt="">Tvijo</a>
+    <nav aria-label="Навигация игры"><a href="./first-shift.html">Первая смена</a><a href="./expedition.html#station">Станция времени</a></nav>
+    <button type="button" class="storm-sound" data-voice aria-label="Включить озвучку"></button>
+  </div></header>
+  <main id="storm" class="storm-shell">
+    <section class="storm-cover" aria-labelledby="storm-title">
+      <div class="storm-title">
+        <h1 id="storm-title">Орбитальный шторм</h1>
+        <p id="storm-cover-text">Связь со Светляком пропала. Экипаж ищет его среди помех.</p>
+      </div>
+      <div class="drone-beacon" aria-hidden="true" hidden></div>
+      <div class="cover-status" id="storm-cover-status" hidden></div>
+    </section>
+    <nav id="storm-path" class="storm-path" aria-label="Этапы вылазки"></nav>
+    <section class="storm-stage" aria-labelledby="stage-title">
+      <div class="stage-intro">
+        <div><h2 id="stage-title" tabindex="-1"></h2><p id="stage-task"></p></div>
+        <div class="stage-crew"><img id="stage-portrait" alt=""><span id="stage-crew"></span></div>
+      </div>
+      <p data-voice-problem class="voice-problem" role="status" hidden>Реплика доступна текстом.</p>
+      <p id="storm-message" class="storm-message" role="status" aria-live="polite"></p>
+      <div id="storm-play"></div>
+      <div id="storm-next" class="storm-next" hidden></div>
+    </section>
+    <noscript>Для вылазки нужен JavaScript. <a href="./expedition.html#station">Комнаты Академии</a></noscript>
+  </main>
+  <script type="module" src="./storm/main.js"></script>
+</body>
+</html>

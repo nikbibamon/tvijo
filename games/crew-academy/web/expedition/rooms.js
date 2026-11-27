@@ -15,13 +15,15 @@ export const stationRooms = [
 ];
 
 export const rooms = [...riftRooms, ...stationRooms];
+export const prizes = [...rooms, {id: 'orbital-storm', name: 'Орбитальный шторм', prize: 'Знак спасения Светляка'}];
 
 export const roomById = id => rooms.find(room => room.id === id);
+export const prizeById = id => prizes.find(item => item.id === id);
 export const roomHref = id => './expedition.html' + (id ? '#' + id : '');
 export const hasPrize = (profile, id) => Array.isArray(profile.expeditionRewards) && profile.expeditionRewards.includes(id);
 export function collectPrize(profile, id) {
-  if (!roomById(id) || hasPrize(profile, id)) return false;
+  if (!prizeById(id) || hasPrize(profile, id)) return false;
   profile.expeditionRewards = [...(Array.isArray(profile.expeditionRewards) ? profile.expeditionRewards : []), id];
   return true;
 }
-export const packNames = profile => rooms.filter(room => hasPrize(profile, room.id)).map(room => room.prize);
+export const packNames = profile => prizes.filter(item => hasPrize(profile, item.id)).map(item => item.prize);
