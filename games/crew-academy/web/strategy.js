@@ -35,7 +35,7 @@ export function planTurn({level,done,tier,parsed,hero,feedback=null}){
     if(!def){const needed=readyTasks(level,work)[0];l(m.actor,needed?'В этой локации сейчас важно другое: '+moves[needed].name.toLowerCase()+'.':'В этой локации все поручения выполнены. Идём за капсулой!');continue;}
     if(work.includes(id)){l(m.actor,'Этот шаг уже подтверждён. Результат в журнале.');continue;}
     const missing=def[1].filter(n=>!work.includes(n));if(missing.length){l(m.actor,'Жду результат: '+missing.map(n=>moves[n].name.toLowerCase()).join(' и ')+'. Передай приказ исполнителю.');continue;}
-    work.push(id);changes.push(id);l(m.actor,sceneLines[level.id]?.[id]||(level.spec&&changes.length===1?readings[level.spec.theme]+' '+m.reply:m.reply));if(def[1].length)chain++;
+    work.push(id);changes.push(id);l(m.actor,sceneLines[level.id]?.[id]||(level.spec&&!done.length&&changes.length===1?readings[level.spec.theme]+' '+m.reply:m.reply));if(def[1].length)chain++;
     if(tier!=='standard')l(m.partner,m.ack);
   }
   const next=readyTasks(level,work)[0],nextGuide=next?'Попробуй: «'+moves[next].example+'»':'Теперь переправа открыта. Прыгни на светящуюся платформу и возьми капсулу.';

@@ -1,3 +1,4 @@
+import {createNarrator} from './narration.js';
 import {heroOrder,tiers,levels,crewIntro,moves} from './catalog.js';
 import {planTurn,tacticalDigest,resolveLevel,intent,readyTasks} from './strategy.js';
 import {makeSpec,cleanSpec,worldLevel,routeReachable,encodeWorld} from './worlds.js';
@@ -26,9 +27,19 @@ export function addLines(lines){chat=chat.concat(lines).slice(-70);bus.dispatchE
 export function setHero(id){return write(s=>{if(heroOrder.includes(id))s.hero=id;});}
 export function setShowHints(on){return write(s=>{s.showHints=on===true;});}
 export function setTier(t){return write(s=>{if(Object.hasOwn(tiers,t))s.tier=t;});}
-export function setLevel(l){return write(s=>{s.level=l.id;s.digest=null;});}
+export function setLevel(l){return write(s=>{s.level=l.id;s.digest=null;if(l.id!=='dock')delete s.resumeAfterShift;});}
+export function enterFirstShift(){
+  return write(s=>{
+    if(s.level!=='dock')s.resumeAfterShift=s.level;
+    s.level='dock';
+    const dock=stageOf(s,'dock');
+    if(s.completed.includes('dock')&&!dock.replaying){
+      dock.done=[];dock.replaying=true;
+    }
+  });
+}
 export function complete(id){
-  return write(s=>{const l=resolveLevel(id);if(!l||s.level!==id||!l.tasks.every(([t])=>s.stages[id]?.done.includes(t)))return false;if(!s.completed.includes(id)){s.completed.push(id);note(s,'field','Капсула получена · '+l.name);}return true;});
+  return write(s=>{const l=resolveLevel(id);if(!l||s.level!==id||!l.tasks.every(([t])=>s.stages[id]?.done.includes(t)))return false;if(!s.completed.includes(id)){s.completed.push(id);note(s,'field','Капсула получена · '+l.name);}if(id==='dock')delete s.stages.dock.replaying;return true;});
 }
 function stageOf(s,id){return s.stages[id]||={done:[],observed:[],turns:0,digest:null};}
 export function collectSpark(id,index){return write(s=>{const stage=stageOf(s,id);stage.sparks||=[];if(!stage.sparks.includes(index))stage.sparks.push(index);});}
@@ -130,9 +141,9 @@ export async function pilotReport(){
     return data.first_events.filter(x=>allowedEvents.has(x.event)&&Number.isInteger(x.seconds));
   });
 }
-export function speech(text){
-  if(!state.voice||!window.speechSynthesis)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.slice(0,200));u.lang='ru-RU';u.rate=1.03;speechSynthesis.speak(u);}catch{}
-}
+const narrator = createNarrator(globalThis);
+export function speech(text){ if (state.voice) narrator.say(text); }
+export function silenceRadio(){ narrator.stop(); }
 let recorder=null;
 export function stopVoice(){if(recorder){try{recorder.abort();}catch{}recorder=null;}}
 export function dictate({onText,onState,onHint,onSpeech=()=>{}}){

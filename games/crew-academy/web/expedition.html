@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#151422">
+  <meta name="description" content="Кристальный разлом Академии экипажа. Шесть игровых комнат, приказы команде и находки для рюкзака.">
+  <title>Кристальный разлом · Академия экипажа</title>
+  <link rel="icon" href="./art/tvijo.png"><link rel="stylesheet" href="./expedition/expedition.css">
+  <link rel="stylesheet" href="./expedition/grid.css"><link rel="stylesheet" href="./expedition/machines.css"><link rel="stylesheet" href="./expedition/radio.css">
+</head>
+<body>
+  <header class="exp-nav"><div class="exp-bar">
+    <a class="exp-brand" href="./#hq"><img src="./art/tvijo.png" alt="">Tvijo</a>
+    <nav aria-label="Навигация экспедиции"><a href="./first-shift.html">Первая смена</a><a href="./expedition.html#rift" id="catalog-link">Комнаты Разлома</a></nav>
+    <a class="to-world" href="./#rift" data-world>В Разлом</a>
+  </div></header>
+  <main class="exp-main">
+    <section id="hub">
+      <div class="rift-cover"><div><p>Академия экипажа</p><h1>Кристальный разлом</h1><p>Выбери комнату и принеси находку в лагерь.</p></div></div>
+      <div class="hub-head"><h2>Комнаты экспедиции</h2><span id="hub-score"></span></div>
+      <div class="room-grid" id="rooms"></div>
+      <p class="hub-pack" id="hub-pack"></p>
+    </section>
+    <section id="room" hidden>
+      <div class="room-heading"><div><p id="room-place"></p><h1 id="room-name" tabindex="-1"></h1><p id="room-task"></p></div><span id="obtained" hidden></span></div>
+      <div class="room-log" id="room-line" role="status" aria-live="polite"></div>
+      <div class="game-piece" id="room-play"></div>
+      <div class="room-finish" id="prize-strip" hidden><div><span>В рюкзаке</span><strong id="prize-name"></strong></div><a href="./#rift" data-world>Вернуться в Разлом</a></div>
+      <div class="room-way"><a href="./#rift" data-world>Вернуться в Разлом</a><a href="#rift">Выбрать другую комнату</a></div>
+    </section>
+    <noscript>Для игры нужен JavaScript. <a href="./">Вернуться в Академию экипажа</a>.</noscript>
+  </main>
+  <script type="module" src="./expedition/main.js"></script>
+</body></html>

@@ -7,6 +7,8 @@ const mime={html:'text/html; charset=utf-8',js:'text/javascript; charset=utf-8',
 const assets={};
 async function walk(dir){for(const child of await readdir(dir,{withFileTypes:true})){const file=path.join(dir,child.name);if(child.isDirectory())await walk(file);else{const rel='/'+path.relative(web,file).split(path.sep).join('/'),ext=child.name.split('.').pop();if(!mime[ext])continue;assets[rel]=[mime[ext],(await readFile(file)).toString('base64')];}}}
 await walk(web);
+// Both public addresses boot the same game and share the player's progress.
+assets['/first-shift.html']=assets['/index.html'];
 const parts=[];for(const f of ['web/catalog.js','web/worlds.js','web/strategy.js','web/crewLabels.js','server/social.js','server/pilot.js']){
  const src=await readFile(path.join(root,f),'utf8');parts.push(src.replace(/^import .*?;\s*$/gm,'').replace(/^export (?=(const|let|function|async function)\b)/gm,''));
 }

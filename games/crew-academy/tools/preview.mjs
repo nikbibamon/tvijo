@@ -13,5 +13,5 @@ http.createServer(async(req,res)=>{try{
  if(u.pathname.startsWith('/api/')){const chunks=[];for await(const b of req){chunks.push(b);if(chunks.reduce((t,c)=>t+c.length,0)>4096){res.writeHead(413);res.end();return;}}
   const request=new Request(u,{method:req.method,headers:req.headers,body:req.method==='POST'?Buffer.concat(chunks):undefined});
   const r=await handleAPI(request,{DB});res.writeHead(r.status,Object.fromEntries(r.headers));res.end(Buffer.from(await r.arrayBuffer()));return;}
- const p=u.pathname==='/'?'index.html':u.pathname.slice(1);const f=new URL(p,dir);if(!f.href.startsWith(dir.href))throw Error('path');const data=await readFile(fileURLToPath(f));res.setHeader('Content-Type',mime[p.split('.').pop()]||'application/octet-stream');res.end(data);
+ const p=['/','/first-shift.html'].includes(u.pathname)?'index.html':u.pathname.slice(1);const f=new URL(p,dir);if(!f.href.startsWith(dir.href))throw Error('path');const data=await readFile(fileURLToPath(f));res.setHeader('Content-Type',mime[p.split('.').pop()]||'application/octet-stream');res.end(data);
  }catch{res.writeHead(404);res.end('Not found');}}).listen(port,host,()=>console.log('Ready at http://'+host+':'+port));

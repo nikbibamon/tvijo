@@ -1,0 +1,71 @@
+.radio-workshop {
+  --radio-night: #222138;
+  --radio-ink: #f8eee2;
+  --radio-edge: #786385;
+  --radio-gold: #ffd48a;
+  display: grid;
+  gap: .72rem;
+  color: var(--radio-ink);
+  min-width: 0;
+}
+.radio-workshop [hidden] { display: none !important; }
+.radio-workshop .radio-viewport {
+  overflow: hidden;
+  border: 1px solid #998297;
+  border-radius: .65rem;
+  background: #29264b;
+}
+.radio-workshop canvas { display: block; width: 100%; height: auto; image-rendering: pixelated; }
+.radio-workshop .radio-note { margin: 0; line-height: 1.4; font-size: .96rem; color: #fff3de; }
+.radio-workshop .radio-request {
+  display: flex;
+  align-items: end;
+  gap: .58rem;
+  margin: 0;
+}
+.radio-workshop .radio-request label { display: grid; min-width: 0; gap: .25rem; flex: 1; font-size: .84rem; font-weight: 600; }
+.radio-workshop input {
+  appearance: none;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  padding: .6rem .72rem;
+  min-height: 43px;
+  border: 1px solid var(--radio-edge);
+  border-radius: .4rem;
+  color: #fff;
+  background: #171729;
+  font: inherit;
+  font-size: 1rem;
+}
+.radio-workshop input::placeholder { color: #bcb5c2; }
+.radio-workshop button, .radio-workshop summary { font-family: inherit; cursor: pointer; touch-action: manipulation; }
+.radio-workshop button {
+  min-height: 42px;
+  padding: .48rem .76rem;
+  border: 1px solid var(--radio-edge);
+  border-radius: .42rem;
+  background: var(--radio-night);
+  color: var(--radio-ink);
+  font-size: .92rem;
+  line-height: 1.2;
+  font-weight: 600;
+}
+.radio-workshop [data-move="cross"], .radio-workshop .radio-request button {
+  background: #f0bd79;
+  color: #201c29;
+  border-color: #f4d5a0;
+}
+.radio-workshop button:disabled { opacity: .55; cursor: default; }
+.radio-workshop button:focus-visible, .radio-workshop summary:focus-visible, .radio-workshop input:focus-visible {
+  outline: 3px solid #98e9e5; outline-offset: 2px;
+}
+.radio-workshop .radio-words summary { color: #e0d8e8; font-size:.89rem; min-height: 32px; box-sizing:border-box; padding: .32rem 0; }
+.radio-workshop .radio-words div, .radio-workshop .radio-tools, .radio-workshop .radio-reset { display:flex; gap:.48rem; flex-wrap:wrap; }
+.radio-workshop .radio-instrument { display: grid; gap: .48rem; }
+.radio-workshop .radio-instrument strong { color: var(--radio-gold); font-size:.94rem; }
+.radio-workshop .radio-reset button { min-height: 34px; padding:.3rem .55rem; color:#ddd3e7; font-weight:400; font-size:.85rem; }
+@media (max-width: 430px) {
+  .radio-workshop { gap: .55rem; }
+  .radio-workshop button { padding: .48rem .57rem; }
+}

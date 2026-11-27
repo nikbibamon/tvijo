@@ -1,0 +1,54 @@
+.tvg-game { --grid-ink:#eafaff; --grid-muted:#b9cdd8; color:var(--grid-ink); width:min(100%,820px); margin-inline:auto; }
+.tvg-game * { box-sizing:border-box; }
+.tvg-game .tvg-goal { margin:0 0 .65rem; font-weight:650; line-height:1.35; color:var(--grid-ink); }
+.tvg-body { display:grid; grid-template-columns:minmax(170px,1.22fr) minmax(134px,.78fr); gap:clamp(10px,2.4vw,26px); align-items:center; }
+.tvg-map { display:grid; grid-template-columns:repeat(5,1fr); grid-template-rows:repeat(5,1fr); gap:3px; width:100%; max-width:400px; aspect-ratio:1; padding:5px; border:2px solid #718791; border-radius:9px; background:#08131e; box-shadow:0 0 0 2px #142534, 0 7px 20px #0207117a; position:relative; }
+.tvg-game button { font:inherit; touch-action:manipulation; }
+.tvg-game button:focus-visible,.tvg-map:focus-visible { outline:3px solid #fff1a0; outline-offset:2px; z-index:1; }
+.tvg-game .tvg-cell { appearance:none; position:relative; display:grid; place-items:center; width:100%; height:100%; min-height:0; min-width:0; padding:0; margin:0; overflow:hidden; border:1px solid #415d76; border-radius:3px; background:linear-gradient(145deg,#3d536d,#243951); box-shadow:inset 0 2px 0 #97bad32b,inset 0 -3px 0 #0d1d3070; cursor:pointer; }
+.tvg-cell.tvg-wall { border-color:#405963; background:repeating-linear-gradient(0deg,transparent 0 24%,#0a1626a6 26% 34%),linear-gradient(100deg,#506479,#283543 35% 64%,#536271); }
+.tvg-pulse .tvg-cell.tvg-wall { border-color:#554b70; background:linear-gradient(144deg,#68517e 0 18%,#433551 19% 41%,#302d46 42% 70%,#53415f 71%); }
+.tvg-game .tvg-zone { background:repeating-linear-gradient(135deg,#7c622640 0 5px,#ffdf583d 5px 8px),#30465d; border-color:#e1c46c; }
+.tvg-tile,.tvg-occupant { position:absolute; pointer-events:none; }
+.tvg-plate .tvg-tile { width:69%; height:65%; border:3px dashed #ffe78a; border-radius:14%; color:#ffe389; background:#463c29; box-shadow:inset 0 0 0 2px #161c20,0 2px 3px #07131b; }
+.tvg-plate .tvg-tile::after { content:""; position:absolute; width:32%; height:32%; left:34%; top:34%; border:2px solid #ffe8a1; transform:rotate(45deg); }
+.tvg-occupant.tvg-box { width:55%; height:58%; border:2px solid #c5eaf7; border-radius:3px; background:repeating-linear-gradient(0deg,#83fff4 0 3px,#378d9d 4px 9px); box-shadow:inset 3px 0 0 #163f54,inset -3px 0 0 #163f54,0 3px #142c42,0 0 8px #5ce4b99a; }
+.tvg-occupant.tvg-box::after { content:""; position:absolute; left:39%; top:25%; width:24%; height:46%; background:#ffe9a7; clip-path:polygon(54% 0,100% 0,65% 36%,94% 36%,18% 100%,38% 56%,0 56%); }
+.tvg-occupant.tvg-robot { width:56%; height:43%; top:32%; border:2px solid #ffe0a0; border-radius:16%; background:linear-gradient(#b7792d 0 20%,#27394a 21% 82%,#cd8734 83%); box-shadow:0 3px #111e2b; }
+.tvg-robot::before,.tvg-robot::after { content:""; position:absolute; width:18%; height:21%; top:37%; border-radius:30%; background:#a4fff3; box-shadow:0 0 5px #58fcf5; }
+.tvg-robot::before { left:17%; } .tvg-robot::after { right:17%; }
+.tvg-occupant.tvg-pilot { width:52%; height:64%; border:2px solid #b6f1ff; border-radius:46% 46% 23% 23%; background:linear-gradient(#e8e6da 0 19%,#1f536a 20% 49%,#e4cb9d 50% 63%,#cb6448 64%); box-shadow:0 3px 0 #211a2d; }
+.tvg-occupant.tvg-pilot::after { content:""; position:absolute; width:22%; height:8%; top:27%; right:19%; background:#99efed; border-radius:50%; }
+.tvg-crack .tvg-tile { width:81%; height:76%; clip-path:polygon(9% 20%,33% 0,66% 8%,96% 33%,86% 79%,53% 100%,7% 85%,0 50%); background:linear-gradient(140deg,#d1a8c5,#5e506d 54%,#413153); }
+.tvg-crack .tvg-tile::after { content:""; position:absolute; inset:5% 20%; background:#fff1a8; clip-path:polygon(72% 0,48% 38%,75% 42%,17% 100%,40% 53%,10% 49%); }
+.tvg-exit .tvg-tile { width:74%; height:75%; background:#122d36; border:3px solid #7ae8cd; border-radius:35% 35% 6% 6%; }
+.tvg-exit .tvg-tile::after { content:""; position:absolute; top:29%; left:25%; width:40%; height:40%; border-left:3px solid #94f0d4; border-top:3px solid #94f0d4; transform:rotate(45deg); }
+.tvg-marked::after { content:""; position:absolute; width:21%; height:21%; right:5%; bottom:5%; border:2px solid #fff0ad; border-radius:50%; background:#e65a37; box-shadow:0 0 6px #fec04c; }
+.tvg-controls { min-width:0; display:flex; flex-direction:column; align-items:flex-start; gap:8px; }
+.tvg-legend { color:#ffe79d; font-weight:bold; font-variant-numeric:tabular-nums; }
+.tvg-game .tvg-status { color:var(--grid-muted); font-size:.9rem; line-height:1.35; min-height:2.7em; margin:0; }
+.tvg-pad { display:grid; grid-template-columns:repeat(3,minmax(39px,46px)); gap:3px; }
+.tvg-game .tvg-pad button,.tvg-game .tvg-action,.tvg-game .tvg-tools button { display:inline-grid; place-items:center; margin:0; padding:5px 10px; color:#effbff; border:1px solid #5b7684; background:#293e50; border-radius:6px; min-width:0; min-height:38px; cursor:pointer; }
+.tvg-game .tvg-pad button { font:700 23px/1 system-ui,sans-serif; height:40px; padding:4px; }
+.tvg-pad button[data-command="up"] { grid-area:1/2; }
+.tvg-pad button[data-command="left"] { grid-area:2/1; }
+.tvg-pad button[data-command="down"] { grid-area:2/2; }
+.tvg-pad button[data-command="right"] { grid-area:2/3; }
+.tvg-game .tvg-action { background:#a86128; border-color:#e7af71; color:#fff4dc; font-weight:bold; }
+.tvg-tools { display:flex; flex-wrap:wrap; gap:4px; }
+.tvg-game .tvg-tools button { background:#1b2c3c; font-size:.8rem; padding:5px 8px; }
+.tvg-game button:disabled { opacity:.46; cursor:default; }
+.tvg-won .tvg-map { border-color:#8fe6bc; box-shadow:0 0 12px #51ca9b65; }
+@media (max-width:530px) and (orientation:portrait) {
+  .tvg-body { grid-template-columns:1fr; gap:9px; }
+  .tvg-map { width:min(100%,32vh,310px); min-width:min(100%,200px); margin:auto; }
+  .tvg-controls { display:grid; grid-template-columns:minmax(132px,1fr) 1.25fr; align-items:center; gap:5px 10px; }
+  .tvg-pad { grid-column:1; grid-row:2 / span 2; }
+  .tvg-status { grid-column:2; grid-row:1 / span 2; }
+  .tvg-tools { grid-column:1 / -1; }
+  .tvg-action { grid-column:2; }
+}
+@media (orientation:landscape) and (max-height:540px) {
+  .tvg-map { width:min(100%,53vh); justify-self:center; }
+  .tvg-controls { gap:4px; } .tvg-game .tvg-status { min-height:0; }
+}
