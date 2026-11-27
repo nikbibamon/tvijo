@@ -1,0 +1,27 @@
+{
+  "source": "08772f9904e81248ad322d52803557f0103bec1e906f55f7a113337c8985ee3e",
+  "studio": "a08318161de1a3b80adf2a25190c77a7242bd8253e3bb38710ec8e8cbb341b30",
+  "candidate": {
+    "summary": "Первая смена с физической переправой, ручным подбором и адресным приглашением на второй пост.",
+    "paths": [
+      "drizzle/0004_beacon_links.sql",
+      "drizzle/meta/_journal.json",
+      "server/herdr_server.py",
+      "server/pilot.js",
+      "server/social.js",
+      "tests/field-interaction.test.mjs",
+      "tests/social.test.mjs",
+      "web/app.js",
+      "web/beaconInvite.js",
+      "web/club.js",
+      "web/dockBridge.js",
+      "web/field.js",
+      "web/index.html",
+      "web/sceneArt.js",
+      "web/style.css",
+      "web/tvijoService.js",
+      "web/worlds.js"
+    ]
+  },
+  "sessions": []
+}

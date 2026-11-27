@@ -71,6 +71,72 @@ async function invitationInfo(db,me,offer){
    (SELECT COUNT(*) FROM crew_referrals WHERE guest=? AND qualified IS NULL) AS incoming`,me.id,me.id,me.id,me.id);
  return {valid,code:owned?.code||null,...tally};
 }
+async function beaconInfo(db,me,code){
+ const own=code==='mine',id=me?.id||'';
+ if(own&&!id)return {status:'create'};
+ if(!own&&!crewID(code))return {status:'unavailable'};
+ const link=await crewOne(db,`SELECT l.*,p.callsign AS hostname FROM crew_beacon_links l
+   JOIN crew_players p ON p.id=l.host AND p.visible=1 WHERE ${own?'l.host=?':'l.code=?'}
+   AND ${crewNoMute} ORDER BY l.rowid DESC LIMIT 1`,own?id:code,id,id);
+ if(!link)return {status:own?'create':'unavailable'};
+ const host=link.host===id;
+ if(link.state==='open')return {status:host?'waiting':'offer',code:link.code,host:link.hostname};
+ if(!host&&link.guest!==id)return {status:'unavailable'};
+ if(link.state!=='paired')return {status:link.state==='declined'?'declined':'closed',owner:host};
+ const other=host?link.guest:link.host;
+ const peer=await crewOne(db,`SELECT p.callsign FROM crew_players p JOIN crew_pairs a ON
+   a.low=MIN(?,p.id) AND a.high=MAX(?,p.id) AND a.status='accepted'
+   WHERE p.id=? AND p.visible=1 AND ${crewNoMute}`,id,id,other,id,id);
+ if(!me.visible||!peer)return {status:'closed',owner:host};
+ const relay=await crewOne(db,'SELECT * FROM crew_relays WHERE mission=? AND low=MIN(?,?) AND high=MAX(?,?)',link.mission,id,other,id,other);
+ if(!relay||relay.phase==='done')return {status:'done',owner:host,partner:peer.callsign};
+ return {status:'active',code:link.code,relay:{...projectRelay(relay,id),other,partner:peer.callsign}};
+}
+async function changeBeacon(db,me,data,now){
+ if(!crewValid(data,['action','code']))return crewReply({error:'action'},422);
+ const {action,code}=data,id=me.id;
+ if(action==='create'){
+   if(!me.visible)return crewReply({error:'visibility'},403);
+   await crewRun(db,`INSERT OR IGNORE INTO crew_beacon_links(code,host,state)
+     SELECT ?,id,'open' FROM crew_players WHERE id=? AND visible=1`,crypto.randomUUID().replaceAll('-',''),id);
+   const link=await crewOne(db,"SELECT code FROM crew_beacon_links WHERE host=? AND state='open'",id);
+   return link?crewReply({code:link.code}):crewReply({error:'visibility'},409);
+ }
+ if(!crewID(code)||!['cancel','decline','accept'].includes(action))return crewReply({error:'action'},422);
+ if(action==='cancel'){
+   await crewRun(db,"UPDATE crew_beacon_links SET state='closed' WHERE code=? AND host=? AND state='open'",code,id);
+   return crewReply({beacon:await beaconInfo(db,me,code)});
+ }
+ const link=await crewOne(db,`SELECT l.host FROM crew_beacon_links l JOIN crew_players p ON p.id=l.host
+   AND p.visible=1 WHERE l.code=? AND ${crewNoMute}`,code,id,id);
+ if(!link||link.host===id)return crewReply({error:'beacon_unavailable'},409);
+ const host=link.host,[lo,hi]=[host,id].sort();
+ if(action==='decline'){
+   await crewRun(db,"UPDATE crew_beacon_links SET state='declined',guest=? WHERE code=? AND state='open'",id,code);
+   return crewReply({beacon:await beaconInfo(db,me,code)});
+ }
+ if(!me.visible)return crewReply({error:'visibility'},403);
+ // Only the transaction that claims the seat may start a mission. Reopening a link is read-only.
+ const claimed="EXISTS(SELECT 1 FROM crew_beacon_links WHERE code=? AND guest=? AND state='joining')";
+ await db.batch([
+   crewQuery(db,`UPDATE crew_beacon_links SET state='joining',guest=? WHERE code=? AND state='open'
+     AND EXISTS(SELECT 1 FROM crew_players p JOIN crew_players g ON g.id=? AND g.visible=1
+       WHERE p.id=crew_beacon_links.host AND p.visible=1 AND ${crewNoMute})
+     AND NOT EXISTS(SELECT 1 FROM crew_pairs WHERE low=? AND high=? AND status='declined')
+     AND (EXISTS(SELECT 1 FROM crew_pairs WHERE low=? AND high=?) OR
+         (SELECT COUNT(*) FROM crew_pairs WHERE sender=? AND touched>?)<12)`,id,code,id,id,id,lo,hi,lo,hi,host,now-crewDay),
+   crewQuery(db,`INSERT INTO crew_pairs(low,high,sender,status,touched) SELECT ?,?,?,'accepted',? WHERE ${claimed}
+     ON CONFLICT(low,high) DO UPDATE SET status='accepted',touched=excluded.touched WHERE crew_pairs.status='waiting'`,lo,hi,host,now,code,id),
+   crewQuery(db,`INSERT INTO crew_relays(low,high,mission,scout,sequence,phase) SELECT ?,?,?,?,?,'scout' WHERE ${claimed}
+     ON CONFLICT(low,high) DO UPDATE SET mission=excluded.mission,scout=excluded.scout,sequence=excluded.sequence,phase='scout'
+     WHERE crew_relays.phase='done'`,lo,hi,crypto.randomUUID(),host,randomTransmission(),code,id),
+   crewQuery(db,`UPDATE crew_beacon_links SET state='paired',mission=(SELECT mission FROM crew_relays WHERE low=? AND high=?)
+     WHERE code=? AND guest=? AND state='joining'`,lo,hi,code,id)
+ ]);
+ const beacon=await beaconInfo(db,me,code);
+ return ['active','done'].includes(beacon.status)?crewReply({beacon}):crewReply({error:'beacon_unavailable'},409);
+}
+
 const crewLogin='https://tvijo.com/ru/login';
 const crewIssuer='https://tvijo.com';
 const crewAudience='https://tvijo-crew-academy.be9ava.chatgpt.site';
@@ -91,14 +157,14 @@ export async function crewAPI(req,env,path,d){
  const auth=await crewAuth(req,db),me=auth?.me,now=crewClock();
  if(req.method==='GET'&&path==='room'){
    const q=new URL(req.url).searchParams;
-   return crewReply({...await crewRoster(db,auth,q.get('player'),q.get('sort')),invite:await invitationInfo(db,me,q.get('invite')),sso:!!env.CREW_TVIJO_VERIFY_KEY});
+   return crewReply({...await crewRoster(db,auth,q.get('player'),q.get('sort')),invite:await invitationInfo(db,me,q.get('invite')),...(q.has('beacon')?{beacon:await beaconInfo(db,me,q.get('beacon'))}:{}),sso:!!env.CREW_TVIJO_VERIFY_KEY});
  }
  if(req.method!=='POST')return crewReply({error:'route'},404);
  if(path==='join'){
-  if(!crewValid(d,['hero','referral'])||!Object.hasOwn(heroes,d.hero)||d.referral!==undefined&&!crewID(d.referral))return crewReply({error:'profile'},422);
+  if(!crewValid(d,['hero','referral','beacon'])||!Object.hasOwn(heroes,d.hero)||d.referral!==undefined&&!crewID(d.referral)||d.beacon!==undefined&&(!crewID(d.beacon)||d.referral!==undefined))return crewReply({error:'profile'},422);
   if(me)return crewReply({joined:true,referralAccepted:false});
-  const host=d.referral?await crewOne(db,'SELECT owner FROM crew_invite_codes WHERE code=?',d.referral):null;
-  if(d.referral&&!host)return crewReply({error:'invite_missing'},422);
+  const host=d.referral?await crewOne(db,'SELECT owner FROM crew_invite_codes WHERE code=?',d.referral):d.beacon?await crewOne(db,"SELECT l.host AS owner FROM crew_beacon_links l JOIN crew_players p ON p.id=l.host AND p.visible=1 WHERE l.code=? AND l.state='open'",d.beacon):null;
+  if((d.referral||d.beacon)&&!host)return crewReply({error:'invite_missing'},422);
   const id=crypto.randomUUID().replaceAll('-',''),raw=crewRandom();
   const entries=[crewQuery(db,'INSERT INTO crew_players(id,callsign,hero) VALUES(?,?,?)',id,callsign(id),d.hero),
     crewQuery(db,'INSERT INTO crew_sessions(digest,player,until) VALUES(?,?,?)',await crewHash(raw),id,now+30*crewDay),
@@ -108,6 +174,7 @@ export async function crewAPI(req,env,path,d){
   return crewReply({joined:true,referralAccepted:!!host},201,crewSetCookie(raw));
  }
  if(!me)return crewReply({error:'session'},401);
+ if(path==='beacon-link')return changeBeacon(db,me,d,now);
  if(path==='invite-link'){
    if(!crewValid(d,[]))return crewReply({error:'action'},422);
    await crewRun(db,'INSERT OR IGNORE INTO crew_invite_codes(owner,code) VALUES(?,?)',me.id,crypto.randomUUID().replaceAll('-',''));
@@ -136,7 +203,7 @@ export async function crewAPI(req,env,path,d){
  if(path==='profile'){
   if(!crewValid(d,['visible','hero','focus','avatar'])||(d.avatar!==undefined&&!validPixelAvatar(d.avatar))||typeof d.visible!=='boolean'||!Object.hasOwn(heroes,d.hero)||!Object.hasOwn(interests,d.focus))return crewReply({error:'profile'},422);
   const actions=[crewQuery(db,'UPDATE crew_players SET visible=?,hero=?,focus=?,avatar=COALESCE(?,avatar) WHERE id=?',Number(d.visible),d.hero,d.focus,d.avatar??null,me.id)];
-  if(!d.visible){actions.push(crewQuery(db,'DELETE FROM crew_relays WHERE low=? OR high=?',me.id,me.id),crewQuery(db,'DELETE FROM crew_pairs WHERE low=? OR high=?',me.id,me.id),crewQuery(db,'DELETE FROM crew_notes WHERE sender=? OR recipient=?',me.id,me.id));}
+  if(!d.visible){actions.push(crewQuery(db,"UPDATE crew_beacon_links SET state='closed' WHERE (host=? OR guest=?) AND state IN ('open','paired')",me.id,me.id),crewQuery(db,'DELETE FROM crew_relays WHERE low=? OR high=?',me.id,me.id),crewQuery(db,'DELETE FROM crew_pairs WHERE low=? OR high=?',me.id,me.id),crewQuery(db,'DELETE FROM crew_notes WHERE sender=? OR recipient=?',me.id,me.id));}
   await db.batch(actions);return crewReply({ok:true});
  }
  if(!['pair','note','relay','report','retract'].includes(path))return crewReply({error:'route'},404);
@@ -147,7 +214,7 @@ export async function crewAPI(req,env,path,d){
  if(path==='pair'){
   if(!crewValid(d,['other','action']))return crewReply({error:'action'},422);
   if(d.action==='mute'){
-   await db.batch([crewQuery(db,'DELETE FROM crew_relays WHERE low=? AND high=?',lo,hi),crewQuery(db,'INSERT OR IGNORE INTO crew_muted(owner,other) VALUES(?,?)',id,other),crewQuery(db,'DELETE FROM crew_pairs WHERE low=? AND high=?',lo,hi),crewQuery(db,'DELETE FROM crew_notes WHERE (sender=? AND recipient=?) OR (sender=? AND recipient=?)',id,other,other,id)]);return crewReply({ok:true});
+   await db.batch([crewQuery(db,"UPDATE crew_beacon_links SET state='closed' WHERE (host=? AND guest=?) OR (host=? AND guest=?)",id,other,other,id),crewQuery(db,'DELETE FROM crew_relays WHERE low=? AND high=?',lo,hi),crewQuery(db,'INSERT OR IGNORE INTO crew_muted(owner,other) VALUES(?,?)',id,other),crewQuery(db,'DELETE FROM crew_pairs WHERE low=? AND high=?',lo,hi),crewQuery(db,'DELETE FROM crew_notes WHERE (sender=? AND recipient=?) OR (sender=? AND recipient=?)',id,other,other,id)]);return crewReply({ok:true});
   }
   if(d.action==='invite'){
    const accepted=await crewOne(db,`INSERT INTO crew_pairs(low,high,sender,status,touched) SELECT ?,?,?,'waiting',? WHERE (SELECT COUNT(*) FROM crew_pairs WHERE sender=? AND touched>?)<12 AND EXISTS (SELECT 1 FROM crew_players p JOIN crew_players s ON s.id=? AND s.visible=1 WHERE p.id=? AND p.visible=1 AND ${crewNoMute}) ON CONFLICT(low,high) DO NOTHING RETURNING status`,lo,hi,id,now,id,now-crewDay,id,other,id,id);

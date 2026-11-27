@@ -35,6 +35,7 @@ export function drawBackdrop(ctx,level,bg){
   ctx.restore();
 }
 export function companionsFor(level){
+  if(level.id==='dock')return ['robot'];
   if(level.id==='mine')return ['plane'];
   if(level.spec)return ({build:['robot'],rescue:['plane'],survey:['plane'],signal:['robot'],duet:['plane','robot']})[level.spec.path];
   if(level.id==='greenhouse')return ['plane'];if(level.id==='foundry')return ['plane','robot'];return [];

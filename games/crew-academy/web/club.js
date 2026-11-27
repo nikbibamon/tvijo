@@ -2,19 +2,21 @@ import {heroes,levels} from './catalog.js';
 import {interests,radioPhrases,crewBadges} from './crewLabels.js';
 import {pixelPreview,pixelStudio} from './pixelAvatar.js';
 import {practiceState,relayMap,relayBrief} from './relayMission.js';
-import {state,write} from './tvijoService.js';
+import {beaconInvitation} from './beaconInvite.js';
+import {state,write,track} from './tvijoService.js';
 import {encodeWorld,worldLevel} from './worlds.js';
 
 const campaignTotal=levels.reduce((n,l)=>n+l.tasks.length,0);
-const errorText={invite_missing:'Ссылка приглашения устарела. Можно начать обычную вылазку.',contacts:'Убери из сообщения ссылки и личные контакты.',text_length:'Напиши от 1 до 180 знаков.',relay_role:'Этот шаг выполняет напарник.',relay_phase:'Этот шаг сейчас недоступен. Обнови сигнал.',wrong_tone:'Импульсы не совпали. Сверь порядок и повтори.',relay_missing:'Эта вылазка уже закрыта. Открой канал напарника.',session:'Позывной на этом устройстве больше не активен.',visibility:'Сначала открой свою карточку в рейтинге.',unavailable_player:'Этот позывной уже скрыт.',already_or_limit:'Приглашение уже отправлено или достигнут дневной лимит.',invitation:'Ответ на это приглашение уже получен.',channel_or_cooldown:'Сообщение не отправилось. Проверь, открыт ли канал, и попробуй через три секунды.',proof:'Время входа истекло. Начни вход заново.',challenge:'Открой вход из этого же браузера ещё раз.',account_mismatch:'На этом устройстве выбран другой аккаунт Tvijo.'};
+const errorText={beacon_unavailable:'Другой пилот уже занял пост, приглашение закрыто или связь между карточками недоступна.',invite_missing:'Ссылка приглашения устарела. Можно начать обычную вылазку.',contacts:'Убери из сообщения ссылки и личные контакты.',text_length:'Напиши от 1 до 180 знаков.',relay_role:'Этот шаг выполняет напарник.',relay_phase:'Этот шаг сейчас недоступен. Обнови сигнал.',wrong_tone:'Импульсы не совпали. Сверь порядок и повтори.',relay_missing:'Эта вылазка уже закрыта. Открой канал напарника.',session:'Позывной на этом устройстве больше не активен.',visibility:'Сначала открой свою карточку в рейтинге.',unavailable_player:'Этот позывной уже скрыт.',already_or_limit:'Приглашение уже отправлено или достигнут дневной лимит.',invitation:'Ответ на это приглашение уже получен.',channel_or_cooldown:'Сообщение не отправилось. Проверь, открыт ли канал, и попробуй через три секунды.',proof:'Время входа истекло. Начни вход заново.',challenge:'Открой вход из этого же браузера ещё раз.',account_mismatch:'На этом устройстве выбран другой аккаунт Tvijo.'};
 async function crewRequest(route,data){
  const response=await fetch('./api/crew/'+route,{method:data===undefined?'GET':'POST',credentials:'same-origin',cache:'no-store',headers:data===undefined?{}:{'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data),signal:AbortSignal.timeout(7000)});
  const payload=await response.json();if(!response.ok)throw Error(errorText[payload.error]||'Станция игроков временно недоступна. Попробуй ещё раз.');return payload;
 }
 export function createClub({el,group,para,action,avatar,ii,openModal,isOpen,showWorld,playRelay,toast,playCampaign}){
  let room=null,tab='rank',peer=null,generation=0,busy=false,feedback='',sort='fame',returnPeer=null,offer=null;
+ let beaconCode='mine',autoPost=false;
  const drafts=new Map();
- const roomURL=()=> 'room?sort='+sort+(peer?'&player='+encodeURIComponent(peer):'')+(offer?'&invite='+encodeURIComponent(offer):'');
+ const roomURL=()=> 'room?sort='+sort+(tab==='beacon'?'&beacon='+encodeURIComponent(beaconCode):'')+(peer?'&player='+encodeURIComponent(peer):'')+(offer?'&invite='+encodeURIComponent(offer):'');
  function badge(p){if(!p.avatar)return avatar(p.hero);return group('avatar player-pixels',pixelPreview(p.avatar,'Знак пилота '+p.callsign));}
 
  const namedLink=(text,url)=>{const a=el('a','btn secondary',text);a.href=url;a.rel='noopener noreferrer';a.target='_blank';return a;};
@@ -36,8 +38,37 @@ export function createClub({el,group,para,action,avatar,ii,openModal,isOpen,show
     const snapshot=await crewRequest('room');return await earnTeamMark(snapshot.invite);
   }catch{return false;}
  }
+ function playBeacon(offer){
+  if(!isOpen()||offer.status!=='active')return;
+  autoPost=false;playRelay({...offer.relay,beaconCode:offer.code});
+ }
+ function beaconPaint(){
+  const beacon=room?.beacon;
+  if(tab==='beacon'&&beacon){
+   if(beacon.status==='waiting'&&beaconCode==='mine'){
+    beaconCode=beacon.code;autoPost=true;history.replaceState(null,'','#beacon/'+beaconCode);
+   }
+   if(beacon.status==='offer')track('beacon_invite_open');
+   if(beacon.status==='active'&&autoPost){playBeacon(beacon);return;}
+  }
+  paint();
+ }
+ async function beaconRequest(route,payload){
+  if(busy)return;busy=true;const current=generation;
+  try{
+   const result=await crewRequest(route,payload);
+   if(!isOpen()||generation!==current||tab!=='beacon')return;
+   if(route==='join')remember(true);
+   if(result.code){
+    beaconCode=result.code;autoPost=true;
+    history.replaceState(null,'','#beacon/'+beaconCode);
+   }
+   if(payload.action==='accept'&&['active','done'].includes(result.beacon?.status)){track('beacon_pair_accept');autoPost=true;}
+   feedback='';await sync();
+  }catch(e){if(isOpen()&&current===generation){feedback=e.message;await sync();}}finally{busy=false;}
+ }
  async function sync(){
-  const id=++generation;try{const data=await crewRequest(roomURL());if(id!==generation||!isOpen())return;room=data;remember(data.me);await earnTeamMark(data.invite);if(id===generation&&isOpen())paint();}
+  const id=++generation;try{const data=await crewRequest(roomURL());if(id!==generation||!isOpen())return;room=data;remember(data.me);await earnTeamMark(data.invite);if(id===generation&&isOpen())beaconPaint();}
   catch{if(id===generation&&isOpen()){feedback='Не удаётся связаться со станцией игроков. Игровые миссии доступны.';paint();}}
  }
  async function mutate(route,payload,ok='',after){
@@ -46,7 +77,7 @@ export function createClub({el,group,para,action,avatar,ii,openModal,isOpen,show
   catch(e){if(id===generation&&isOpen()){feedback=e.message;paint();}}
   finally{busy=false;}
  }
- function open(which='rank',id=null){tab=which;offer=which==='invite'?id:null;peer=which==='invite'?null:id;returnPeer=null;feedback='';room=null;openModal('Станция игроков',para('Подключаемся к станции…'),'club');sync();}
+ function open(which='rank',id=null){tab=which;beaconCode=which==='beacon'&&id!=null?id:'mine';autoPost=which==='beacon'&&!!id;offer=which==='invite'?id:null;peer=['invite','beacon'].includes(which)?null:id;returnPeer=null;feedback='';room=null;openModal('Станция игроков',para('Подключаемся к станции…'),'club');sync();}
  function google(){
   if(!room?.sso)return namedLink('Вход на tvijo.com','https://tvijo.com/ru/login');
   return action('Войти через Tvijo',async()=>{try{const d=await crewRequest('auth/start',{});if(d.available)location.assign(d.url);else{feedback='Связь со входом Tvijo пока не включена.';paint();}}catch(e){feedback=e.message;paint();}},'btn secondary','person');
@@ -122,6 +153,7 @@ export function createClub({el,group,para,action,avatar,ii,openModal,isOpen,show
  function duet(){
   const out=[el('h3','duet-title','Два пилота. Один сигнал.'),para('Разведчик находит частоту на причале. Инженер получает три импульса по рации и повторяет их на другом конце планеты.'),relayMap(null),
    action('Тренировка с Роботом',()=>playRelay(practiceState()),'btn primary','play'),para('В тренировке ты пробуешь обе роли. В таблицу идут маяки, зажжённые с другим пилотом.','subtle')];
+  out.push(action('Пригласить друга на второй пост',()=>open('beacon'),'btn secondary','users'));
   const peers=room.peers.filter(p=>p.status==='accepted');
   if(peers.length){out.push(el('h3','club-head','Сыграть вдвоём'));for(const p of peers)out.push(relayCard(p));}
   else out.push(action('Найти напарника',()=>tabTo(room.me?.visible?'rank':'profile'),'btn secondary','users'));
@@ -182,16 +214,21 @@ export function createClub({el,group,para,action,avatar,ii,openModal,isOpen,show
  function paint(){
   if(!isOpen())return;
   const status=el('div','club-feedback',feedback);status.setAttribute('role','status');
+  if(!room&&tab==='beacon'){openModal('Парный маяк',[status,action('Обновить связь',sync),action('Продолжить кампанию',playCampaign)],'club');return;}
   if(!room){openModal('Станция игроков',[status,action('Тренировка с Роботом',()=>playRelay(practiceState()),'btn primary','play'),action('Обновить',sync,'btn secondary')],'club');return;}
+  if(tab==='beacon'){
+   const view=beaconInvitation({...room,selectedHero:state.hero},{el,group,para,action,ii,request:beaconRequest,track,share:namedLink,play:playBeacon,campaign:playCampaign,code:beaconCode});
+   openModal('Связь с напарником',[status,...view],'club');return;
+  }
   const menu=group('club-tabs',...([['duet','Парный маяк'],['rank','Рейтинг'],['links','Связь'],['invite','Пригласить'],['profile','Моя карточка']]).map(([id,label])=>{const b=action(label,()=>tabTo(id),'chip'+(tab===id||tab==='peer'&&id==='links'?' chosen':''));b.setAttribute('aria-pressed',String(tab===id));return b;}));
   const view=tab==='invite'?inviteView():tab==='duet'?duet():tab==='avatar'?editor():tab==='rank'?rankings():tab==='profile'?profile():tab==='links'?connections():contact();
   const refresh=action('Обновить',()=>{feedback='';sync();},'text-btn','radio');
   openModal('Станция игроков',[menu,status,...view,group('club-foot',refresh)],'club');
  }
  async function listen(){
-  if(!isOpen()||!room||busy||document.hidden||!['links','peer','duet','rank','invite'].includes(tab)||document.activeElement?.matches('input,textarea,select,option'))return;
+  if(!isOpen()||!room||busy||document.hidden||!['links','peer','duet','rank','invite','beacon'].includes(tab)||document.activeElement?.matches('input,textarea,select,option'))return;
   const n=generation,view=tab,person=peer;
-  try{const snapshot=await crewRequest(roomURL());if(n===generation&&view===tab&&person===peer&&!busy&&isOpen()&&JSON.stringify(snapshot)!==JSON.stringify(room)){room=snapshot;await earnTeamMark(snapshot.invite);if(n===generation&&isOpen())paint();}}catch{}
+  try{const snapshot=await crewRequest(roomURL());if(n===generation&&view===tab&&person===peer&&!busy&&isOpen()&&JSON.stringify(snapshot)!==JSON.stringify(room)){room=snapshot;await earnTeamMark(snapshot.invite);if(n===generation&&isOpen())beaconPaint();}}catch{}
  }
  window.setInterval(listen,5000);
  return {open,finish,updateRelay,refreshRelay,checkMedal};

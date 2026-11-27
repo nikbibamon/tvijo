@@ -19,18 +19,19 @@ const service=await import('../web/tvijoService.js');
 const {createField}=await import('../web/field.js');
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 
-async function play(level=levels[0],hero='captain'){
+async function play(level=levels[0],hero='captain',viewport=[390,844]){
   window=new EventTarget();const doc=new EventTarget();globalThis.document=doc;
   const ids=new Map(),pads=Object.fromEntries(['left','right','jump','use'].map(k=>[k,new Element(k)]));
   doc.querySelector=id=>{if(id==='dialog[open]')return null;if(!ids.has(id))ids.set(id,new Element());return ids.get(id);};
   doc.querySelectorAll=()=>Object.values(pads);
-  const canvas=doc.querySelector('#stage');canvas.clientWidth=390;canvas.clientHeight=350;
-  let latest,translation,elapsed=100,frame=0;const scheduled=new Map();
+  const canvas=doc.querySelector('#stage');canvas.clientWidth=viewport[0]-20;canvas.clientHeight=Math.min(390,viewport[0]*.56);
+  let latest,translation,camera,sceneScale,firstScale,firstTranslate,elapsed=100,frame=0;const scheduled=new Map();
   // Read the normal renderer's full-body sprite position. The controller exposes no teleport or test hooks.
   const labels=[];canvas.getBoundingClientRect=()=>({left:0,top:0});
   const ctx=new Proxy({
-    clearRect(){labels.length=0;},fillText(value){labels.push(value);},
-    translate(x,y){translation={x,y};},
+    clearRect(){labels.length=0;firstScale=true;firstTranslate=true;},fillText(value){labels.push(value);},
+    scale(value){if(firstScale){sceneScale=value;firstScale=false;}},
+    translate(x,y){translation={x,y};if(firstTranslate){camera={x,y};firstTranslate=false;}},
     drawImage(img,...args){if(img.src.includes('/runners/')&&args.length===8)latest={...translation,pose:args[0]/128};},
     createLinearGradient:()=>({addColorStop(){}}),createRadialGradient:()=>({addColorStop(){}}),
     measureText:()=>({width:45})
@@ -58,48 +59,44 @@ async function play(level=levels[0],hero='captain'){
   return {pads,key,tap,advance,field,go:()=>doc.querySelector('#field-target').onclick(),
     get labels(){return [...labels];},get label(){return doc.querySelector('#grab span').textContent;},
     get message(){return doc.querySelector('#field-feedback').textContent;},
-    tapScene:(clientX,clientY)=>canvas.onpointerdown({clientX,clientY}),
+    worldPoint:(x,y)=>[(x+camera.x)*sceneScale,(y+camera.y)*sceneScale],
+    touchWorld:(x,y)=>canvas.onpointerdown({clientX:(x+camera.x)*sceneScale,clientY:(y+camera.y)*sceneScale}),
     get actor(){return latest;},get finished(){return finish;},get orders(){return orders;},get falls(){return falls;},get relay(){return relay;}};
 }
 
-test('dock, two thumbs: pass the old wall in midair, give one order and touch the capsule',async()=>{
-  const p=await play(),floor=levels[0].floor;
-  p.pads.right.pointer('pointerdown',1);await p.advance(1590); // approach the crane from the ship
-  p.tap('jump');await p.advance(350);
-  assert.ok(p.actor.x>450,'the runner must clear x=418 before the bridge order, actual x='+p.actor.x);
-  assert.ok(p.actor.y<floor-63&&p.actor.pose===3,'the same held direction must persist during the jump');
-  p.pads.right.pointer('pointerup',1);await p.advance(550);
-  assert.equal(p.finished,0);assert.deepEqual(service.doneFor(),[]);
-  await service.setTier('genius');const {balance,tallies}=service.state;
-  p.tap('use');p.tap('use',3);await flush();
+for(const viewport of [[375,667],[390,844]]){
+ test('First Shift, '+viewport.join('×')+': see the capsule, hold Right and jump, radio the Robot, touch the cargo',async()=>{
+  await service.setShowHints(false);const level=levels[0],route=layout(level),p=await play(level,'daughter',viewport);
+  const [cx,cy]=p.worldPoint(route.goal,route.goalY-20);
+  assert.ok(cx>0&&cx<viewport[0]-20&&cy>0&&cy<viewport[0]*.56,'cargo must be in the initial frame');
+  p.touchWorld(route.goal,route.goalY-15);await p.advance(80);assert.deepEqual(service.doneFor(),[]);
+  p.pads.right.pointer('pointerdown',1);await p.advance(1300);
+  assert.equal(p.actor.x,route.gap[0]-8);assert.equal(p.finished,0);
+  const before=p.actor.x;p.tap('jump');await p.advance(160);
+  assert.ok(p.actor.x>before&&p.actor.y<level.floor-20&&p.actor.pose===3);
+  const balance=service.state.balance;p.tap('use');p.tap('use',3);await flush();
   assert.deepEqual(service.doneFor(),['bridge']);assert.equal(p.orders,1);
-  assert.equal(service.state.balance,balance);assert.equal(service.state.tallies.clear,tallies.clear);
-  p.pads.right.pointer('pointerdown',1);await p.advance(550);p.pads.right.pointer('pointerup',1);
+  assert.equal(service.state.balance,balance);await p.advance(1350);p.pads.right.pointer('pointerup',1);
+  assert.equal(p.finished,0);p.touchWorld(route.goal,route.goalY-16);await p.advance(2200);
+  assert.equal(p.finished,1);assert.equal(p.falls,0);assert.equal(p.message,'');p.field.leave();
+ });
+}
+test('First Shift, keyboard: radio from the bank, cross on foot, overshoot and return with E',async()=>{
+  const l=levels[0],route=layout(l),p=await play(l,'captain',[1280,800]);
+  p.key('KeyD');await p.advance(1700);assert.equal(p.actor.x,route.gap[0]-8);
+  p.key('Digit1');p.key('Digit1',false);await flush();assert.deepEqual(service.doneFor(),['bridge']);
+  p.key('Space');await p.advance(180);assert.ok(p.actor.y<l.floor-30);p.key('Space',false);
+  await p.advance(2280);p.key('KeyD',false);assert.ok(p.actor.x>route.goal+60);assert.equal(p.finished,0);
+  p.key('KeyE');p.key('KeyE',false);await p.advance(2600);
   assert.equal(p.finished,1);assert.equal(p.falls,0);
 });
-
-test('dock, keyboard: D + E at the blocked spot, Space and a clean pickup on the first run',async()=>{
-  const p=await play();p.key('KeyD');await p.advance(1630);assert.ok(Math.abs(p.actor.x-414)<4);
-  p.key('KeyE');p.key('KeyE',false);await flush();
-  assert.deepEqual(service.doneFor(),['bridge']);p.key('Space');await p.advance(160);
-  assert.ok(p.actor.y<310&&p.actor.pose===3);p.key('Space',false);
-  await p.advance(900);p.key('KeyD',false);
-  assert.equal(p.finished,1);assert.equal(p.falls,0);
-});
-
-test('the action under the pickup jumps and gathers it for all seven heights, with no runway',async()=>{
-  for(const hero of heroOrder){
-    const p=await play(levels[0],hero);p.key('ArrowRight');await p.advance(2430);p.key('ArrowRight',false);
-    assert.ok(Math.abs(p.actor.x-layout(levels[0]).goal)<3);assert.equal(p.actor.y,levels[0].floor);
-    assert.equal(p.finished,0);p.tap('use');await p.advance(1400);
+test('all seven pilots can call for the capsule from either bank after locking the bridge',async()=>{
+  for(const [i,hero] of heroOrder.entries()){
+    const p=await play(levels[0],hero);
+    await p.field.issue('bridge');if(i%2){p.key('ArrowRight');await p.advance(3300);p.key('ArrowRight',false);}
+    assert.equal(p.finished,0);p.tap('use');await p.advance(4300);
     assert.equal(p.finished,1,hero);assert.equal(p.falls,0,hero);p.field.leave();
   }
-});
-
-test('the goal can also be approached from the right in assisted mode',async()=>{
-  const p=await play(levels[0],'plane');p.key('KeyD');await p.advance(3000);p.key('KeyD',false);
-  assert.ok(p.actor.x>690);p.tap('use');await flush();p.go();await p.advance(2100);
-  assert.equal(p.finished,1);assert.equal(p.falls,0);
 });
 
 test('the rift waits on its real bank and resumes the route after the three field controls',async()=>{
@@ -182,8 +179,7 @@ test('E takes the marked spark within reach, once and without issuing an order',
 
 test('touching a visible spark steers to it and an enabled hint confirms pickup',async()=>{
   await service.setShowHints(true);const p=await play();
-  // At the starting camera position the first spark is at (176,324) in the 960×448 scene.
-  p.tapScene(176*350/448,324*350/448);await p.advance(950);
+  p.touchWorld(176,324);await p.advance(950);
   assert.deepEqual(service.state.stages.dock.sparks,[0]);assert.equal(p.orders,0);
   assert.match(p.message,/Искра найдена/);assert.ok(p.actor.x<160,'the requested pickup stops the assisted walk');
   p.field.leave();await service.setShowHints(false);

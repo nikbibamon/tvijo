@@ -1,7 +1,7 @@
 import {heroes,moves,tiers} from '../web/catalog.js';
 import {planTurn,resolveLevel} from '../web/strategy.js';
 import {crewAPI,recordCrewOrder} from './social.js';
-const eventNames=['open_map','mic_click','command_sent','task_done','dependency_done','crosscheck','voice_command','field_start','capsule','workshop_open','world_created','out_of_credits','wallet_open','buy_click','demo_refill'];
+const eventNames=['open_map','mic_click','command_sent','task_done','dependency_done','crosscheck','voice_command','field_start','capsule','workshop_open','world_created','out_of_credits','wallet_open','buy_click','demo_refill','shift_hq','shift_enter','shift_bridge','shift_capsule','beacon_share_open','beacon_invite_open','beacon_pair_accept'];
 const replyJSON=(data,status=200,extra={})=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json; charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff',...extra}});
 const member=(obj,k)=>typeof k==='string'&&Object.hasOwn(obj,k);
 const safeIds=(a,max)=>Array.isArray(a)&&a.length<=max&&a.every(k=>member(moves,k));

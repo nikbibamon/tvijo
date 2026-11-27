@@ -23,7 +23,8 @@ DEADLINE = 2.5
 EVENTS = frozenset(
     "open_map mic_click command_sent task_done dependency_done crosscheck "
     "voice_command field_start capsule workshop_open world_created "
-    "out_of_credits wallet_open buy_click demo_refill".split()
+    "out_of_credits wallet_open buy_click demo_refill shift_hq shift_enter shift_bridge shift_capsule "
+    "beacon_share_open beacon_invite_open beacon_pair_accept".split()
 )
 # The prototype accepts only one of these reviewed lines from an optional narrator.
 NUDGES = {

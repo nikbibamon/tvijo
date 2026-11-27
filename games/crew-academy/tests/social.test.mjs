@@ -138,3 +138,58 @@ test('Telegram referral pays both pilots once after two real different campaign 
     assert.equal((await a.room()).data.invite.code,invite);
   }finally{db.close();}
 });
+
+test('one beacon invitation binds two consenting devices, survives reload at each phase and settles once',async()=>{
+ const {db,DB}=await openCrewDB();
+ try{
+  const [host,guest,outsider]=[player({DB}),player({DB}),player({DB})];
+  const beacon=(user,action,code)=>user.fetch('/api/crew/beacon-link',{action,code});
+  const read=async(user,code)=>(await user.fetch('/api/crew/room?beacon='+code)).data.beacon;
+  await host.join();assert.equal((await beacon(host,'create')).code,403);
+  await host.share();const code=(await beacon(host,'create')).data.code;
+  assert.equal((await beacon(host,'create')).data.code,code);
+  assert.equal((await read(host,code)).status,'waiting');assert.equal((await read(guest,code)).status,'offer');
+  assert.equal((await beacon(host,'accept',code)).code,409);
+  assert.equal((await beacon(guest,'accept',code)).code,401);
+  assert.equal((await guest.fetch('/api/crew/join',{hero:'son',beacon:code})).data.referralAccepted,true);
+  assert.equal((await beacon(guest,'accept',code)).code,403);assert.equal((await guest.room()).data.peers.length,0);
+  await guest.share();await beacon(guest,'accept',code);
+  const a=(await read(host,code)).relay,b=(await read(guest,code)).relay;
+  assert.equal(a.role,'scout');assert.equal(b.role,'engineer');assert.equal(a.mission,b.mission);assert.equal(b.sequence,null);
+  assert.equal((await beacon(guest,'accept',code)).data.beacon.relay.mission,b.mission);
+  await outsider.join();await outsider.share();assert.equal((await beacon(outsider,'accept',code)).code,409);
+  assert.equal((await read(outsider,code)).status,'unavailable');
+  const doRelay=(u,r,action,sequence)=>u.fetch('/api/crew/relay',{other:r.other,mission:r.mission,action,sequence});
+  const symbols=(await doRelay(host,a,'scan')).data.relay.sequence;assert.equal((await read(guest,code)).relay.sequence,null);
+  await doRelay(host,a,'send');assert.equal((await read(guest,code)).relay.sequence,symbols);
+  await doRelay(guest,b,'tune',symbols);await doRelay(guest,b,'tune',symbols);
+  assert.equal((await read(guest,code)).status,'done');assert.equal((await read(host,code)).status,'done');
+  assert.equal((await beacon(guest,'accept',code)).data.beacon.status,'done');
+  assert.equal((await host.room()).data.me.beacons,1);
+  assert.equal((await host.room()).data.invite.qualified,0);
+  await guest.turn('dock','Робот, закрепи мост');await guest.turn('dock','Робот, закрепи мост');
+  assert.equal((await host.room()).data.invite.qualified,0);await guest.turn('rift','Самолётик, найди частоту');
+  assert.equal((await host.room()).data.invite.qualified,1);
+  const next=(await beacon(host,'create')).data.code;assert.notEqual(next,code);
+  assert.equal((await beacon(guest,'accept',next)).data.beacon.relay.phase,'scout');
+  assert.equal((await read(host,code)).status,'done');
+ }finally{db.close();}
+});
+
+test('existing pilots can decline; withdrawn, blocked and private beacon links cannot open a channel',async()=>{
+ const {db,DB}=await openCrewDB();
+ try{
+  const host=player({DB}),guest=player({DB});await host.join();await host.share();await guest.join();await guest.share();
+  const send=(p,action,code)=>p.fetch('/api/crew/beacon-link',{action,code});
+  const link=async()=>(await send(host,'create')).data.code;
+  const view=async(code)=>(await guest.fetch('/api/crew/room?beacon='+code)).data.beacon;
+  const declined=await link();assert.equal((await send(guest,'decline',declined)).data.beacon.status,'declined');
+  assert.equal((await send(guest,'accept',declined)).code,409);
+  const cancelled=await link();await send(host,'cancel',cancelled);assert.equal((await send(guest,'accept',cancelled)).code,409);
+  assert.equal((await view('bad')).status,'unavailable');
+  const muted=await link(),id=(await host.room()).data.me.id;await guest.pair(id,'mute');
+  assert.equal((await view(muted)).status,'unavailable');assert.equal((await send(guest,'accept',muted)).code,409);
+  await guest.pair(id,'unmute');await host.share(false);await host.share();
+  assert.equal((await send(guest,'accept',muted)).code,409);assert.equal((await guest.room()).data.peers.length,0);
+ }finally{db.close();}
+});
