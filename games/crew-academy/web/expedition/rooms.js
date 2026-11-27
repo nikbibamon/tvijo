@@ -1,6 +1,6 @@
 export const riftRooms = [
   { id: 'alphabet', name: 'Алфавит маяка', place: 'Кристальный разлом', crew: 'Самолётик, Ассистентка и Дочка', task: 'Узнай по работе приборов, что означают три знака на шлюзе.', art: './expedition/art/beacon-idle.webp', prize: 'Линза связи' },
-  { id: 'cargo', name: 'Склад Робота', place: 'Грузовой отсек', crew: 'Робот', task: 'Подтолкни энергоячейку на плиту, чтобы запустить конвейер.', art: './art/foundry.webp', prize: 'Энергоячейка' },
+  { id: 'cargo', name: 'Склад Робота', place: 'Грузовой отсек', crew: 'Робот', task: 'Развези энергоячейку и хладагент по двум плитам. Затем отправь посылку в Ремонтный шлюз.', art: './warehouse/depot.webp', prize: 'Энергоячейка' },
   { id: 'chain', name: 'Цепная реакция', place: 'Энергоблок', crew: 'Дочка и Робот', task: 'Поверни желоб и рычаг, чтобы шар включил лампу.', art: './art/beacon.webp', prize: 'Световое реле' },
   { id: 'drones', name: 'Ремонтный шлюз', place: 'Оранжерея дронов', crew: 'Пять ремонтных дронов', task: 'Доведи пятерых до шлюза. После дневной смены откроется ночная с грузовым лифтом.', art: './sluice/hangar.webp', prize: 'Знак спасателей' },
   { id: 'pulse', name: 'Шахта эха', place: 'Нижние штольни', crew: 'Сын', task: 'Расчисти завал импульсом и дойди до шлюза.', art: './art/mine.webp', prize: 'Резонатор' },
@@ -17,7 +17,8 @@ export const stationRooms = [
 export const rooms = [...riftRooms, ...stationRooms];
 export const prizes = [...rooms, {id: 'orbital-storm', name: 'Орбитальный шторм', prize: 'Знак спасения Светляка'},
   {id:'echo-mine', name:'Шахта эха', prize:'Чёрный ящик разведчика'},
-  {id:'drones-night', name:'Ночная смена в шлюзе', prize:'Фонарь ночной смены'}];
+  {id:'drones-night', name:'Ночная смена в шлюзе', prize:'Фонарь ночной смены'},
+  {id:'cargo-express',name:'Экспресс-сортировка',prize:'Марка экспресс-груза'}];
 
 export const roomById = id => rooms.find(room => room.id === id);
 export const prizeById = id => prizes.find(item => item.id === id);

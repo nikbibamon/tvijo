@@ -1,16 +1,16 @@
 /* The room keeps the expedition navigation and the established Rubik typography. */
 body.sluice-room { background:radial-gradient(ellipse at 45% 22%,#203934,#101722 70%); }
-.sluice-room .exp-bar,.sluice-room .exp-main { width:min(100%,1370px); }
-.sluice-room .exp-main { padding-top:clamp(10px,1.5vw,23px); }
-.sluice-room .exp-bar { min-height:51px; }
-.sluice-room .room-heading { margin-bottom:9px; }
-.sluice-room #room-task,.sluice-room #room-line,.sluice-room #obtained,.sluice-room #prize-strip { display:none; }
-.sluice-room #room-play { padding:0;border:0;background:none; }
-.sluice-only { display:none; }
-.sluice-room .sluice-only { display:inline; }
-.sluice-room .to-world,.sluice-room .exp-bar nav a:first-child { display:none; }
-.sluice-room .exp-bar nav { margin-left:auto; }
-.sluice-room .room-way { margin:8px 0; }
+.workshop-room .exp-bar,.workshop-room .exp-main { width:min(100%,1370px); }
+.workshop-room .exp-main { padding-top:clamp(10px,1.5vw,23px); }
+.workshop-room .exp-bar { min-height:51px; }
+.workshop-room .room-heading { margin-bottom:9px; }
+.workshop-room #room-task,.workshop-room #room-line,.workshop-room #obtained,.workshop-room #prize-strip { display:none; }
+.workshop-room #room-play { padding:0;border:0;background:none; }
+.workshop-only { display:none; }
+.workshop-room .workshop-only { display:inline; }
+.workshop-room .to-world,.workshop-room .exp-bar nav a:first-child { display:none; }
+.workshop-room .exp-bar nav { margin-left:auto; }
+.workshop-room .room-way { margin:8px 0; }
 .sluice { --rail-edge:#3f5659; --teal:#9cebd9; --amber:#ffcf79; background:#151f29; color:#f8f3e8;
   border:1px solid var(--rail-edge); border-radius:14px; overflow:hidden; box-shadow:0 14px 46px #080c1c70; }
 .sluice button,.sluice summary,.sluice a { touch-action:manipulation; }
@@ -77,7 +77,7 @@ body.sluice-room { background:radial-gradient(ellipse at 45% 22%,#203934,#101722
  .sl-power h2 { margin:0; }
 }
 @media(max-width:670px) {
- .sluice-room .exp-main { padding-inline:6px; }.sluice-room .room-heading {padding-inline:5px;}.sluice-room .exp-bar { min-height:43px; }
+ .workshop-room .exp-main { padding-inline:6px; }.workshop-room .room-heading {padding-inline:5px;}.workshop-room .exp-bar { min-height:43px; }
  .sl-field { aspect-ratio:1.58;max-height:none; }.sl-toolbar { display:grid;gap:7px; }.sl-transport { justify-self:start; }
  .sl-desk,.sl-desk.night { grid-template-columns:1fr 1fr;gap:11px 7px;padding-top:9px; }
  .sl-desk .sl-team,.sl-desk.night .sl-team { grid-column:1/-1;grid-row:auto; }
@@ -86,11 +86,13 @@ body.sluice-room { background:radial-gradient(ellipse at 45% 22%,#203934,#101722
  .sl-finish { align-items:flex-start;flex-wrap:wrap; }.sl-feedback { font-size:.94rem; }
 }
 @media(orientation:landscape) and (max-height:540px) {
- .sluice-room .exp-main { padding-top:3px; }.sluice-room .exp-bar {min-height:34px;}
- .sluice-room .room-title h1 {font-size:1.25rem;}.sluice-room .room-heading{margin:0 0 3px;}
- .sluice-room #room-place {display:none;}.sluice-room #room-sound {height:32px;flex-basis:36px;}
+ .workshop-room .exp-main { padding-top:3px; }.workshop-room .exp-bar {min-height:34px;}
+ .workshop-room .room-title h1 {font-size:1.25rem;}.workshop-room .room-heading{margin:0 0 3px;}
+ .workshop-room #room-place {display:none;}.workshop-room #room-sound {height:32px;flex-basis:36px;}
  .sl-field { height:clamp(165px,52svh,245px);max-height:none;aspect-ratio:auto; }
  .sl-toolbar {display:flex;padding:4px 10px;gap:8px;}.sl-feedback {font-size:.9rem;}
  .sl-desk {padding-block:7px;}.sl-stop{font-size:.76rem;}
 }
 @media(prefers-reduced-motion:reduce){.sl-unit{transition:none;}}
+
+.sl-finish-links{display:flex;align-items:center;gap:7px;flex-wrap:wrap}

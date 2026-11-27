@@ -4,6 +4,8 @@ import {rooms, roomById, roomHref, hasPrize} from './expedition/rooms.js';
 import {scenes, restoreStorm} from './storm/rules.js';
 import {phaseNames, restoreMine} from './echo/rules.js';
 import {sluiceRoute} from './sluice/progress.js';
+import {activeJob,warehouseRoute} from './warehouse/progress.js';
+import {readShift} from './warehouse/rules.js';
 import {rescued, restoreRun} from './sluice/rules.js';
 
 const lastKey = 'tvijo.crew.last-route.v1';
@@ -48,12 +50,20 @@ export function nextRoute(profile, last, stormSave) {
   const chosen = last?.kind==='room' && roomById(last.id);
   if (last?.kind==='echo' && activeMine) return echo(mine,true);
   if (last?.kind==='storm' && activeStorm) return storm(orbit,true);
+  if (chosen?.id==='cargo' && profile.warehouse) {
+    const id=activeJob(profile), b=readShift(profile.warehouse,id).board;
+    if(!b.sent || id==='line' && !profile.warehouseReports?.express)return warehouseRoute(profile);
+    const sent=profile.warehouseReports?.express;
+    if(sent && sent.receivedAt==null)return {...warehouseRoute(profile),place:'Ремонтный шлюз',action:'Принять груз в шлюзе',
+      href:'./expedition.html#drones/delivery',detail:'Посылка ждёт приёмки',text:'Энергоячейка и хладагент уже на разгрузке.'};
+  }
   if (chosen?.id === 'drones' && profile.sluice) {
     const board=restoreRun(profile.sluice).board;
     if(rescued(board)<5) return sluiceRoute(profile);
     if(board.mode==='day' && !hasPrize(profile,'drones-night')) return {...sluiceRoute(profile),
       action:'Открыть ночную смену',href:'./expedition.html#drones/night',detail:'Ночная смена',art:'./sluice/night.webp',
       text:'У лифта и маяка один источник питания. Верни пятерых ремонтников при свете фонарей.'};
+    if(!profile.warehouseReports?.express)return warehouseRoute(profile);
   }
   if (chosen && !hasPrize(profile,chosen.id)) return room(chosen,true);
   const current = resolveLevel(profile.level);

@@ -3,11 +3,14 @@ import {markRoute} from '../crewRoute.js';
 import {hasPrize, prizeById} from '../expedition/rooms.js';
 import {deliverPrize} from '../expedition/rewards.js';
 import {applySluice} from './progress.js';
+import {acceptShipment} from '../warehouse/progress.js';
 import {atStop, canAssign, crew, dayPrize, GATE, guidance, modes, nightPrize, reportLine, rescued, restoreRun, roleName} from './rules.js';
 import {dronePlace, paintTrack} from './track.js';
 
 const STEP_MS = 500;
 const template = `
+  <section class="wh-delivery" hidden aria-label="Приёмка со склада"><div><strong>Входящий груз · Склад Робота</strong><h2></h2><p>Энергоячейка и хладагент для ремонтников.</p></div>
+    <button type="button" data-cmd="receive">Принять оба груза</button><a href="./expedition.html#cargo" data-world>На Склад Робота</a></section>
   <div class="sluice">
     <div class="sl-field" data-phase="day" role="group" aria-label="Пути ремонтного шлюза">
       <canvas width="1500" height="750" aria-hidden="true"></canvas>
@@ -37,7 +40,7 @@ const template = `
     </div>
     <div class="sl-finish" hidden>
       <div><p class="sl-result-kicker"></p><h2>Вся пятёрка в шлюзе</h2><p class="sl-report"></p></div>
-      <a class="sl-journal" href="./#journal" data-world>Открыть журнал</a>
+      <div class="sl-finish-links"><a class="sl-journal" href="./expedition.html#cargo" data-world>На Склад Робота</a><a class="sl-journal" href="./#journal" data-world>Открыть журнал</a></div>
     </div>
     <div class="sl-footer">
       <button type="button" class="sl-night" data-cmd="night" hidden>Выйти в ночную смену</button>
@@ -86,6 +89,13 @@ export function mountDrones(root, api) {
     run=restoreRun(state.sluice,legacy);
     const {board,selected}=run, count=rescued(board), complete=count===crew.length, night=board.mode==='night';
     if(complete)pause();
+    const shipment=state.warehouseReports?.express, delivery=get('.wh-delivery');
+    delivery.hidden=!shipment;
+    if(shipment){
+      delivery.querySelector('h2').textContent=shipment.receivedAt!=null?'Груз принят в шлюзе':'Посылка на разгрузке';
+      buttons.receive.hidden=shipment.receivedAt!=null;
+      buttons.receive.dataset.shipment=String(shipment.shipment);
+    }
     field.dataset.phase=board.mode;field.dataset.complete=String(complete);
     get('.sl-mode span').textContent=modes[board.mode];get('.sl-count strong').textContent=count+' / 5';
     get('.sl-gap').textContent=night?'Грузовой лифт':'Разрыв';
@@ -172,6 +182,17 @@ export function mountDrones(root, api) {
     const cmd=button.dataset.cmd;
     if(button.dataset.drone!==undefined){await commit({type:'select',id:Number(button.dataset.drone)});return;}
     if(!cmd)return;
+    if(cmd==='receive'){
+      const serial=Number(button.dataset.shipment);
+      const receipt=write(profile=>{
+        if(!acceptShipment(profile,serial,Date.now()))return false;
+        note(profile,'field','Ремонтный шлюз принял посылку со Склада Робота. Энергоячейка и хладагент на месте.');
+        return true;
+      });
+      api.pending(receipt);
+      if(await receipt && !disposed)api.say('Груз принят. Оба места на разгрузке.');
+      return;
+    }
     if(cmd==='march'){
       if(marching){pause();draw();}else{marching=true;draw();void tick();}
       return;
@@ -196,6 +217,8 @@ export function mountDrones(root, api) {
   window.addEventListener('pagehide',leave);
   bus.addEventListener('change',draw);
   draw();
+  if(api.cargoDeliveryEntry && state.warehouseReports?.express)
+    requestAnimationFrame(()=>{if(!disposed)get('.wh-delivery').scrollIntoView({block:'nearest'});});
   if(api.nightEntry){
     history.replaceState(history.state,'',location.pathname+location.search+'#drones');
     if(hasPrize(state,dayPrize) && run.board.mode!=='night')void commit({type:'night'});

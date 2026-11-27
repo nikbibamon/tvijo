@@ -3,7 +3,8 @@ import {bindVoiceControls} from '../voiceControls.js';
 import {riftRooms, stationRooms, roomById, roomHref, packNames} from './rooms.js';
 import {deliverPrize, recoverPrizes, ownsPrize} from './rewards.js';
 import {mountAlphabet} from './beacon.js';
-import {mountCargo, mountPulse} from './grid.js';
+import {mountCargo as mountTraining, mountPulse} from './grid.js';
+import {mountWarehouse} from '../warehouse/main.js';
 import {mountChain} from './machines.js';
 import {mountDrones} from '../sluice/main.js';
 import {mountRadio} from './radio.js';
@@ -11,7 +12,7 @@ import {mountMirrors, mountArchive} from './station.js';
 
 import {markRoute} from '../crewRoute.js';
 
-const scenes = {alphabet:mountAlphabet, cargo:mountCargo, chain:mountChain, drones:mountDrones, pulse:mountPulse,
+const scenes = {alphabet:mountAlphabet, cargo:mountWarehouse, chain:mountChain, drones:mountDrones, pulse:mountPulse,
   radio:mountRadio, mirrors:mountMirrors, 'time-archive':mountArchive};
 const $ = id => document.getElementById(id);
 const memory = new Map();
@@ -70,11 +71,18 @@ function showHub(hash) {
 function navigate() {
   const hash = location.hash.slice(1);
   const nightEntry = hash === 'drones/night';
-  const room = roomById(nightEntry ? 'drones' : hash);
+  const cargoDeliveryEntry = hash === 'drones/delivery';
+  const cargoEntry = ['cargo/line','cargo/express','cargo/training'].includes(hash) ? hash.split('/')[1] : '';
+  const room = roomById(nightEntry || cargoDeliveryEntry ? 'drones' : cargoEntry ? 'cargo' : hash);
+  const oldCargo = room?.id==='cargo' && !cargoEntry && !state.warehouse ? saved('cargo') : null;
+  const training = cargoEntry==='training' || Boolean(oldCargo?.kind==='cargo' && oldCargo.state?.moves>0 && !oldCargo.state?.done);
   if (current) silenceRadio();
   release?.(); release = null; $('room-play').replaceChildren();
   current = room || null;
-  document.body.classList.toggle('sluice-room',room?.id === 'drones');
+  const warehouse = room?.id==='cargo' && !training;
+  document.body.classList.toggle('workshop-room',room?.id==='drones' || warehouse);
+  document.body.classList.toggle('cargo-room',warehouse);
+  document.body.classList.toggle('sluice-room',room?.id==='drones');
   if (!room) {
     showHub(hash);
     inventory();
@@ -84,6 +92,7 @@ function navigate() {
   }
   $('hub').hidden = true; $('room').hidden = false;
   $('room-place').textContent = room.place; $('room-name').textContent = room.name; $('room-task').textContent = room.task;
+  if(training){$('room-name').textContent='Учебный склад';$('room-task').textContent='Толкни энергоячейку на золотую плиту.';}
   $('room-line').textContent = '';
   const station = room.chapter === 'station';
   const next = roomById(room.next);
@@ -97,7 +106,7 @@ function navigate() {
   const id = room.id;
   let interactive = false;
   const api = {
-    nightEntry,
+    nightEntry, cargoEntry, cargoDeliveryEntry,
     load: () => saved(id),
     pending: promise => { transition=promise; },
     save: record => keep(id, record),
@@ -114,14 +123,18 @@ function navigate() {
       return transition;
     }
   };
-  const unmount = scenes[id]($('room-play'), api);
+  const unmount = (training ? mountTraining : scenes[id])($('room-play'), api);
+  if(training){
+    const link=node('a','warehouse-training-exit','На погрузочную линию');
+    link.href='#cargo/line';link.dataset.world='';$('room-play').append(link);
+  }
   interactive = true;
   release = () => { interactive = false; unmount?.(); };
   inventory();
   window.scrollTo(0, 0);
 }
 document.addEventListener('click', async event => {
-  const link = event.target.closest('a[data-world]');
+  const link = event.target.closest(document.body.classList.contains('workshop-room') ? 'a[href]' : 'a[data-world]');
   if (!link || event.defaultPrevented || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;
   event.preventDefault(); await transition; location.assign(link.href);
 });

@@ -2,7 +2,7 @@
 .bridge-panel{overflow:hidden;background:#211b2c;border:1px solid #705871;border-radius:16px;margin:clamp(10px,2vw,25px) 0 10px;box-shadow:0 14px 44px #100b1955}
 .bridge-panel .mission-card{border:0;border-radius:0;min-height:clamp(310px,34vw,515px)}.bridge-panel .mission-art{background-position:center}.bridge-panel .mission-copy{width:70%;max-width:780px;padding:clamp(22px,5.6vw,92px)}
 .bridge-panel .mission-copy h2{max-width:12ch;line-height:.98;margin:12px 0;font-size:clamp(2.65rem,5.5vw,5.25rem);text-wrap:balance}.bridge-panel .mission-copy p{max-width:420px;font-size:clamp(.95rem,1.5vw,1.16rem)}.bridge-panel .hero-actions{margin-top:18px}
-.bridge-routes{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(7px,1.3vw,21px);padding:13px clamp(12px,4vw,68px) 17px;background:linear-gradient(165deg,#312333,#231c2f 55%,#292634);border-top:1px solid #82624e}
+.bridge-routes{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(7px,1.3vw,21px);padding:13px clamp(12px,4vw,68px) 17px;background:linear-gradient(165deg,#312333,#231c2f 55%,#292634);border-top:1px solid #82624e}
 .bridge-routes a{position:relative;display:grid;grid-template-columns:minmax(0,1fr);color:#fff0db;text-decoration:none;line-height:1.2;min-width:0}.bridge-routes img{width:100%;height:clamp(44px,5.2vw,80px);border:1px solid #8d6f63;border-radius:7px;object-fit:cover;transition:filter .15s}.bridge-routes a:hover img{filter:brightness(1.23)}.bridge-routes span{font-weight:700;margin-top:6px}.bridge-routes small{margin-top:3px;color:#d4c5d3;font-size:.83rem}
 #hq .main-grid{display:block}.bridge-radio{margin:8px 0 14px;background:#221d2d;border:1px solid #493b52;border-radius:9px}.bridge-radio>summary{padding:9px 15px;color:#dac5ec;cursor:pointer}.bridge-radio #radio{max-height:510px}.bridge-radio #messages{min-height:90px}.bridge-radio:not([open]) aside{display:none}
 #radio-history{align-self:flex-start;margin:6px 12px;padding:6px 12px;color:#ead9f5;background:#33283d;border:1px solid #695473;border-radius:7px;cursor:pointer}
@@ -11,5 +11,5 @@
 @media(max-width:700px){.bridge-panel .mission-copy{width:85%;padding:22px}.bridge-routes{gap:8px;padding:9px 11px 12px}.bridge-routes span{font-size:.93rem}}
 @media(max-width:520px){.bridge-panel .mission-card{min-height:305px}.bridge-panel .mission-copy{width:100%;max-width:100%;padding:18px}.bridge-panel .mission-copy h2{font-size:2.7rem}.bridge-panel .mission-art{background-position:60% center}.bridge-routes{grid-template-columns:repeat(2,minmax(0,1fr))}.bridge-routes a{grid-template-columns:48px minmax(0,1fr);column-gap:7px;align-content:center}.bridge-routes img{grid-row:1/3;height:44px}.bridge-routes span{margin:0;align-self:end;font-size:.85rem}.bridge-routes small{font-size:.75rem}.mine-journal{grid-template-columns:1fr}.mine-journal img{height:88px}.world-thumbnail{width:55px;height:34px}}
 
-#sluice-journal-lines{padding:0}
+#sluice-journal-lines,#warehouse-journal-lines{padding:0}
 @media(max-width:520px){.bridge-routes a:last-child:nth-child(odd){grid-column:1/-1;}}
