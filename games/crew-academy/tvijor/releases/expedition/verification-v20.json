@@ -1,0 +1,151 @@
+{
+  "release": 20,
+  "date": "2026-11-27",
+  "game": "Tvijo · Академия экипажа",
+  "site": {
+    "url": "https://tvijo-crew-academy.be9ava.chatgpt.site",
+    "entry": "https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#drones",
+    "source": "c7d1ff8c2da434f9aa4498f1421788044d9913a7",
+    "version": 20,
+    "version_id": "appgprj_6b08be8d319881918d089d9ce576a41f~appgver_6b6790d474e481918c5b78c34534baaa",
+    "deployment_id": "appgdep_6b09ecf3d6a08191816fe791642b128e",
+    "status": "succeeded",
+    "assets": 122,
+    "worker_sha256": "a338ede4aa2aad0e76c768623cf6cadd649c43c7606f11d96dcee2680ac3e099"
+  },
+  "repo": {
+    "slug": "nikbibamon/tvijo",
+    "pr": 20,
+    "branch": "feat/remdesk-crew-expedition",
+    "game_commit": "66e5933196e0814b2180d32eeba45651b60bff33",
+    "changed_files": 17
+  },
+  "automated": {
+    "node": {
+      "passed": 86,
+      "failed": 0,
+      "new_sluice": 7
+    },
+    "fastapi": {
+      "passed": 3,
+      "failed": 0
+    },
+    "worker_routes_matching_status_mime_bytes": 122,
+    "fastapi_routes_matching_get_and_head": 14
+  },
+  "browser": {
+    "engine": "Chrome",
+    "preview": {
+      "day": {
+        "builder": "Искра",
+        "signaller": "Болт",
+        "detours": 5,
+        "rescued": 5
+      },
+      "night": {
+        "builder": "Искра",
+        "signaller": "Болт",
+        "rescued_before_return": 4,
+        "stranded": "Пикс",
+        "restored_via_hq_and_reload": true,
+        "power_switches": 3,
+        "rescued": 5
+      },
+      "journal_both_shifts": true
+    },
+    "public_v20": {
+      "previous_v19_completed_shift_recognized": true,
+      "day": {
+        "undo_first_assignment": true,
+        "builder": "Луна",
+        "signaller": "Пикс",
+        "rescued": 5,
+        "detours": 0,
+        "prize": "Знак спасателей"
+      },
+      "night": {
+        "builder": "Ток",
+        "signaller": "Искра",
+        "early_beacon_after_steps": 6,
+        "rescued_before_return": 4,
+        "stranded": "Пикс",
+        "restored_via_hq_and_reload": true,
+        "power_switches": 3,
+        "rescued": 5,
+        "prize": "Фонарь ночной смены"
+      },
+      "journal_verified_both_reports": true
+    },
+    "viewport_measurements": [
+      {
+        "size": [
+          375,
+          667
+        ],
+        "field": [
+          346,
+          219
+        ],
+        "march_button": [
+          97,
+          44
+        ],
+        "horizontal_overflow": 0,
+        "visible_elements_beyond_right_edge": 0
+      },
+      {
+        "size": [
+          390,
+          844
+        ],
+        "field": [
+          361,
+          228
+        ],
+        "march_button": [
+          97,
+          44
+        ],
+        "horizontal_overflow": 0,
+        "visible_elements_beyond_right_edge": 0
+      },
+      {
+        "size": [
+          844,
+          390
+        ],
+        "field": [
+          775,
+          203
+        ],
+        "march_button": [
+          97,
+          44
+        ],
+        "horizontal_overflow": 0,
+        "visible_elements_beyond_right_edge": 0
+      }
+    ],
+    "physical_phone": false,
+    "speech": {
+      "text_fallback_observed_in_preview": true,
+      "audio_on_hardware_verified": false
+    }
+  },
+  "remdesk": {
+    "path": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v20",
+    "based_on": "07f537ab9e4456b1602f44f801bcfd374c5c6bde",
+    "patch": "update.patch.part-01 … update.patch.part-14",
+    "bytes": 465655,
+    "parts": 14,
+    "sha256": "90a51c87427f89bc6706b9cb3762d7aef8f9b099df0e1c7a3f51fe928a3be56e",
+    "all_parts_readback_exact": true,
+    "clean_rebuild_matches_publication_package": true,
+    "biba2_process_v20_verified": false
+  },
+  "open": [
+    "Physical phone including speech and touch; two independent clients for the paired beacon",
+    "Independent first-shift M1 playtests",
+    "Verify a running v20 service on biba2"
+  ]
+}
