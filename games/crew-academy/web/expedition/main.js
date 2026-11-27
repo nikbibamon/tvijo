@@ -5,14 +5,14 @@ import {deliverPrize, recoverPrizes, ownsPrize} from './rewards.js';
 import {mountAlphabet} from './beacon.js';
 import {mountCargo as mountTraining, mountPulse} from './grid.js';
 import {mountWarehouse} from '../warehouse/main.js';
-import {mountChain} from './machines.js';
+import {mountCircuit} from '../chain/main.js';
 import {mountDrones} from '../sluice/main.js';
 import {mountRadio} from './radio.js';
 import {mountMirrors, mountArchive} from './station.js';
 
 import {markRoute} from '../crewRoute.js';
 
-const scenes = {alphabet:mountAlphabet, cargo:mountWarehouse, chain:mountChain, drones:mountDrones, pulse:mountPulse,
+const scenes = {alphabet:mountAlphabet, cargo:mountWarehouse, chain:mountCircuit, drones:mountDrones, pulse:mountPulse,
   radio:mountRadio, mirrors:mountMirrors, 'time-archive':mountArchive};
 const $ = id => document.getElementById(id);
 const memory = new Map();
@@ -73,14 +73,15 @@ function navigate() {
   const nightEntry = hash === 'drones/night';
   const cargoDeliveryEntry = hash === 'drones/delivery';
   const cargoEntry = ['cargo/line','cargo/express','cargo/training'].includes(hash) ? hash.split('/')[1] : '';
-  const room = roomById(nightEntry || cargoDeliveryEntry ? 'drones' : cargoEntry ? 'cargo' : hash);
+  const chainEntry = ['chain/lamp','chain/pump'].includes(hash) ? hash.split('/')[1] : '';
+  const room = roomById(nightEntry || cargoDeliveryEntry ? 'drones' : cargoEntry ? 'cargo' : chainEntry ? 'chain' : hash);
   const oldCargo = room?.id==='cargo' && !cargoEntry && !state.warehouse ? saved('cargo') : null;
   const training = cargoEntry==='training' || Boolean(oldCargo?.kind==='cargo' && oldCargo.state?.moves>0 && !oldCargo.state?.done);
   if (current) silenceRadio();
   release?.(); release = null; $('room-play').replaceChildren();
   current = room || null;
   const warehouse = room?.id==='cargo' && !training;
-  document.body.classList.toggle('workshop-room',room?.id==='drones' || warehouse);
+  document.body.classList.toggle('workshop-room',room?.id==='drones' || warehouse || room?.id==='chain');
   document.body.classList.toggle('cargo-room',warehouse);
   document.body.classList.toggle('sluice-room',room?.id==='drones');
   if (!room) {
@@ -106,8 +107,9 @@ function navigate() {
   const id = room.id;
   let interactive = false;
   const api = {
-    nightEntry, cargoEntry, cargoDeliveryEntry,
+    nightEntry, cargoEntry, cargoDeliveryEntry, chainEntry,
     load: () => saved(id),
+    visit: () => markRoute('room',id),
     pending: promise => { transition=promise; },
     save: record => keep(id, record),
     say: message => {

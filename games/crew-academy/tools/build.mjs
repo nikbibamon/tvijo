@@ -9,7 +9,7 @@ async function walk(dir){for(const child of await readdir(dir,{withFileTypes:tru
 await walk(web);
 // Both public addresses boot the same game and share the player's progress.
 assets['/first-shift.html']=assets['/index.html'];
-const parts=[];for(const f of ['web/catalog.js','web/worlds.js','web/strategy.js','web/crewLabels.js','server/social.js','server/pilot.js']){
+const parts=[];for(const f of ['web/catalog.js','web/worlds.js','web/strategy.js','web/crewLabels.js','web/rescue/mission.js','server/social.js','server/pilot.js']){
  const src=await readFile(path.join(root,f),'utf8');parts.push(src.replace(/^import .*?;\s*$/gm,'').replace(/^export (?=(const|let|function|async function)\b)/gm,''));
 }
 const runtime=await readFile(path.join(root,'server/worker-entry.txt'),'utf8');

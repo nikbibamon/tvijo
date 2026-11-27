@@ -7,6 +7,8 @@ import {sluiceRoute} from './sluice/progress.js';
 import {activeJob,warehouseRoute} from './warehouse/progress.js';
 import {readShift} from './warehouse/rules.js';
 import {rescued, restoreRun} from './sluice/rules.js';
+import {circuitRoute} from './chain/rules.js';
+import {rescueHref} from './rescue/mission.js';
 
 const lastKey = 'tvijo.crew.last-route.v1';
 export const stormKey = 'tvijo.crew.storm.v1';
@@ -48,6 +50,10 @@ export function nextRoute(profile, last, stormSave) {
   const activeMine = !!profile.echoMine && mine.phase < 3 && (mine.heard.length > 0 || last?.kind==='echo');
   const activeStorm = orbit.stage < 4 && !!stormSave && (orbit.stage>0 || orbit.signal.band>0 || orbit.signal.observations>0);
   const chosen = last?.kind==='room' && roomById(last.id);
+  if (last?.kind==='rescue' && /^[0-9a-f]{32}$/.test(last.id)) return {
+    kind:'duet',title:'Линия спасения',place:'Совместная смена',text:'Экипаж у разлома. Продолжи спасение со своего поста.',
+    action:'Вернуться на свой пост',href:rescueHref(last.id),art:'./rescue/gantry.webp',detail:'Возврат в вылазку'
+  };
   if (last?.kind==='echo' && activeMine) return echo(mine,true);
   if (last?.kind==='storm' && activeStorm) return storm(orbit,true);
   if (chosen?.id==='cargo' && profile.warehouse) {
@@ -64,6 +70,10 @@ export function nextRoute(profile, last, stormSave) {
       action:'Открыть ночную смену',href:'./expedition.html#drones/night',detail:'Ночная смена',art:'./sluice/night.webp',
       text:'У лифта и маяка один источник питания. Верни пятерых ремонтников при свете фонарей.'};
     if(!profile.warehouseReports?.express)return warehouseRoute(profile);
+  }
+  if (chosen?.id==='chain' && profile.chainLab) {
+    const circuit=circuitRoute(profile);
+    if (circuit) return circuit;
   }
   if (chosen && !hasPrize(profile,chosen.id)) return room(chosen,true);
   const current = resolveLevel(profile.level);

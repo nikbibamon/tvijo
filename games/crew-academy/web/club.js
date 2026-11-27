@@ -1,18 +1,15 @@
+import {crewRequest,errorText} from './crewRequest.js';
 import {heroes,levels} from './catalog.js';
 import {interests,radioPhrases,crewBadges} from './crewLabels.js';
 import {pixelPreview,pixelStudio} from './pixelAvatar.js';
 import {practiceState,relayMap,relayBrief} from './relayMission.js';
 import {beaconInvitation} from './beaconInvite.js';
+import {rescueHref} from './rescue/mission.js';
 import {invitationLinks,openTelegramShare} from './miniApp.js';
 import {state,write,track} from './tvijoService.js';
 import {encodeWorld,worldLevel} from './worlds.js';
 
 const campaignTotal=levels.reduce((n,l)=>n+l.tasks.length,0);
-const errorText={beacon_unavailable:'Другой пилот уже занял пост, приглашение закрыто или связь между карточками недоступна.',invite_missing:'Ссылка приглашения устарела. Можно начать обычную вылазку.',contacts:'Убери из сообщения ссылки и личные контакты.',text_length:'Напиши от 1 до 180 знаков.',relay_role:'Этот шаг выполняет напарник.',relay_phase:'Этот шаг сейчас недоступен. Обнови сигнал.',wrong_tone:'Импульсы не совпали. Сверь порядок и повтори.',relay_missing:'Эта вылазка уже закрыта. Открой канал напарника.',session:'Позывной на этом устройстве больше не активен.',visibility:'Сначала открой свою карточку в рейтинге.',unavailable_player:'Этот позывной уже скрыт.',already_or_limit:'Приглашение уже отправлено или достигнут дневной лимит.',invitation:'Ответ на это приглашение уже получен.',channel_or_cooldown:'Сообщение не отправилось. Проверь, открыт ли канал, и попробуй через три секунды.',proof:'Время входа истекло. Начни вход заново.',challenge:'Открой вход из этого же браузера ещё раз.',account_mismatch:'На этом устройстве выбран другой аккаунт Tvijo.'};
-async function crewRequest(route,data){
- const response=await fetch('./api/crew/'+route,{method:data===undefined?'GET':'POST',credentials:'same-origin',cache:'no-store',headers:data===undefined?{}:{'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data),signal:AbortSignal.timeout(7000)});
- const payload=await response.json();if(!response.ok)throw Error(errorText[payload.error]||'Станция игроков временно недоступна. Попробуй ещё раз.');return payload;
-}
 export function createClub({el,group,para,action,avatar,ii,openModal,isOpen,showWorld,playRelay,toast,playCampaign}){
  let room=null,tab='rank',peer=null,generation=0,busy=false,feedback='',sort='fame',returnPeer=null,offer=null;
  let beaconCode='mine',autoPost=false;
@@ -156,6 +153,9 @@ export function createClub({el,group,para,action,avatar,ii,openModal,isOpen,show
   const out=[el('h3','duet-title','Два пилота. Один сигнал.'),para('Разведчик находит частоту на причале. Инженер получает три импульса по рации и повторяет их на другом конце планеты.'),relayMap(null),
    action('Тренировка с Роботом',()=>playRelay(practiceState()),'btn primary','play'),para('В тренировке ты пробуешь обе роли. В таблицу идут маяки, зажжённые с другим пилотом.','subtle')];
   out.push(action('Пригласить друга на второй пост',()=>open('beacon'),'btn secondary','users'));
+  const rescue=el('a','btn secondary','Линия спасения');
+  rescue.href=rescueHref();
+  out.push(rescue);
   const peers=room.peers.filter(p=>p.status==='accepted');
   if(peers.length){out.push(el('h3','club-head','Сыграть вдвоём'));for(const p of peers)out.push(relayCard(p));}
   else out.push(action('Найти напарника',()=>tabTo(room.me?.visible?'rank':'profile'),'btn secondary','users'));

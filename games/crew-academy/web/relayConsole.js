@@ -1,4 +1,5 @@
 import {beaconTones} from './crewLabels.js';
+import {rescueHref} from './rescue/mission.js';
 import {relayDiagram,toneRibbon,relayBrief,practiceStep} from './relayMission.js';
 
 export function crewTerminal({el,group,ii,action,para,openModal,read,store,launch,home,channel,club,visible}){
@@ -30,7 +31,12 @@ export function crewTerminal({el,group,ii,action,para,openModal,read,store,launc
   const onChannel=()=>channel(run);
   if(run.phase==='done'){
    blocks.push(group('relay-win',ii('award'),el('h3','','Маяк зажжён!'),para(run.practice?'Ты нашёл частоту и настроил приёмник. Теперь попробуй разделить эти роли с другим пилотом.':'Оба поста подтвердили частоту. Ваш совместный результат появился в таблице пилотов.')),
-    group('actions',action(run.practice?'Найти напарника':'Открыть канал напарника',onChannel,'btn primary','users'),action('В штаб',home)));
+    group('actions',action(run.practice?'Найти напарника':'Открыть канал напарника',onChannel,run.practice?'btn primary':'btn secondary','users'),action('В штаб',home)));
+   if(!run.practice){
+    const rescue=el('a','btn primary','В «Линию спасения»');
+    rescue.href=rescueHref(run.other);
+    blocks.at(-1).prepend(rescue);
+   }
   }else if(run.role==='scout'&&run.phase==='scout'){
    blocks.push(el('h3','','Сканер поймал сигнал'),para('Прочитай три импульса на частоте причала.'),action('Считать импульсы',()=>command('scan'),'btn primary','radio'));
   }else if(run.role==='scout'&&run.phase==='found'){

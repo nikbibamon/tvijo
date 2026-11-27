@@ -1,0 +1,50 @@
+.circuit{max-width:1240px;margin:auto;border:1px solid #645373;border-radius:14px;overflow:hidden;background:#201a2c;color:#f7f0ff}
+.circuit-stage{position:relative;aspect-ratio:16/9;background:#1c1730 url(./power-chamber.webp) center/cover}
+.circuit-stage::before{content:"";position:absolute;inset:0;background:linear-gradient(180deg,#140d23be 0,transparent 35%,transparent 80%,#171021a0)}
+.circuit-stage canvas{position:absolute;inset:0;display:block;width:100%;height:100%;pointer-events:none}
+.circuit-head{position:absolute;z-index:1;inset:4% 5% auto;display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.circuit-head h2{font-size:clamp(1.18rem,3.4vw,2.85rem);line-height:1;margin:.22em 0;text-shadow:0 2px 8px #0f0b1b}
+.circuit-head div>span{font-size:.875rem;color:#ffd18d}
+.circuit-lights{display:flex;justify-content:end;gap:6px;flex-wrap:wrap}
+.circuit-lights span{display:block;padding:5px 10px;border:1px solid #847294;border-radius:4px;color:#ddd1ed!important;background:#221b30ee}
+.circuit-lights span::before{content:"";display:inline-block;margin-right:7px;width:.52em;height:.52em;border-radius:50%;background:#8b8099}
+.circuit-lights span.on{border-color:#80cfbb;color:#bef5e7!important}
+.circuit-lights span.on::before{background:#8ef9d5;box-shadow:0 0 6px #71e7c8}
+.circuit-console{padding:clamp(10px,2.6vw,24px);display:grid;gap:12px;background:linear-gradient(125deg,#2a223a,#1b1727)}
+.circuit-brief{display:grid;gap:6px;color:#eaddf1}
+.circuit-brief p{margin:0}
+.circuit-status{border-left:3px solid #a989d1;padding:5px 8px;background:#3b2d4b;color:#f4e4ff;min-height:32px}
+.circuit-status[data-outcome=miss]{border-color:#ffd08c;color:#ffe0ad}
+.circuit-status[data-outcome=won]{border-color:#86e8cf;color:#acffe5}
+.circuit-tools{border:0;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(168px,1fr));gap:8px;min-width:0}
+.circuit-tools legend{padding:0;margin:0 0 7px;font-size:.875rem;color:#d6c4e7}
+.circuit-tools button,.circuit-actions button,.circuit-next a{display:inline-flex;align-items:center;justify-content:center;gap:3px;min-height:44px;padding:8px 13px;background:#312640;border:1px solid #6f5a86;border-radius:7px;color:#f7efff;font:inherit;text-decoration:none;text-align:center;cursor:pointer}
+.circuit-tools button{align-items:start;flex-direction:column;text-align:left;font-size:.875rem}
+.circuit-tools button strong{font-size:1rem;font-weight:700}
+.circuit-tools button[aria-pressed=true]{border-color:#70b7aa;background:#284640}
+.circuit button[hidden],.circuit [hidden]{display:none}
+.circuit button:disabled{opacity:.68;cursor:default}
+.circuit button:focus-visible,.circuit a:focus-visible{outline:2px solid #dabeff;outline-offset:2px}
+.circuit-actions,.circuit-next{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.circuit-actions .circuit-launch,.circuit-next .circuit-launch{background:#ffc875;color:#281729;border-color:#ffd598;font-weight:800}
+.circuit-tries{margin-left:auto;color:#d8c5e6;font-size:.875rem}
+.circuit-back{display:inline-flex;align-items:center;min-height:44px;color:#e6cdff;padding:4px 5px;text-decoration:underline;text-underline-offset:3px}
+.circuit-result{border:1px solid #5aafa1;background:#234039;padding:12px;border-radius:9px;display:flex;justify-content:space-between;align-items:center;gap:10px 18px;flex-wrap:wrap}
+.circuit-result p{margin:3px 0 0;color:#cceadd}
+@media(max-width:520px){
+  .circuit-head{inset:6px 8px auto}
+  .circuit-head h2{max-width:12ch}
+  .circuit-lights{gap:4px;flex-direction:column}
+  .circuit-lights span{padding:2px 5px}
+  .circuit-tools{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .circuit-tools button{padding-inline:8px}
+}
+@media(orientation:landscape) and (max-height:540px) and (min-width:560px){
+  .circuit{display:grid;grid-template-columns:minmax(0,1.44fr) minmax(220px,1fr);align-items:stretch}
+  .circuit-stage{align-self:start}
+  .circuit-head div>span{font-size:.78rem}
+  .circuit-head h2{font-size:clamp(1.15rem,2.8vw,2rem)}
+  .circuit-console{gap:7px;padding:9px}
+  .circuit-tools{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .circuit-tools button{padding:4px 7px}
+}

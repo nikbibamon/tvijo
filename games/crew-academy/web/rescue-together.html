@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#171427">
+  <meta name="description" content="Парная вылазка Академии экипажа. Найдите путь и поднимите капсулу из разлома.">
+  <title>Линия спасения · Академия экипажа</title>
+  <link rel="icon" href="./art/tvijo.png">
+  <link rel="stylesheet" href="./expedition/expedition.css">
+  <link rel="stylesheet" href="./rescue/rescue.css">
+</head>
+<body>
+  <header class="exp-nav">
+    <div class="exp-bar">
+      <a class="exp-brand" href="./#hq"><img src="./art/tvijo.png" alt="">Tvijo</a>
+      <nav class="rescue-nav" aria-label="Академия экипажа">
+        <a href="./#hq">Штаб</a><a href="./#beacon">Парный маяк</a><a href="./#journal">Журнал</a>
+      </nav>
+    </div>
+  </header>
+  <main class="exp-main rescue">
+    <header class="rescue-heading">
+      <div><p>Совместная смена</p><h1>Линия спасения</h1></div>
+      <p id="rescue-partner" hidden></p>
+    </header>
+    <p class="rescue-alert" id="rescue-alert" role="status"></p>
+    <section id="rescue-lobby" class="rescue-lobby" hidden aria-label="Выбор напарника">
+      <h2>Вдвоём через разлом</h2>
+      <p id="rescue-lobby-text"></p>
+      <div id="rescue-crew"></div>
+      <div class="rescue-actions"><a class="rescue-button primary" href="./#beacon">Открыть Парный маяк</a><button type="button" class="rescue-button" data-refresh>Обновить связь</button></div>
+    </section>
+    <section id="rescue-mission" class="rescue-mission" hidden aria-label="Спасательная вылазка">
+      <figure class="rescue-field" aria-labelledby="rescue-field-status">
+        <div class="rescue-view" aria-hidden="true">
+          <div class="rescue-wire upper"><span>Верхняя</span></div>
+          <div class="rescue-wire lower"><span>Нижняя</span></div>
+          <div class="rescue-robot"></div>
+          <div class="rescue-flight"></div>
+          <div class="rescue-capsule"></div>
+          <div class="rescue-marker"></div>
+        </div>
+        <figcaption id="rescue-field-status"></figcaption>
+      </figure>
+      <aside class="rescue-console">
+        <div id="rescue-role" class="rescue-role" hidden>
+          <img alt=""><div><small>Твой пост</small><strong></strong></div>
+        </div>
+        <h2 id="rescue-title" tabindex="-1"></h2>
+        <p id="rescue-task"></p>
+        <div class="rescue-actions" id="rescue-controls"></div>
+        <ol id="rescue-steps" class="rescue-steps" aria-label="Шаги спасения"></ol>
+        <div class="rescue-actions">
+          <button type="button" class="rescue-button" data-refresh>Обновить связь</button>
+          <a class="rescue-button" href="./rescue-together.html">Список напарников</a>
+        </div>
+      </aside>
+    </section>
+    <noscript>Для вылазки включи JavaScript. <a href="./#hq">В штаб</a></noscript>
+  </main>
+  <script type="module" src="./rescue/main.js"></script>
+</body>
+</html>

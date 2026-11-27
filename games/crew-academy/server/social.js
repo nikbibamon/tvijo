@@ -2,6 +2,7 @@ import {heroes,levelById} from '../web/catalog.js';
 import {planTurn} from '../web/strategy.js';
 import {decodeWorld,encodeWorld} from '../web/worlds.js';
 import {interests,radioPhrases,validPixelAvatar,randomTransmission,projectRelay,validBotName} from '../web/crewLabels.js';
+import {rescueView,intendedStep} from '../web/rescue/mission.js';
 
 const crewDay=86400;
 const crewClock=()=>Math.floor(Date.now()/1000);
@@ -89,7 +90,7 @@ async function beaconInfo(db,me,code){
    WHERE p.id=? AND p.visible=1 AND ${crewNoMute}`,id,id,other,id,id);
  if(!me.visible||!peer)return {status:'closed',owner:host};
  const relay=await crewOne(db,'SELECT * FROM crew_relays WHERE mission=? AND low=MIN(?,?) AND high=MAX(?,?)',link.mission,id,other,id,other);
- if(!relay||relay.phase==='done')return {status:'done',owner:host,partner:peer.callsign};
+ if(!relay||relay.phase==='done')return {status:'done',owner:host,partner:peer.callsign,rescuePeer:other};
  return {status:'active',code:link.code,relay:{...projectRelay(relay,id),other,partner:peer.callsign}};
 }
 async function changeBeacon(db,me,data,now){
@@ -155,6 +156,7 @@ async function verifyCrewTicket(token,jwk){
 export async function crewAPI(req,env,path,d){
  const db=env.DB;if(!db)return crewReply({error:'unavailable'},503);
  const auth=await crewAuth(req,db),me=auth?.me,now=crewClock();
+ if(path==='rescue'&&['GET','POST'].includes(req.method))return rescueAPI(req,db,me,d,now);
  if(req.method==='GET'&&path==='room'){
    const q=new URL(req.url).searchParams;
    const telegramBot=env.TVIJO_TELEGRAM_BOT;
@@ -245,6 +247,61 @@ export async function crewAPI(req,env,path,d){
  const sent=await crewOne(db,`INSERT INTO crew_notes(sender,recipient,phrase,world,body,sent) SELECT ?,?,?,?,?,? WHERE EXISTS(SELECT 1 FROM crew_pairs a JOIN crew_players p ON p.id=? AND p.visible=1 JOIN crew_players s ON s.id=? AND s.visible=1 WHERE a.low=? AND a.high=? AND a.status='accepted') AND NOT EXISTS(SELECT 1 FROM crew_notes WHERE sender=? AND sent>?) RETURNING id`,id,other,d.phrase,spec?encodeWorld(spec):null,clean,now,id,other,lo,hi,id,now-3);
  if(sent)await crewRun(db,'DELETE FROM crew_notes WHERE sender=? AND recipient=? AND id NOT IN (SELECT id FROM crew_notes WHERE sender=? AND recipient=? ORDER BY id DESC LIMIT 30)',id,other,id,other);
  return sent?crewReply({ok:true}):crewReply({error:'channel_or_cooldown'},409);
+}
+
+const rescueRosterSQL = `FROM crew_pairs p
+  JOIN crew_beacons b ON b.low=p.low AND b.high=p.high
+  JOIN crew_players l ON l.id=p.low AND l.visible=1
+  JOIN crew_players h ON h.id=p.high AND h.visible=1`;
+const rescueAccessSQL = `p.status='accepted' AND NOT EXISTS (
+  SELECT 1 FROM crew_muted m WHERE (m.owner=p.low AND m.other=p.high)
+     OR (m.owner=p.high AND m.other=p.low))`;
+const rescuePairSQL = `EXISTS (SELECT 1 ${rescueRosterSQL}
+  WHERE ${rescueAccessSQL} AND p.low=? AND p.high=?)`;
+
+async function rescueAPI(req,db,me,d,now){
+ const reading=req.method==='GET';
+ const query=new URL(req.url).searchParams;
+ const other=reading?query.get('other'):d?.other;
+ if(reading&&other===null){
+  if(!me?.visible)return crewReply({eligible:[],signedIn:!!me,visible:false});
+  const rows=await crewAll(db,`SELECT CASE WHEN p.low=? THEN p.high ELSE p.low END AS id,
+    CASE WHEN p.low=? THEN h.callsign ELSE l.callsign END AS callsign, r.phase
+    ${rescueRosterSQL} LEFT JOIN crew_rescues r ON r.low=p.low AND r.high=p.high
+    WHERE ${rescueAccessSQL} AND (p.low=? OR p.high=?)
+    ORDER BY CASE WHEN r.phase='done' THEN 2 WHEN r.phase IS NULL THEN 1 ELSE 0 END,b.finished DESC
+    LIMIT 60`,me.id,me.id,me.id,me.id);
+  return crewReply({eligible:rows,signedIn:true,visible:true});
+ }
+ if(!me)return crewReply({error:'session'},401);
+ if(!me.visible||other===me.id||!crewID(other))return crewReply({error:'visibility'},403);
+ const id=me.id,[lo,hi]=[id,other].sort();
+ const read=()=>crewOne(db,`SELECT r.mission,r.drone,r.lane,r.phase,r.finished,
+    CASE WHEN p.low=? THEN h.callsign ELSE l.callsign END AS partner
+    ${rescueRosterSQL} LEFT JOIN crew_rescues r ON r.low=p.low AND r.high=p.high
+    WHERE ${rescueAccessSQL} AND p.low=? AND p.high=?`,id,lo,hi);
+ let row=await read();
+ if(!row)return crewReply({error:'rescue_pair'},409);
+ const reply=record=>crewReply({rescue:record.mission?rescueView(record,id):null,partner:record.partner});
+ if(reading)return reply(row);
+ if(!crewValid(d,['other','action','mission','lane']))return crewReply({error:'action'},422);
+ if(d.action==='start'){
+  if(d.mission!==undefined||d.lane!==undefined)return crewReply({error:'action'},422);
+  const lanes=['upper','lower'];
+  const lane=lanes[crypto.getRandomValues(new Uint8Array(1))[0]%lanes.length];
+  await crewRun(db,`INSERT OR IGNORE INTO crew_rescues(low,high,mission,drone,lane,phase)
+    SELECT ?,?,?,?,?,'survey' WHERE ${rescuePairSQL}`,lo,hi,crypto.randomUUID(),id,lane,lo,hi);
+ }else{
+  if(!row.mission||row.mission!==d.mission)return crewReply({error:'rescue_phase'},409);
+  const step=intendedStep(row,id,d.action,d.lane);
+  if(step.error)return crewReply({error:step.error},step.status);
+  if(step.duplicate)return reply(row);
+  await crewRun(db,`UPDATE crew_rescues SET phase=?,finished=?
+    WHERE low=? AND high=? AND mission=? AND phase=? AND ${rescuePairSQL}`,
+    step.next,step.next==='done'?now:null,lo,hi,row.mission,row.phase,lo,hi);
+ }
+ row=await read();
+ return row?.mission?reply(row):crewReply({error:'rescue_pair'},409);
 }
 
 async function relayAction(db,id,lo,hi,d,now){
