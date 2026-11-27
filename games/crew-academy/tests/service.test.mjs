@@ -33,3 +33,15 @@ test('click-built drawings debit once per seed, award once and can be replayed a
   await assert.rejects(service.buildWorld('',{...spec,seed:4322}),/25/);
   assert.equal(service.state.worlds.length,before);assert.equal((await service.buildWorld('',spec)).cost,0);
 });
+
+test('old saves start with quiet hints and both checkbox values persist alongside progress',async()=>{
+  const key='tvijo.crew.academy.v1',old=JSON.parse(localStorage.getItem(key));delete old.showHints;
+  localStorage.setItem(key,JSON.stringify(old));
+  const restored=await import('../web/tvijoService.js?legacy-hints');
+  assert.equal(restored.state.showHints,false);assert.deepEqual(restored.state.completed,old.completed);
+  await restored.setShowHints(true);
+  const on=await import('../web/tvijoService.js?reload-hints-on');assert.equal(on.state.showHints,true);
+  await on.setShowHints(false);
+  const off=await import('../web/tvijoService.js?reload-hints-off');assert.equal(off.state.showHints,false);
+  assert.equal(off.state.balance,old.balance);assert.deepEqual(off.state.stages,old.stages);
+});

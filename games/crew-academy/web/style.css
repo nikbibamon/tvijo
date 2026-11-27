@@ -130,3 +130,23 @@ dialog:has(.blueprint-view),dialog:has(.medal-grid){width:min(650px,calc(100vw -
 @media(max-width:800px){.crew-doors{grid-template-columns:1fr}.studio-door{min-height:73px;padding:10px}.studio-door strong{font-size:.97rem}.studio-door small{font-size:.73rem}.studio-door img{width:36px;height:36px}}
 @media(max-width:520px){.studio-doors{grid-template-columns:1.12fr 1fr;gap:6px}.studio-door{gap:3px}.studio-door>i{display:none}.landscapes{grid-template-columns:repeat(3,minmax(0,1fr))}.landscapes .blueprint-pick{display:flex;justify-content:flex-start;padding:3px;min-height:40px;font-size:.8rem}.landscapes img{width:28px;height:30px;border-radius:5px}.medal-grid{grid-template-columns:1fr}.work-preview{aspect-ratio:3.55}.work-buy{position:sticky;bottom:-1px;background:#221c2b;padding:8px 0 4px}.work-buy .btn{font-size:.86rem}.blueprint-pick{min-height:40px}.game-status #pilot-toggle span{font-size:.66rem}}
 @media(max-width:370px){.game-status #pilot-toggle:not(.pilot-on) span{display:none}.trophies-door img{width:28px;height:28px}}
+
+/* A small key on the artifact matches the field action on a keyboard and on touch. */
+.game-controls #grab kbd{display:inline-grid;place-items:center;flex:none;width:1.55rem;height:1.5rem;padding:0;border:1px solid #edc780;border-bottom-width:3px;border-radius:5px;background:#302434;color:#fff0c9;font:700 .94rem/1 Rubik,sans-serif}
+.mission-tools{margin-top:10px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:0 12px}
+.mission-tools details{flex:1 1 130px;color:var(--muted);font-size:.85rem}
+.mission-tools summary,.result-more summary{cursor:pointer;padding:10px 0}
+.hint-check{display:inline-flex;align-items:center;gap:8px;min-height:42px;cursor:pointer;color:#dccfe6;font-size:.85rem;line-height:1.2}
+.hint-check input{width:17px;height:17px;margin:0;accent-color:#e9c178}
+.field-overlay .hint-check{margin-top:6px}
+.quiet-flight #field-feedback{display:none}
+#toast.inline-notice{position:static;transform:none;box-shadow:none;margin:5px 0 0;max-width:100%;width:auto;background:none;border:0;text-align:inherit;padding:4px 0;color:#f5d79e;font-size:.85rem}
+.result-strip{display:flex;align-items:center;gap:10px 16px;flex-wrap:wrap;padding:10px 0;color:#ffde99}
+.result-title{display:flex;gap:7px;align-items:center}.result-title h2{font-size:1.05rem}
+.result-more{color:var(--muted);font-size:.85rem}.result-more[open]{flex-basis:100%}.result-more .actions{margin:0}
+#field.compact-result .game-controls,#field.compact-result .tasks-panel{display:none}
+@media(max-width:520px){.game-controls #grab kbd{width:1.4rem;height:1.35rem;font-size:.86rem}.mission-tools{gap:0 5px}.mission-tools .hint-check{font-size:.76rem}.result-strip{gap:6px 10px}.result-strip .btn{font-size:.83rem}}
+@media(orientation:landscape) and (max-height:540px){.result-strip{padding:3px 8px}.result-more[open]{background:#1b1726;padding:0 8px}}
+
+.quiet-flight #field-progress,#field-sparks{white-space:nowrap}
+#field.compact-result .flight-options{visibility:hidden}

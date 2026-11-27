@@ -27,7 +27,9 @@ async function play(level=levels[0],hero='captain'){
   const canvas=doc.querySelector('#stage');canvas.clientWidth=390;canvas.clientHeight=350;
   let latest,translation,elapsed=100,frame=0;const scheduled=new Map();
   // Read the normal renderer's full-body sprite position. The controller exposes no teleport or test hooks.
+  const labels=[];canvas.getBoundingClientRect=()=>({left:0,top:0});
   const ctx=new Proxy({
+    clearRect(){labels.length=0;},fillText(value){labels.push(value);},
     translate(x,y){translation={x,y};},
     drawImage(img,...args){if(img.src.includes('/runners/')&&args.length===8)latest={...translation,pose:args[0]/128};},
     createLinearGradient:()=>({addColorStop(){}}),createRadialGradient:()=>({addColorStop(){}}),
@@ -50,10 +52,13 @@ async function play(level=levels[0],hero='captain'){
       await flush();
     }
   }
-  function key(code,down=true){const e=new Event(down?'keydown':'keyup',{cancelable:true});Object.assign(e,{code});window.dispatchEvent(e);}
+  function key(code,down=true,keyValue){const e=new Event(down?'keydown':'keyup',{cancelable:true});Object.assign(e,{code,key:keyValue});window.dispatchEvent(e);}
   function tap(id,n=2){pads[id].pointer('pointerdown',n);pads[id].pointer('pointerup',n);}
   await advance(20);
   return {pads,key,tap,advance,field,go:()=>doc.querySelector('#field-target').onclick(),
+    get labels(){return [...labels];},get label(){return doc.querySelector('#grab span').textContent;},
+    get message(){return doc.querySelector('#field-feedback').textContent;},
+    tapScene:(clientX,clientY)=>canvas.onpointerdown({clientX,clientY}),
     get actor(){return latest;},get finished(){return finish;},get orders(){return orders;},get falls(){return falls;},get relay(){return relay;}};
 }
 
@@ -161,4 +166,25 @@ test('player can take over the demonstration, then resume without repeating a co
   p.key('ArrowLeft');p.key('ArrowLeft',false);const before=p.orders;await p.advance(2000);
   assert.equal(p.orders,before);assert.equal(p.finished,0);
   p.field.startPilot();await p.advance(12000);assert.equal(p.finished,1);assert.equal(p.orders,l.tasks.length);
+});
+
+test('E takes the marked spark within reach, once and without issuing an order',async()=>{
+  await service.setShowHints(false);const p=await play();
+  p.key('KeyD');await p.advance(365);p.key('KeyD',false);
+  assert.equal(p.label,'Взять искру');assert.ok(p.labels.includes('E'));
+  p.key('KeyE');p.key('KeyE',false);await p.advance(150);
+  assert.deepEqual(service.state.stages.dock.sparks,[0]);assert.equal(p.orders,0);
+  assert.equal(p.message,'');assert.equal(p.label,'Закрепить мост');assert.ok(!p.labels.includes('E'));
+  await p.field.issue('bridge');await p.advance(20);assert.ok(p.labels.includes('E'));
+  p.key('Unidentified',true,'е');p.key('Unidentified',false,'е');await p.advance(4000);
+  assert.equal(p.finished,1);assert.ok(!p.labels.includes('E'),'a collected artifact cannot keep its action marker');
+});
+
+test('touching a visible spark steers to it and an enabled hint confirms pickup',async()=>{
+  await service.setShowHints(true);const p=await play();
+  // At the starting camera position the first spark is at (176,324) in the 960×448 scene.
+  p.tapScene(176*350/448,324*350/448);await p.advance(950);
+  assert.deepEqual(service.state.stages.dock.sparks,[0]);assert.equal(p.orders,0);
+  assert.match(p.message,/Искра найдена/);assert.ok(p.actor.x<160,'the requested pickup stops the assisted walk');
+  p.field.leave();await service.setShowHints(false);
 });

@@ -3,10 +3,10 @@ import {planTurn,tacticalDigest,resolveLevel,intent,readyTasks} from './strategy
 import {makeSpec,cleanSpec,worldLevel,routeReachable,encodeWorld} from './worlds.js';
 import {flightAwards,awardAvailable} from './flightAwards.js';
 const STORAGE='tvijo.crew.academy.v1', lock='tvijo.crew.wallet.v1';
-const initial=()=>({v:1,hero:'captain',tier:'standard',balance:100,level:'dock',stages:{},completed:[],worlds:[],claimedAwards:[],worldDrawn:false,crewMedal:false,log:[],cache:[],receipts:[],tallies:{orders:0,clear:0,chains:0,voice:0,verified:0,spend:0,falls:0,fallback:0,cache:0},observed:[],digest:null,voice:false,micConsent:false,pilot:null});
+const initial=()=>({v:1,hero:'captain',tier:'standard',balance:100,level:'dock',stages:{},completed:[],worlds:[],claimedAwards:[],worldDrawn:false,crewMedal:false,log:[],cache:[],receipts:[],tallies:{orders:0,clear:0,chains:0,voice:0,verified:0,spend:0,falls:0,fallback:0,cache:0},observed:[],digest:null,voice:false,showHints:false,micConsent:false,pilot:null});
 let memoryState=null;
 function read(){
-  try {const s=JSON.parse(localStorage.getItem(STORAGE));if(s?.v===1&&Number.isInteger(s.balance)&&s.balance>=0&&heroOrder.includes(s.hero)&&Object.hasOwn(tiers,s.tier)&&resolveLevel(s.level)&&Array.isArray(s.completed)&&Array.isArray(s.worlds)){const n=initial();return {...n,...s,tallies:{...n.tallies,...s.tallies}};}}catch{}
+  try {const s=JSON.parse(localStorage.getItem(STORAGE));if(s?.v===1&&Number.isInteger(s.balance)&&s.balance>=0&&heroOrder.includes(s.hero)&&Object.hasOwn(tiers,s.tier)&&resolveLevel(s.level)&&Array.isArray(s.completed)&&Array.isArray(s.worlds)){const n=initial();return {...n,...s,showHints:s.showHints===true,tallies:{...n.tallies,...s.tallies}};}}catch{}
   return memoryState||initial();
 }
 export let state=read();
@@ -24,6 +24,7 @@ let queue=Promise.resolve();export function write(fn){
 window.addEventListener('storage',e=>{if(e.key===STORAGE){state=read();bus.dispatchEvent(new Event('change'));}});
 export function addLines(lines){chat=chat.concat(lines).slice(-70);bus.dispatchEvent(new Event('chat'));}
 export function setHero(id){return write(s=>{if(heroOrder.includes(id))s.hero=id;});}
+export function setShowHints(on){return write(s=>{s.showHints=on===true;});}
 export function setTier(t){return write(s=>{if(Object.hasOwn(tiers,t))s.tier=t;});}
 export function setLevel(l){return write(s=>{s.level=l.id;s.digest=null;});}
 export function complete(id){

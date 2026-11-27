@@ -1,5 +1,5 @@
 import {heroes,heroOrder,tiers,levels,moves} from './catalog.js';
-import {state,chat,bus,write,note,collectSpark,setHero,setLevel,setTier,complete,currentLevel,doneFor,isOpen,resetStage,addLines,speech,dictate,stopVoice,track,pilot,pilotReport,localFunnel,turn,fieldOrder,buildWorld,importWorld,grantDemo,rewind,claimAward} from './tvijoService.js';
+import {state,chat,bus,write,note,collectSpark,setHero,setLevel,setTier,setShowHints,complete,currentLevel,doneFor,isOpen,resetStage,addLines,speech,dictate,stopVoice,track,pilot,pilotReport,localFunnel,turn,fieldOrder,buildWorld,importWorld,grantDemo,rewind,claimAward} from './tvijoService.js';
 import {readyTasks,tacticalDigest,resolveLevel} from './strategy.js';
 import {worldLevel,encodeWorld,decodeWorld} from './worlds.js';
 import {icon,populate} from './icons.js';
@@ -17,7 +17,8 @@ const group=(cls,...children)=>{const g=el('div',cls);g.append(...children);retu
 const para=(t,cls='')=>el('p',cls,t);
 const modal=$('#modal'),body=$('#modal-body'),radio=$('#radio');
 let page='hq',mapId=state.level,busy=false,voiceDraft=false,spokenInto='',toastTimer,scoreText='',lastHint='',lastShownStage='',lastMessageList=null,activeModal='';
-let activeRelay=null,mobileRadio=false;
+let activeRelay=null,mobileRadio=false,finishedLevel=null,lastHints;
+const notice=$('#toast');
 const phoneLayout=matchMedia('(max-width: 800px), (orientation: landscape) and (max-height: 540px)');
 const fieldLevel=()=>activeRelay?relayStage(activeRelay.role):currentLevel();
 function fieldRadio(open){
@@ -30,7 +31,26 @@ function fieldRadio(open){
 }
 phoneLayout.addEventListener('change',()=>{if(mobileRadio&&!phoneLayout.matches)fieldRadio(false);});
 const maps={hq:['Ночной штаб','Командный мостик экспедиции Tvijo'],map:['Карта сектора','Выбери локацию и узнай, какой команде она под силу.'],journal:['Журнал смены','Приказы, решения экипажа и результат каждого шага.']};
-function toast(t){$('#toast').textContent=t;clearTimeout(toastTimer);toastTimer=setTimeout(()=>$('#toast').textContent='',3300);}
+function toast(t){
+ const overlay=$('#field-overlay');
+ const inline=modal.open?body:page==='field'&&!overlay.hidden?overlay.firstElementChild:page==='field'?$('#field .field-left'):$('#'+page);
+ const host=state.showHints?document.body:inline;host.append(notice);notice.classList.toggle('inline-notice',!state.showHints);
+ notice.textContent=t;clearTimeout(toastTimer);toastTimer=setTimeout(()=>notice.textContent='',3300);
+}
+function hintOption(){
+ const input=el('input');input.type='checkbox';input.dataset.hints='';input.checked=state.showHints;
+ const label=el('label','hint-check');label.append(input,document.createTextNode('Всплывающие подсказки'));return label;
+}
+document.addEventListener('change',e=>{if(e.target.matches('input[data-hints]'))setShowHints(e.target.checked);});
+function syncHints(){
+ for(const input of document.querySelectorAll('input[data-hints]'))input.checked=state.showHints;
+ if(lastHints===state.showHints)return;
+ lastHints=state.showHints;document.body.classList.toggle('quiet-flight',!state.showHints);
+ $('#field-brief').open=state.showHints;
+ clearTimeout(toastTimer);notice.textContent='';document.body.append(notice);
+ $('#field-feedback').textContent='';
+ if(finishedLevel&&page==='field')showFinish(finishedLevel);
+}
 function status(t){lastHint=t;$('#radio-state').textContent=t;}
 function openModal(title,content,id=''){activeModal=id;$('#modal-title').textContent=title;body.replaceChildren(...(Array.isArray(content)?content:[content]));if(!modal.open)modal.showModal();if(page==='field')field.suspend(true);}
 function close(){if(modal.open)modal.close();}
@@ -79,12 +99,13 @@ function fieldHud(){
  $('#field-sparks').hidden=!!activeRelay;
  $('#mic-field').setAttribute('aria-label',activeRelay?'Канал напарника':'Открыть рацию экипажа');
  $('#mic-field span').textContent=activeRelay?'Напарник':'Рация';
- if(activeRelay){const r=activeRelay;$('#field-progress').textContent=r.role==='scout'?'Пост разведчика':'Пост инженера';$('#field-objective').textContent=relayBrief(r);
-  $('#field-tasks').replaceChildren(relayDiagram(r,{el,group,ii}));$('#pair-side').replaceChildren(group('pair-side-crew',avatar(state.hero),ii('radio'),r.practice?avatar('robot'):ii('users')),el('h2','','Парный маяк'),para((r.practice?'Тренировка с Роботом':'Напарник · '+r.partner)),relayMap(r),action(r.practice?'Как пройти':'Канал напарника',()=>fieldRadio(true),'btn secondary','radio'));$('#grab span').textContent='Реле';$('#grab').title='Включить реле (E)';return;}
+ if(activeRelay){const r=activeRelay,progress=$('#field-progress');progress.textContent=r.role==='scout'?'Пост разведчика':'Пост инженера';progress.title=progress.textContent;progress.setAttribute('aria-label',progress.title);$('#field-objective').textContent=relayBrief(r);
+  $('#field-tasks').replaceChildren(relayDiagram(r,{el,group,ii}));$('#pair-side').replaceChildren(group('pair-side-crew',avatar(state.hero),ii('radio'),r.practice?avatar('robot'):ii('users')),el('h2','','Парный маяк'),para((r.practice?'Тренировка с Роботом':'Напарник · '+r.partner)),relayMap(r),action(r.practice?'Как пройти':'Канал напарника',()=>fieldRadio(true),'btn secondary','radio'));return;}
  $('#field-sparks').textContent='✦ '+(state.stages[state.level]?.sparks?.length||0)+'/3';$('#field-sparks').setAttribute('aria-label','Собрано искр '+(state.stages[state.level]?.sparks?.length||0)+' из трёх');
- const l=currentLevel(),d=doneFor(),ready=readyTasks(l,d);const actionLabel=ready.length?moves[ready[0]].name:'Взять капсулу';$('#grab span').textContent=actionLabel;$('#grab').title=actionLabel+' (E)';$('#field-progress').textContent=l.tag+' · '+d.length+'/'+l.tasks.length;$('#field-objective').textContent=!ready.length&&l.id==='mine'?'Дрон в безопасности. Нажми «Взять капсулу» — у правого края дрон принесёт её тебе.':ready.length?(l.id==='dock'?'Нажми «Закрепить мост» или дай Роботу приказ в рацию. Капсула на платформе справа.':l.desc):'Прыгни к метке «Капсула» или нажми «Взять капсулу» для автопрыжка.';
+ const l=currentLevel(),d=doneFor(),ready=readyTasks(l,d);const progress=$('#field-progress'),count=d.length+'/'+l.tasks.length;progress.textContent=state.showHints?l.tag+' · '+count:count;progress.title='Поручения экипажа · '+count;progress.setAttribute('aria-label',progress.title);$('#field-objective').textContent=!ready.length&&l.id==='mine'?'Нажми E или коснись «Взять капсулу». У правого края её принесёт дрон.':ready.length?(l.id==='dock'?'Нажми «Закрепить мост» или дай Роботу приказ в рацию. Капсула на платформе справа.':l.desc):'Нажми E или коснись капсулы. Герой подойдёт и заберёт её.';
  $('#field-tasks').replaceChildren(...l.tasks.map(([id])=>{const m=moves[id],cls=d.includes(id)?'done':ready.includes(id)?'ready':'locked';const b=action((d.includes(id)?'✓ ':'')+m.name,()=>{if(d.includes(id))toast('Шаг уже подтверждён.');else if(ready.includes(id)){$('#stage').focus({preventScroll:true});field.issue(id);}else toast('Сначала: '+l.tasks.find(t=>t[0]===id)[1].map(n=>moves[n].name).join(', '));},cls);return b;}));}
 function render(){
+ syncHints();
  $('#balance').textContent=state.balance;$('#wallet').setAttribute('aria-label','Кошелёк: '+state.balance+' демо-кредитов');const sound=$('#sound');sound.replaceChildren(ii(state.voice?'sound':'mute'));sound.setAttribute('aria-label',state.voice?'Выключить озвучку':'Включить озвучку');sound.setAttribute('aria-pressed',state.voice);
  const info=page==='field'?[fieldLevel().name,fieldLevel().tag+' · '+heroes[state.hero].name]:maps[page];$('#page-title').textContent=info[0];$('#page-sub').textContent=info[1];
  for(const nav of document.querySelectorAll('[data-page]')){const on=nav.dataset.page===page;nav.classList.toggle('active',on);if(on)nav.setAttribute('aria-current','page');else nav.removeAttribute('aria-current');}
@@ -99,6 +120,7 @@ function render(){
 }
 function go(next,hash=true){
  if(!['hq','map','field','journal'].includes(next))next='hq';if(modal.open)close();if(page==='field'&&next!=='field'){field.leave();activeRelay=null;mobileRadio=false;}document.body.classList.toggle('in-field',next==='field');document.body.classList.toggle('field-radio-open',next==='field'&&mobileRadio);document.body.classList.toggle('pair-running',next==='field'&&!!activeRelay);if(next!==page){stopVoice();status('');voiceDraft=false;}
+ finishedLevel=null;$('#field-result').hidden=true;$('#field').classList.remove('compact-result');
  page=next;for(const n of ['hq','map','field','journal'])$('#'+n).hidden=n!==page;
  if(page==='hq'||page==='field'){const dest=page==='hq'?$('#radio-home'):$('#radio-field');if(radio.parentElement!==dest)dest.append(radio);radio.hidden=false;}else radio.hidden=true;
  if(page==='map')track('open_map');if(page==='field'){track('field_start');field.start(fieldLevel(),state.hero);field.suspend(mobileRadio||modal.open);if(!mobileRadio&&!modal.open)$('#stage').focus({preventScroll:true});}
@@ -108,14 +130,34 @@ function go(next,hash=true){
 async function launch(l,replay=false){if(activeRelay){activeRelay=null;field.forget();}if(!isOpen(l)){toast('Сначала пройди предыдущую миссию.');return;}if(replay){await resetStage(l);field.forget();}else if(state.level!==l.id){await setLevel(l);field.forget();}if(lastShownStage!==l.id){lastShownStage=l.id;const completedTasks=doneFor(l.id),remaining=readyTasks(l,completedTasks);const brief=!completedTasks.length?l.desc:remaining.length?'Экипаж уже на маршруте. Следующее поручение — '+moves[remaining[0]].name.toLowerCase()+'.':'Переправа готова. Забирай капсулу!';addLines([{who:l.tasks[0][0]==='bridge'?'robot':'tvijo',text:brief}]);}go('field');}
 function continueGame(){const l=currentLevel();if(state.completed.includes(l.id)){const next=levels.find(x=>isOpen(x)&&!state.completed.includes(x.id));return launch(next||l,!next);}return launch(l);}
 function launchRelay(run){activeRelay=run;mobileRadio=false;field.forget();go('field');}
-function overlay(title,txt,controls){const card=group('',el('h2','',title),para(txt),group('actions',...controls));$('#field-overlay').replaceChildren(card);$('#field-overlay').hidden=false;}
+function overlay(title,txt,controls,option){const card=group('',el('h2','',title),para(txt),group('actions',...controls));if(option)card.append(option);$('#field-overlay').replaceChildren(card);$('#field-overlay').hidden=false;}
+function showFinish(l){
+ const idx=levels.indexOf(l),next=idx>=0?levels[idx+1]:null;
+ const title=l.id==='beacon'?'Маяк ответил!':'Капсула на борту!';
+ const advance=next?action('Дальше: '+next.name,()=>launch(next),'btn primary','play'):null;
+ const make=action('Нарисовать мир',openWorkshop,advance?'btn secondary':'btn primary','spark');
+ const extras=[];
+ if(!next)extras.push(action('Журнал смены',()=>go('journal'),'btn secondary'));
+ const prize=flightAwards.find(a=>a.stage===l.id&&!state.claimedAwards.includes(a.id));
+ if(prize)extras.push(action('Награда · +'+prize.credits+' демо-кр.',openAwards,'btn secondary','award'));
+ if(l.spec)extras.push(action('Поделиться миром',()=>worldResult({level:l,spec:l.spec,cost:0}),'btn secondary','orbit'));
+ extras.push(action('Пригласить друга',()=>club.open('invite'),'text-btn','users'));
+ const strip=$('#field-result');strip.hidden=state.showHints;
+ $('#field').classList.toggle('compact-result',!state.showHints);
+ if(state.showHints){
+   const description=l.id==='dock'?'Теперь доступен конструктор. Можно собрать свой мир или исследовать Кристальный разлом.':'Экипаж выполнил план. Результат записан в журнал.';
+   overlay(title,description,[...(advance?[advance]:[]),make,...extras]);return;
+ }
+ $('#field-overlay').hidden=true;
+ const more=el('details','result-more');more.append(el('summary','','Ещё'),group('actions',...(advance?[make]:[]),...extras));
+ const result=el('h2','',title);result.setAttribute('role','status');
+ strip.replaceChildren(group('result-title',ii('check'),result),advance||make,more);
+}
 const field=createField({
  spark:collectSpark,relayTerminal:()=>terminal.arrive(),order:async(level,id,automatic)=>{const r=await fieldOrder(level,id,automatic);if(r?.reply&&page==='field'&&state.level===level&&!activeRelay)speech(r.reply.lines[0].text);return r;},fell:n=>{write(s=>{s.tallies.falls++;note(s,'field','Возвращение на контрольную точку · бесплатно');});if(n===2)addLines([{who:'plane',text:'Вижу точку посадки! Коснись платформы или подойди и нажми прыжок. Подскажу бесплатно.'}]);},
  won:async id=>{const ok=await complete(id);if(ok)track('capsule');return ok;},
- finish:l=>{const idx=levels.indexOf(l),next=idx>=0?levels[idx+1]:null;const prize=flightAwards.find(a=>a.stage===l.id&&!state.claimedAwards.includes(a.id));const controls=[action('Нарисовать мир',openWorkshop,'btn primary','spark')];if(next)controls.push(action('Дальше: '+next.name,()=>launch(next),'btn secondary'));else controls.push(action('Журнал смены',()=>go('journal'),'btn secondary'));if(prize)controls.push(action('Награда · +'+prize.credits+' демо-кр.',openAwards,'btn secondary','award'));
-   if(l.spec)controls.push(action('Поделиться миром',()=>worldResult({level:l,spec:l.spec,cost:0}),'btn secondary','orbit'));
-   controls.push(action('Пригласить друга',()=>club.open('invite'),'text-btn','users'));overlay(l.id==='beacon'?'Маяк ответил!':'Капсула на борту!',l.id==='dock'?'Теперь доступен конструктор. Можно собрать свой мир или исследовать Кристальный разлом.':'Экипаж выполнил план. Результат записан в журнал.',controls);addLines([{who:'captain',text:l.id==='beacon'?'«Станция вызывает экипаж!» Мы всё-таки нашли источник. Хорошая работа.':'Капсула у нас. Следующий маршрут выбираешь ты.'}]);},
- pauseMenu:(resume,warp)=>{const options=[action('Продолжить',resume,'btn primary','play'),action('В штаб',()=>go('hq'))];if(!activeRelay&&!state.completed.includes(state.level))options.push(action('К реле · 10 демо',async e=>{e.currentTarget.disabled=true;if(await rewind(state.level))warp();else{toast('Недостаточно демо-кредитов. Продолжить можно бесплатно.');e.target.disabled=false;}}));overlay('Пауза','Окно связи приостановлено.',options);}
+ finish:l=>{finishedLevel=l;showFinish(l);addLines([{who:'captain',text:l.id==='beacon'?'«Станция вызывает экипаж!» Мы всё-таки нашли источник. Хорошая работа.':'Капсула у нас. Следующий маршрут выбираешь ты.'}]);},
+ pauseMenu:(resume,warp)=>{const options=[action('Продолжить',resume,'btn primary','play'),action('В штаб',()=>go('hq'))];if(!activeRelay&&!state.completed.includes(state.level))options.push(action('К реле · 10 демо',async e=>{const b=e.currentTarget;b.disabled=true;if(await rewind(state.level))warp();else{toast('Недостаточно демо-кредитов. Продолжить можно бесплатно.');b.disabled=false;}}));overlay('Пауза','Окно связи приостановлено.',options,hintOption());}
 });
 async function send(){
  if(busy)return;const sentFrom=page==='field'?state.level:null,raw=$('#command').value.trim();if(!raw)return;busy=true;const voice=voiceDraft&&raw===spokenInto;voiceDraft=false;spokenInto='';$('#command').value='';$('#radio-form button[type=submit]').disabled=true;status('Экипаж отвечает…');
@@ -145,7 +187,7 @@ $('#wallet').onclick=wallet;
 function consentControl(changed){
  const wrap=el('label','check-line'),input=el('input');input.type='checkbox';input.checked=state.pilot===true;input.onchange=async()=>{await pilot(input.checked);if(changed)changed();};wrap.append(input,document.createTextNode('Участвовать в тесте: передавать названия игровых действий и секунду первого клика. Без текста и аудиозаписей.'));return wrap;
 }
-function settings(){openModal('Настройки',[group('fact-row',document.createTextNode('Озвучка героев'),action(state.voice?'Включена':'Выключена',async()=>{await write(s=>{s.voice=!s.voice;});if(!state.voice)window.speechSynthesis?.cancel();settings();},'chip')),consentControl(),para('Прогресс и демо-баланс сохраняются на этом устройстве. Ссылкой на мир передаются только параметры ландшафта.','subtle')],'settings');}
+function settings(){openModal('Настройки',[hintOption(),group('fact-row',document.createTextNode('Озвучка героев'),action(state.voice?'Включена':'Выключена',async()=>{await write(s=>{s.voice=!s.voice;});if(!state.voice)window.speechSynthesis?.cancel();settings();},'chip')),consentControl(),para('Прогресс и демо-баланс сохраняются на этом устройстве. Ссылкой на мир передаются только параметры ландшафта.','subtle')],'settings');}
 $('#settings').onclick=settings;
 function openWorkshop(){
  track('workshop_open');workshop({el,group,picture,action,openModal,startMic,wallet,onDock:()=>launch(levels[0]),play:async(result,auto)=>{
