@@ -1,0 +1,8 @@
+export default {async fetch(request,env){
+ const p=new URL(request.url).pathname;
+ if(p.startsWith('/api/')){try{return await handleAPI(request,env);}catch{return replyJSON({error:'unavailable'},503);}}
+ if(!['GET','HEAD'].includes(request.method))return new Response('Method not allowed',{status:405});
+ const record=bundledAssets[p==='/'?'/index.html':p];if(!record||!Array.isArray(record))return new Response('Not found',{status:404});
+ const [type,bytes]=record,headers={'Content-Type':type,'X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Cache-Control':p.startsWith('/art/')||p.startsWith('/fonts/')?'public, max-age=86400':'no-cache'};
+ return new Response(request.method==='HEAD'?null:Uint8Array.from(atob(bytes),c=>c.charCodeAt(0)),{headers});
+}};
