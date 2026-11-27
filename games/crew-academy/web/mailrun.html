@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#182523">
+  <meta name="description" content="Гуманоид и гоблин Шпуль несут три горячих каравая на Нижний остров. Рисованная приключенческая глава Tvijo.">
+  <title>Почта Нижнего острова · Tvijo</title>
+  <link rel="icon" href="./art/tvijo.png">
+  <link rel="stylesheet" href="./mailrun/game.css">
+</head>
+<body>
+  <main id="game">
+    <header class="mast">
+      <div class="identity"><a href="./#hq" class="home" aria-label="В штаб Tvijo">Tvijo</a><h1>Почта Нижнего острова</h1></div>
+      <div class="tools">
+        <button id="map-button" type="button">Маршрут</button>
+        <button id="help-button" type="button" aria-label="Как играть" title="Как играть">?</button>
+      </div>
+    </header>
+    <section class="surface" aria-label="Игровая сцена">
+      <div id="stage" class="stage">
+        <div id="plane" class="plane">
+          <div id="art" class="art" role="img" aria-label="Пекарня под часами"></div>
+          <div id="spots"></div>
+          <div id="socks" class="socks" hidden aria-label="Пара носков на верёвке"><b></b><b></b></div>
+        </div>
+        <span id="effect" aria-hidden="true"></span>
+      </div>
+    </section>
+    <section class="desk" aria-labelledby="room-name">
+      <div class="story">
+        <div class="roomline"><h2 id="room-name">Пекарня под часами</h2><span id="counter"></span></div>
+        <p id="reply" role="status" aria-live="polite"></p>
+        <p id="goal"></p>
+      </div>
+      <div id="choices" class="choices" role="group" aria-label="Предметы и действия"></div>
+    </section>
+  </main>
+  <dialog id="dialog"><div class="dialog-head"><h2 id="dialog-title"></h2><button id="close" type="button" aria-label="Закрыть">×</button></div><div id="dialog-body"></div></dialog>
+  <noscript>Для игры включите JavaScript в браузере.</noscript>
+  <script type="module" src="./mailrun/game.js"></script>
+</body></html>
