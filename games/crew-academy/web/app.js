@@ -2,6 +2,7 @@ import {heroes,heroOrder,tiers,levels,moves} from './catalog.js';
 import {state,chat,bus,write,note,collectSpark,setHero,setLevel,setTier,setShowHints,complete,currentLevel,doneFor,isOpen,resetStage,enterFirstShift,addLines,speech,silenceRadio,toggleVoice,dictate,stopVoice,track,pilot,pilotReport,localFunnel,turn,fieldOrder,buildWorld,importWorld,grantDemo,rewind,claimAward} from './tvijoService.js';
 import {readRoute,markRoute,nextRoute,stormKey} from './crewRoute.js';
 import {gearLabel} from './echo/rules.js';
+import {modes as sluiceModes, reportLine as sluiceReportLine} from './sluice/rules.js';
 import {beginRadioAttempt,radioAttempt} from './tvijoService.js';
 import {drawBlueprint} from './sceneArt.js';
 import {bindVoiceControls} from './voiceControls.js';
@@ -111,6 +112,7 @@ function homeBrief(){
  $('#bridge-dock').textContent=state.completed.includes('dock')?'Капсула на борту':'Первая смена';
  $('#bridge-rift').textContent='Находки · '+riftRooms.filter(def=>hasPrize(state,def.id)).length+' / '+riftRooms.length;
  $('#bridge-station').textContent='Находки · '+stationRooms.filter(def=>hasPrize(state,def.id)).length+' / '+stationRooms.length;
+ $('#bridge-sluice').textContent=hasPrize(state,'drones-night')?'Обе смены пройдены':hasPrize(state,'drones')?'Открыта ночная смена':'Вывести пятерых дронов';
  $('#bridge-mine').textContent=hasPrize(state,'echo-mine')?'Чёрный ящик в рюкзаке':'Спасение дрона';
  $('#pick-portrait').src='./art/crew/'+state.hero+'.webp';$('#pick-name').textContent=hero.name;
  $('#pick-hero').setAttribute('aria-label','Выбрать героя. Сейчас '+hero.name);
@@ -138,6 +140,7 @@ function renderMap(){const pins=$('#map-pins'),pos=[[12,73],[31,54],[51,63],[71,
     if(prizes.length)items.push(para('В рюкзаке — '+prizes.join(', ')+'.','rift-loot'));
     items.push(group('actions',roomLink('Войти в «Алфавит маяка»','alphabet'),roomLink('Станция времени','station'),roomLink('Все комнаты')));
   }
+  if(l.id==='greenhouse')items.push(roomLink('Ремонтный шлюз','drones','btn primary'));
   if(l.id==='mine'){
     const entry=el('a','btn primary',hasPrize(state,'echo-mine')?'Открыть спасение':'Найти дрон в штольне');
     entry.href='./echo-mine.html';items.splice(4,0,entry);
@@ -165,6 +168,15 @@ function drawGraph(){
  $('#plan-json').textContent=JSON.stringify(l.tasks.map(([task,requires])=>({agent:heroes[moves[task].actor].name,task,requires,status:done.includes(task)?'done':readyTasks(l,done).includes(task)?'ready':'waiting'})),null,2);
 }
 function journal(){
+ const sluice=$('#sluice-journal');
+ const shifts=Object.values(state.sluiceReports||{}).filter(r=>r && Object.hasOwn(sluiceModes,r.mode)).sort((a,b)=>b.at-a.at);
+ sluice.hidden=!shifts.length;
+ if(shifts.length){
+   $('#sluice-journal-lines').replaceChildren(...shifts.map(r=>{const p=para('');p.append(el('strong','',sluiceModes[r.mode]+' · 5 из 5. '),document.createTextNode(sluiceReportLine(r)));return p;}));
+   sluice.querySelector('img').src='./sluice/'+(shifts[0].mode==='night'?'night':'hangar')+'.webp';
+   $('#mine-journal').before(sluice);
+   if((state.echoMineReport?.at||0)>shifts[0].at)$('#mine-journal').after(sluice);
+ }
  const report=state.echoMineReport,panel=$('#mine-journal');panel.hidden=!report;
  if(report)$('#mine-journal-line').textContent=(report.first==='blue'?'Гуманоид первым проверил золотую жилу.':'Самолётик первым запеленговал вагонетку.')+
    ' Дрон ответил тремя импульсами. Проверок жилы — '+report.ore+'. Пусков шара — '+report.tries+'. Переправа — '+gearLabel(report.tool).toLowerCase()+'.';
@@ -175,6 +187,7 @@ function fieldHud(){
  const atRift=!activeRelay&&state.level==='rift';
  $('#rift-entrance').hidden=!atRift;$('#mine-entrance').hidden=!!activeRelay||state.level!=='mine';
  if(atRift){const bag=packNames(state);$('#rift-pack').textContent=bag.length?'В рюкзаке — '+bag.join(', ')+'.':'В скале видна антенна боковой станции.';}
+ $('#sluice-entrance').hidden=!!activeRelay||state.level!=='greenhouse';
  $('#field').classList.toggle('dock-run',dock);$('#dock-objective').hidden=!dock||!!finishedLevel;
  if(dock){
    const locked=!doneFor('dock').includes('bridge'),bar=$('#dock-objective');

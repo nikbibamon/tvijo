@@ -4,7 +4,8 @@ import {riftRooms, stationRooms, roomById, roomHref, packNames} from './rooms.js
 import {deliverPrize, recoverPrizes, ownsPrize} from './rewards.js';
 import {mountAlphabet} from './beacon.js';
 import {mountCargo, mountPulse} from './grid.js';
-import {mountChain, mountDrones} from './machines.js';
+import {mountChain} from './machines.js';
+import {mountDrones} from '../sluice/main.js';
 import {mountRadio} from './radio.js';
 import {mountMirrors, mountArchive} from './station.js';
 
@@ -68,10 +69,12 @@ function showHub(hash) {
 }
 function navigate() {
   const hash = location.hash.slice(1);
-  const room = roomById(hash);
+  const nightEntry = hash === 'drones/night';
+  const room = roomById(nightEntry ? 'drones' : hash);
   if (current) silenceRadio();
   release?.(); release = null; $('room-play').replaceChildren();
   current = room || null;
+  document.body.classList.toggle('sluice-room',room?.id === 'drones');
   if (!room) {
     showHub(hash);
     inventory();
@@ -94,7 +97,9 @@ function navigate() {
   const id = room.id;
   let interactive = false;
   const api = {
+    nightEntry,
     load: () => saved(id),
+    pending: promise => { transition=promise; },
     save: record => keep(id, record),
     say: message => {
       if (current?.id !== id) return;

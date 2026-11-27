@@ -3,6 +3,8 @@ import {resolveLevel} from './strategy.js';
 import {rooms, roomById, roomHref, hasPrize} from './expedition/rooms.js';
 import {scenes, restoreStorm} from './storm/rules.js';
 import {phaseNames, restoreMine} from './echo/rules.js';
+import {sluiceRoute} from './sluice/progress.js';
+import {rescued, restoreRun} from './sluice/rules.js';
 
 const lastKey = 'tvijo.crew.last-route.v1';
 export const stormKey = 'tvijo.crew.storm.v1';
@@ -46,6 +48,13 @@ export function nextRoute(profile, last, stormSave) {
   const chosen = last?.kind==='room' && roomById(last.id);
   if (last?.kind==='echo' && activeMine) return echo(mine,true);
   if (last?.kind==='storm' && activeStorm) return storm(orbit,true);
+  if (chosen?.id === 'drones' && profile.sluice) {
+    const board=restoreRun(profile.sluice).board;
+    if(rescued(board)<5) return sluiceRoute(profile);
+    if(board.mode==='day' && !hasPrize(profile,'drones-night')) return {...sluiceRoute(profile),
+      action:'Открыть ночную смену',href:'./expedition.html#drones/night',detail:'Ночная смена',art:'./sluice/night.webp',
+      text:'У лифта и маяка один источник питания. Верни пятерых ремонтников при свете фонарей.'};
+  }
   if (chosen && !hasPrize(profile,chosen.id)) return room(chosen,true);
   const current = resolveLevel(profile.level);
   if (last?.kind==='campaign' && current?.id===last.id && !visited.includes(current.id)) return campaign(current,profile);
