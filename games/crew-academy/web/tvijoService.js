@@ -1,5 +1,5 @@
 import {heroOrder,tiers,levels,crewIntro,moves} from './catalog.js';
-import {planTurn,tacticalDigest,resolveLevel,intent} from './strategy.js';
+import {planTurn,tacticalDigest,resolveLevel,intent,readyTasks} from './strategy.js';
 import {makeSpec,cleanSpec,worldLevel,routeReachable,encodeWorld} from './worlds.js';
 const STORAGE='tvijo.crew.academy.v1', lock='tvijo.crew.wallet.v1';
 const initial=()=>({v:1,hero:'captain',tier:'standard',balance:100,level:'dock',stages:{},completed:[],worlds:[],log:[],cache:[],receipts:[],tallies:{orders:0,clear:0,chains:0,voice:0,verified:0,spend:0,falls:0,fallback:0,cache:0},observed:[],digest:null,voice:false,micConsent:false,pilot:null});
@@ -43,41 +43,50 @@ export function importWorld(spec){return write(s=>{const clean=cleanSpec(spec);i
 export function rewind(id){return write(s=>{if(s.level!==id||s.balance<10)return false;s.balance-=10;s.tallies.spend+=10;note(s,'field','Телепорт к реле · 10 демо-кредитов');return true;});}
 const now=()=>performance.now();
 export async function beforeDeadline(fn,ms=2500){const c=new AbortController();let timer;try{return await Promise.race([Promise.resolve().then(()=>fn(c.signal)),new Promise((_,reject)=>{timer=setTimeout(()=>{c.abort();reject(Error('deadline'));},ms);})]);}finally{clearTimeout(timer);}}
-export async function turn(raw,voice=false){
-  const text=raw.trim().slice(0,450);if(!text)return null;const s=state,l=currentLevel(),pre=doneFor().slice(),parsed=intent(text),tier=s.tier,hero=s.hero;
+let recordedOrders=Promise.resolve();
+function recordLocalOrder(packet){
+  let joined=false;try{joined=localStorage.getItem('tvijo.crew.joined')==='1';}catch{}
+  if(!joined)return;
+  recordedOrders=recordedOrders.then(()=>beforeDeadline(signal=>fetch('./api/herdr/turn',{
+    method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(packet),signal,credentials:'same-origin'
+  }))).catch(()=>{});
+}
+// The field switch issues one available order locally. Only a pilot's own words earn a prompt score.
+export function fieldOrder(levelId,id){
+  if(state.level!==levelId||!readyTasks(currentLevel(),doneFor()).includes(id))return Promise.resolve(null);
+  return turn(moves[id].example,false,id);
+}
+export async function turn(raw,voice=false,preset=null){
+  const text=raw.trim().slice(0,450);if(!text)return null;const s=state,l=currentLevel(),pre=doneFor().slice(),parsed=intent(text),tier=preset?'standard':s.tier,hero=s.hero;
   const lastDigest=s.stages[l.id]?.digest,feedback=lastDigest?{blocks:lastDigest.blocks,focus:lastDigest.focus}:null;
   const pkt={level:l.id,done:pre,tier,parsed,hero,feedback};const k=JSON.stringify([l.id,pre.slice().sort(),tier,hero,parsed.orders,parsed.who,parsed.kind,parsed.criteria,feedback]);
-  const predicted=planTurn({level:l,done:pre,tier,parsed,hero,feedback});const cache=s.cache.includes(k),requestId=crypto.randomUUID();let source=cache?'cache':'demo',reply=predicted;const began=now();
-  addLines([{who:'you',text}]);
-  if(cache){
-    let joined=false;try{joined=localStorage.getItem('tvijo.crew.joined')==='1';}catch{}
-    if(joined&&predicted.changes.length)beforeDeadline(signal=>fetch('./api/herdr/turn',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pkt),signal,credentials:'same-origin'})).catch(()=>{});
-  }
-  if(!cache){
-    try{reply=await beforeDeadline(async signal=>{const r=await fetch('./api/herdr/turn',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pkt),signal,credentials:'same-origin'});if(!r.ok)throw Error('offline');const d=await r.json();if(d.engine!=='crew-demo-1'||!Array.isArray(d.reply?.lines)||!Array.isArray(d.reply?.changes)||d.reply.changes.join()!==predicted.changes.join())throw Error('protocol');if(d.source==='fallback')source='fallback';else if(d.source==='cache')source='cache';return d.reply;});}
+  const predicted=planTurn({level:l,done:pre,tier,parsed,hero,feedback});const cache=s.cache.includes(k),requestId=crypto.randomUUID();let source=preset?'preset':cache?'cache':'demo',reply=predicted;const began=now();
+  addLines([preset?{who:'tvijo',text:'Полевой приказ · '+moves[preset].name}:{who:'you',text}]);
+  if(!cache&&!preset){
+    try{reply=await beforeDeadline(async signal=>{await recordedOrders;const r=await fetch('./api/herdr/turn',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pkt),signal,credentials:'same-origin'});if(!r.ok)throw Error('offline');const d=await r.json();if(d.engine!=='crew-demo-1'||!Array.isArray(d.reply?.lines)||!Array.isArray(d.reply?.changes)||d.reply.changes.join()!==predicted.changes.join())throw Error('protocol');if(d.source==='fallback')source='fallback';else if(d.source==='cache')source='cache';return d.reply;});}
     catch{source='fallback';reply=predicted;}
   }
   // The public service never debits. One local commit applies the reward and the demo cost together.
   const settled=await write(st=>{
     if(st.level!==l.id)return {discarded:true};const scene=stageOf(st,l.id);
-    if(st.receipts.includes(requestId))return {discarded:true};
+    if(st.receipts.includes(requestId)||preset&&!readyTasks(l,scene.done).includes(preset))return {discarded:true};
     const current=planTurn({level:l,done:scene.done,tier,parsed,hero,feedback});
     if(current.changes.join()!==reply.changes.join()){reply=current;source='cache';}
-    if(st.cache.includes(k))source='cache';
+    if(!preset&&st.cache.includes(k))source='cache';
     let charge=source==='demo'?reply.cost:0;
     if(charge>st.balance){charge=0;source='training';reply=planTurn({level:l,done:scene.done,tier:'standard',parsed,hero,feedback});}
     st.receipts=[...st.receipts.slice(-127),requestId];st.balance-=charge;st.tallies.spend+=charge;
     if(source==='demo')st.cache=[...st.cache.filter(x=>x!==k).slice(-63),k];
     if(source==='fallback')st.tallies.fallback++;if(source==='cache')st.tallies.cache++;
-    st.tallies.orders++;if(voice)st.tallies.voice++;if(reply.score===3&&reply.changes.length)st.tallies.clear++;st.tallies.chains+=reply.chain;
+    st.tallies.orders++;if(voice)st.tallies.voice++;if(!preset&&reply.score===3&&reply.changes.length)st.tallies.clear++;st.tallies.chains+=reply.chain;
     if(reply.changes.includes('compare'))st.tallies.verified++;
     scene.done=[...new Set([...scene.done,...reply.changes])];scene.turns=(scene.turns||0)+1;
     const obs={ok:reply.changes.length>0,source,elapsed:Math.round(now()-began),cost:charge,targets:parsed.orders};scene.observed=[...(scene.observed||[]).slice(-39),obs];
     if(scene.turns%5===0)scene.digest={...tacticalDigest(l,scene.done,scene.observed),turn:scene.turns};
     note(st,'turn',(reply.changes.map(a=>moves[a].name).join(' → ')||({social:'Разговор экипажа',hint:'Запрос подсказки',stop:'Отмена приказа'}[parsed.kind]||'Уточнение приказа'))+' · '+charge+' демо-кр.');return {charge,source,reply};
   });
-  if(settled.discarded)return settled;addLines(reply.lines);if(state.balance===0||source==='training')track('out_of_credits');
-  track('command_sent');if(voice)track('voice_command');if(reply.changes.length)track('task_done');if(reply.chain)track('dependency_done');if(reply.changes.includes('compare'))track('crosscheck');return settled;
+  if(settled.discarded)return settled;if((cache||preset)&&reply.changes.length)recordLocalOrder(pkt);addLines(reply.lines);if(state.balance===0||source==='training')track('out_of_credits');
+  if(!preset)track('command_sent');if(voice)track('voice_command');if(reply.changes.length)track('task_done');if(reply.chain)track('dependency_done');if(reply.changes.includes('compare'))track('crosscheck');return settled;
 }
 const allowedEvents=new Set(['open_map','mic_click','command_sent','task_done','dependency_done','crosscheck','voice_command','field_start','capsule','workshop_open','world_created','out_of_credits','wallet_open','buy_click','demo_refill']);
 function firsts(){try{return JSON.parse(sessionStorage.getItem('tvijo.crew.funnel')||'{}');}catch{return {};}}

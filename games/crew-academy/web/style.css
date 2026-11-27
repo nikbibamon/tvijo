@@ -63,7 +63,7 @@ dialog{max-width:min(500px,94vw);width:100%;max-height:89dvh;overflow:auto;backg
 .dial-key{width:58px;height:48px}.dial-input{text-align:center;letter-spacing:.32em;font-size:1.8rem;color:#fff0c1}.relay-win{text-align:center;padding:12px;background:#27332f;border-radius:10px}.relay-win>i{font-size:2rem;color:#f5d08f}
 .note-control{border:0;background:none;color:#c6add3;font-size:.68rem;justify-self:end;padding:2px}.channel-input{width:100%;resize:vertical;max-height:120px}.club-message span{overflow-wrap:anywhere;white-space:pre-wrap}
 .pixel-avatar{image-rendering:pixelated}.player-pixels{background:#33283d;display:grid;place-items:center}.player-pixels canvas{width:86%;height:86%}.paint-heading{display:flex;align-items:center;gap:14px}.paint-heading canvas{width:52px;height:52px}.paint-layout{display:grid;grid-template-columns:minmax(130px,200px) 1fr;gap:16px;align-items:start}.paint-board{position:relative;border:1px solid #866d94;line-height:0;background:repeating-conic-gradient(#352d3f 0 25%,#2d2635 0 50%) 0 / 12.5% 12.5%}.paint-grid{width:100%;display:block;touch-action:none;cursor:crosshair}.paint-cursor{pointer-events:none;position:absolute;width:6.25%;height:6.25%;border:1px solid white;display:none}.paint-board:focus-within .paint-cursor{display:block}.paint-tools{display:grid;gap:10px}.ink-swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}.paint-ink{min-width:27px;height:32px;border:1px solid #776780;background:var(--ink);color:#eee;border-radius:5px}.paint-ink[aria-pressed=true],.paint-tools .chip[aria-pressed=true]{outline:2px solid #f5ce89;outline-offset:1px}
-#field-orders{display:none}
+
 @media(max-width:800px),(orientation:landscape) and (max-height:540px){
  body.in-field .topbar,body.in-field footer{display:none}.in-field main{padding:0 max(9px,env(safe-area-inset-right)) 15px max(9px,env(safe-area-inset-left))}
  .in-field .page-heading{padding:9px 3px 7px}.in-field .page-heading h1{font-size:1.28rem;letter-spacing:-.025em}.in-field .page-heading p{font-size:.72rem;margin:3px 0 0}.in-field .connection{display:none}
@@ -73,7 +73,6 @@ dialog{max-width:min(500px,94vw);width:100%;max-height:89dvh;overflow:auto;backg
  .field-radio-open #radio-close{display:grid;place-items:center;border:1px solid #695877;border-radius:6px;width:36px;height:36px;color:white;background:#382c40;margin-left:auto}
  .in-field .tasks-panel{padding:10px 12px}.in-field .tasks-panel .section-heading h2{font-size:1rem}
  .in-field .tasks-panel p{font-size:.82rem;margin:6px 0}.in-field .game-status{top:6px;left:6px;right:6px}.in-field #field-feedback{max-width:94%}
- #field-orders:not([hidden]){display:inline-flex;align-items:center;gap:4px;position:absolute;right:8px;bottom:7px;z-index:2;border-radius:7px;border:1px solid #d9b783;background:#382b2dec;color:#ffdea0;font-size:.71rem;padding:8px}
 }
 @media(max-width:520px){.crew-doors{grid-template-columns:1fr;gap:7px;margin-top:12px}.crew-door{padding:10px 12px;gap:10px}.door-glyph{width:35px;height:35px}.crew-door strong{font-size:1rem}.crew-door small{font-size:.72rem}.paint-layout{grid-template-columns:minmax(110px,45%) 1fr;gap:10px}.paint-tools .chip{font-size:.66rem;padding:5px}.leaderboard th,.leaderboard td{padding:6px 3px}.leaderboard .crew-bio small{display:none}.rank-player{gap:4px}.rank-player strong{font-size:.72rem}.rank-tools{flex-wrap:wrap}.mission-art{background-position:71% center}.mission-card{min-height:307px}}
 @media(orientation:landscape) and (max-height:540px){
@@ -85,3 +84,13 @@ dialog{max-width:min(500px,94vw);width:100%;max-height:89dvh;overflow:auto;backg
 @media(max-width:340px){.game-controls [data-pad]{min-width:42px}.game-controls [data-pad=jump],.game-controls [data-pad=use]{min-width:47px}.hud-left{gap:3px}}
 
 .relay-map{width:100%;height:auto;display:block;margin:13px 0 17px;font-family:Rubik,system-ui,sans-serif}.pair-running #pair-side{align-self:start}.pair-running #pair-side>.actions{margin-top:12px}
+
+
+@media (max-width:800px) and (orientation:portrait){
+ .game-controls #grab{width:75px;line-height:1.05}
+ .game-controls #grab span{max-width:100%;white-space:normal}
+}
+@media (max-width:360px) and (orientation:portrait){
+ .game-controls #grab{width:62px}
+ .game-controls{gap:3px}
+}

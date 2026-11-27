@@ -1,5 +1,5 @@
 import {heroes,heroOrder,tiers,levels,moves} from './catalog.js';
-import {state,chat,bus,write,note,collectSpark,setHero,setLevel,setTier,complete,currentLevel,doneFor,isOpen,resetStage,addLines,speech,dictate,stopVoice,track,pilot,pilotReport,localFunnel,turn,buildWorld,importWorld,grantDemo,rewind} from './tvijoService.js';
+import {state,chat,bus,write,note,collectSpark,setHero,setLevel,setTier,complete,currentLevel,doneFor,isOpen,resetStage,addLines,speech,dictate,stopVoice,track,pilot,pilotReport,localFunnel,turn,fieldOrder,buildWorld,importWorld,grantDemo,rewind} from './tvijoService.js';
 import {readyTasks,tacticalDigest,resolveLevel} from './strategy.js';
 import {worldLevel,encodeWorld,decodeWorld} from './worlds.js';
 import {icon,populate} from './icons.js';
@@ -24,6 +24,7 @@ function fieldRadio(open){
  document.body.classList.toggle('field-radio-open',mobileRadio);
  if(page==='field')field.suspend(mobileRadio||modal.open);
  if(open&&!mobileRadio)$('#radio').scrollIntoView({block:'nearest'});
+ if(!open&&page==='field'&&!modal.open)$('#stage').focus({preventScroll:true});
 }
 phoneLayout.addEventListener('change',()=>{if(mobileRadio&&!phoneLayout.matches)fieldRadio(false);});
 const maps={hq:['Ночной штаб','Командный мостик экспедиции Tvijo'],map:['Карта сектора','Выбери локацию и узнай, какой команде она под силу.'],journal:['Журнал смены','Приказы, решения экипажа и результат каждого шага.']};
@@ -74,27 +75,31 @@ function journal(){
  const scene=state.stages[state.level],digest=scene?.digest;$('#digest-text').textContent=digest?'Сводка после '+digest.turn+' приказов. Из последних пяти '+digest.blocks+' потребовали уточнения. '+digest.hint:'После пяти приказов появится сводка по реальным ходам этой миссии. Сейчас '+(scene?.turns||0)+' из 5.';}
 function fieldHud(){
  $('#field-sparks').hidden=!!activeRelay;
- $('#field-orders').hidden=!!activeRelay||currentLevel().tasks.every(([id])=>doneFor().includes(id));
  $('#mic-field').setAttribute('aria-label',activeRelay?'Канал напарника':'Открыть рацию экипажа');
  $('#mic-field span').textContent=activeRelay?'Напарник':'Рация';
  if(activeRelay){const r=activeRelay;$('#field-progress').textContent=r.role==='scout'?'Пост разведчика':'Пост инженера';$('#field-objective').textContent=relayBrief(r);
-  $('#field-tasks').replaceChildren(relayDiagram(r,{el,group,ii}));$('#pair-side').replaceChildren(group('pair-side-crew',avatar(state.hero),ii('radio'),r.practice?avatar('robot'):ii('users')),el('h2','','Парный маяк'),para((r.practice?'Тренировка с Роботом':'Напарник · '+r.partner)),relayMap(r),action(r.practice?'Как пройти':'Канал напарника',()=>fieldRadio(true),'btn secondary','radio'));$('#grab span').textContent='Реле';return;}
- $('#field-sparks').textContent='✦ '+(state.stages[state.level]?.sparks?.length||0)+'/3';$('#field-sparks').setAttribute('aria-label','Собрано искр '+(state.stages[state.level]?.sparks?.length||0)+' из трёх');$('#grab span').textContent='Действие';
- const l=currentLevel(),d=doneFor(),ready=readyTasks(l,d);$('#field-progress').textContent=l.tag+' · '+d.length+'/'+l.tasks.length;$('#field-objective').textContent=ready.length?l.desc:'Переправа открыта. Прыгни за светящейся капсулой или коснись её на игровом поле.';
- $('#field-tasks').replaceChildren(...l.tasks.map(([id])=>{const m=moves[id],cls=d.includes(id)?'done':ready.includes(id)?'ready':'locked';const b=action((d.includes(id)?'✓ ':'')+m.name,()=>{if(d.includes(id))toast('Шаг уже подтверждён.');else if(ready.includes(id))draft(m.example);else toast('Сначала: '+l.tasks.find(t=>t[0]===id)[1].map(n=>moves[n].name).join(', '));},cls);return b;}));}
+  $('#field-tasks').replaceChildren(relayDiagram(r,{el,group,ii}));$('#pair-side').replaceChildren(group('pair-side-crew',avatar(state.hero),ii('radio'),r.practice?avatar('robot'):ii('users')),el('h2','','Парный маяк'),para((r.practice?'Тренировка с Роботом':'Напарник · '+r.partner)),relayMap(r),action(r.practice?'Как пройти':'Канал напарника',()=>fieldRadio(true),'btn secondary','radio'));$('#grab span').textContent='Реле';$('#grab').title='Включить реле (E)';return;}
+ $('#field-sparks').textContent='✦ '+(state.stages[state.level]?.sparks?.length||0)+'/3';$('#field-sparks').setAttribute('aria-label','Собрано искр '+(state.stages[state.level]?.sparks?.length||0)+' из трёх');
+ const l=currentLevel(),d=doneFor(),ready=readyTasks(l,d);const actionLabel=ready.length?moves[ready[0]].name:'Взять капсулу';$('#grab span').textContent=actionLabel;$('#grab').title=actionLabel+' (E)';$('#field-progress').textContent=l.tag+' · '+d.length+'/'+l.tasks.length;$('#field-objective').textContent=ready.length?(l.id==='dock'?'Нажми «Закрепить мост» или дай Роботу приказ в рацию. Капсула на платформе справа.':l.desc):'Прыгни к метке «Капсула» или нажми «Взять капсулу» для автопрыжка.';
+ $('#field-tasks').replaceChildren(...l.tasks.map(([id])=>{const m=moves[id],cls=d.includes(id)?'done':ready.includes(id)?'ready':'locked';const b=action((d.includes(id)?'✓ ':'')+m.name,()=>{if(d.includes(id))toast('Шаг уже подтверждён.');else if(ready.includes(id)){$('#stage').focus({preventScroll:true});field.issue(id);}else toast('Сначала: '+l.tasks.find(t=>t[0]===id)[1].map(n=>moves[n].name).join(', '));},cls);return b;}));}
 function render(){
  $('#balance').textContent=state.balance;$('#wallet').setAttribute('aria-label','Кошелёк: '+state.balance+' демо-кредитов');const sound=$('#sound');sound.replaceChildren(ii(state.voice?'sound':'mute'));sound.setAttribute('aria-label',state.voice?'Выключить озвучку':'Включить озвучку');sound.setAttribute('aria-pressed',state.voice);
  const info=page==='field'?[fieldLevel().name,fieldLevel().tag+' · '+heroes[state.hero].name]:maps[page];$('#page-title').textContent=info[0];$('#page-sub').textContent=info[1];
  for(const nav of document.querySelectorAll('[data-page]')){const on=nav.dataset.page===page;nav.classList.toggle('active',on);if(on)nav.setAttribute('aria-current','page');else nav.removeAttribute('aria-current');}
  if(page==='hq'){crew();$('#home-route').replaceChildren(...levels.map(routeCard));$('#start-mission span').textContent=state.completed.length||doneFor().length?'Продолжить вылазку':'Начать вылазку';}
- if(page==='map')renderMap();if(page==='field')fieldHud();if(page==='journal')journal();
+ if(page==='map')renderMap();
+ if(page==='field'){
+   if(!activeRelay&&field.stageId&&field.stageId!==state.level)field.start(currentLevel(),state.hero);
+   fieldHud();
+ }
+ if(page==='journal')journal();
  if(page==='hq'||page==='field'){radioHud();showMessages();}
 }
 function go(next,hash=true){
  if(!['hq','map','field','journal'].includes(next))next='hq';if(modal.open)close();if(page==='field'&&next!=='field'){field.leave();activeRelay=null;mobileRadio=false;}document.body.classList.toggle('in-field',next==='field');document.body.classList.toggle('field-radio-open',next==='field'&&mobileRadio);document.body.classList.toggle('pair-running',next==='field'&&!!activeRelay);if(next!==page){stopVoice();status('');voiceDraft=false;}
  page=next;for(const n of ['hq','map','field','journal'])$('#'+n).hidden=n!==page;
  if(page==='hq'||page==='field'){const dest=page==='hq'?$('#radio-home'):$('#radio-field');if(radio.parentElement!==dest)dest.append(radio);radio.hidden=false;}else radio.hidden=true;
- if(page==='map')track('open_map');if(page==='field'){track('field_start');field.start(fieldLevel(),state.hero);field.suspend(mobileRadio||modal.open);}
+ if(page==='map')track('open_map');if(page==='field'){track('field_start');field.start(fieldLevel(),state.hero);field.suspend(mobileRadio||modal.open);if(!mobileRadio&&!modal.open)$('#stage').focus({preventScroll:true});}
  if(hash&&location.hash!=='#'+page){history.pushState(null,'','#'+page);}
  render();window.scrollTo({top:0,behavior:'instant'});
 }
@@ -103,15 +108,16 @@ function continueGame(){const l=currentLevel();if(state.completed.includes(l.id)
 function launchRelay(run){activeRelay=run;mobileRadio=false;field.forget();go('field');}
 function overlay(title,txt,controls){const card=group('',el('h2','',title),para(txt),group('actions',...controls));$('#field-overlay').replaceChildren(card);$('#field-overlay').hidden=false;}
 const field=createField({
- spark:collectSpark,relayTerminal:()=>terminal.arrive(),orderHint:draft,fell:n=>{write(s=>{s.tallies.falls++;note(s,'field','Возвращение на контрольную точку · бесплатно');});if(n===2)addLines([{who:'plane',text:'Вижу точку посадки! Коснись платформы или подойди и нажми прыжок. Подскажу бесплатно.'}]);},
+ spark:collectSpark,relayTerminal:()=>terminal.arrive(),order:async(level,id)=>{const r=await fieldOrder(level,id);if(r?.reply&&page==='field'&&state.level===level&&!activeRelay)speech(r.reply.lines[0].text);return r;},fell:n=>{write(s=>{s.tallies.falls++;note(s,'field','Возвращение на контрольную точку · бесплатно');});if(n===2)addLines([{who:'plane',text:'Вижу точку посадки! Коснись платформы или подойди и нажми прыжок. Подскажу бесплатно.'}]);},
  won:async id=>{const ok=await complete(id);if(ok)track('capsule');return ok;},
  finish:l=>{const idx=levels.indexOf(l),next=idx>=0?levels[idx+1]:null;const controls=[action('Создать свой мир',openWorkshop,'btn primary','spark')];if(next)controls.push(action('Дальше: '+next.name,()=>launch(next),'btn secondary'));else controls.push(action('Журнал смены',()=>go('journal'),'btn secondary'));controls.push(action('Найти напарника',()=>club.open(),'text-btn','users'));overlay(l.id==='beacon'?'Маяк ответил!':'Капсула на борту!',l.id==='dock'?'Теперь доступен конструктор. Можно собрать свой мир или исследовать Кристальный разлом.':'Экипаж выполнил план. Результат записан в журнал.',controls);addLines([{who:'captain',text:l.id==='beacon'?'«Станция вызывает экипаж!» Мы всё-таки нашли источник. Хорошая работа.':'Капсула у нас. Следующий маршрут выбираешь ты.'}]);},
  pauseMenu:(resume,warp)=>{const options=[action('Продолжить',resume,'btn primary','play'),action('В штаб',()=>go('hq'))];if(!activeRelay&&!state.completed.includes(state.level))options.push(action('К реле · 10 демо',async e=>{e.currentTarget.disabled=true;if(await rewind(state.level))warp();else{toast('Недостаточно демо-кредитов. Продолжить можно бесплатно.');e.target.disabled=false;}}));overlay('Пауза','Окно связи приостановлено.',options);}
 });
 async function send(){
- if(busy)return;const raw=$('#command').value.trim();if(!raw)return;busy=true;const voice=voiceDraft&&raw===spokenInto;voiceDraft=false;spokenInto='';$('#command').value='';$('#radio-form button[type=submit]').disabled=true;status('Экипаж отвечает…');
+ if(busy)return;const sentFrom=page==='field'?state.level:null,raw=$('#command').value.trim();if(!raw)return;busy=true;const voice=voiceDraft&&raw===spokenInto;voiceDraft=false;spokenInto='';$('#command').value='';$('#radio-form button[type=submit]').disabled=true;status('Экипаж отвечает…');
  try{const result=await turn(raw,voice);if(!result||result.discarded){status('Канал переключён.');return;}const {reply,source,charge}=result;
    scoreText='Приказ · '+reply.score+'/3';$('#score').textContent=scoreText;const tags={fallback:'Резервный канал · бесплатно',cache:'Ответ из памяти · бесплатно',training:'Учебный канал · бесплатно',demo:charge?'Списано '+charge+' демо-кр.':'Без списания'};status(tags[source]+' · '+reply.criteria.map((v,i)=>(v?'✓ ':'○ ')+['кто','что','зачем'][i]).join('  '));const v=reply.lines.find(x=>x.who!=='tvijo')||reply.lines[0];if(v)speech(v.text);render();
+   if(sentFrom&&page==='field'&&state.level===sentFrom&&!activeRelay&&!modal.open&&reply.changes.length&&!$('#command').value&&(mobileRadio||radio.contains(document.activeElement)))fieldRadio(false);
  }catch{status('Связь прервалась. Повтори приказ.');}finally{busy=false;$('#radio-form button[type=submit]').disabled=false;}
 }
 $('#radio-form').onsubmit=e=>{e.preventDefault();send();};$('#command').oninput=()=>{if($('#command').value!==spokenInto)voiceDraft=false;};
@@ -125,7 +131,7 @@ function startMic(sink='command'){
  if(sink==='world'&&modal.open){const d=$('#world-note');d.replaceChildren(document.createTextNode('Распознавание выполняет браузер и может передавать звук своей службе. '),action('Включить микрофон',async()=>{await write(s=>{s.micConsent=true;});begin();},'chip'));return;}
  openModal('Голосовая рация',[para('Распознавание выполняет браузер. Браузер может отправить звук своей службе распознавания. Игра получает текст, который можно поправить перед отправкой.'),group('actions',action('Включить микрофон',async()=>{await write(s=>{s.micConsent=true;});modal.addEventListener('close',begin,{once:true});close();},'btn primary','mic'),action('Ввести текст',()=>{close();target.focus();}))],'mic');
 }
-$('#mic').onclick=()=>startMic();$('#mic-field').onclick=()=>fieldRadio(true);$('#radio-close').onclick=()=>fieldRadio(false);$('#field-home').onclick=()=>go('hq');$('#field-orders').onclick=()=>{const task=readyTasks(currentLevel(),doneFor())[0];if(task)draft(moves[task].example);};
+$('#mic').onclick=()=>startMic();$('#mic-field').onclick=()=>fieldRadio(true);$('#radio-close').onclick=()=>fieldRadio(false);$('#field-home').onclick=()=>go('hq');
 $('#sound').onclick=async()=>{await write(s=>{s.voice=!s.voice;});if(!state.voice)window.speechSynthesis?.cancel();else speech('Рация Tvijo на связи.');toast(state.voice?'Озвучка включена':'Озвучка выключена');};
 function coreModes(){openModal('Мощность ядра',[para('В демо герои отвечают по сценариям. Цена указана за выполненный приказ в учебных кредитах. Уточнения, повтор из памяти и резервный канал бесплатны.'),...Object.entries(tiers).map(([key,t])=>{const b=el('button','option'+(key===state.tier?' selected':''));b.append(ii('chip'),group('',el('strong','',t.label),el('small','',t.desc)),el('strong','price',String(t.cost)+' кр.'));b.onclick=async()=>{await setTier(key);close();toast('Ядро · '+t.label);};return b;})],'tiers');}
 $('#tier-change').onclick=coreModes;

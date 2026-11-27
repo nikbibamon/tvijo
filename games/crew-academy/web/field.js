@@ -7,8 +7,9 @@ const W=960,H=448,G=1050,clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 export function createField(ui){
   const canvas=document.querySelector('#stage'),c=canvas.getContext('2d'),status=document.querySelector('#field-feedback'),overlay=document.querySelector('#field-overlay'),time=document.querySelector('#window-time');
   const imgs=new Map(),keys=new Set(),reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let level,route,hero,started=false,paused=false,ended=false,blocking=false,suspended=false,raf,last=0,clock=0,elapsed=0,x=55,y=0,vy=0,grounded=true,target=null,falls=0,shield=false,checkpoint=55,stamp=0,msgTill=0,camera=0,scale=1,camY=0,airGrace=0,face=1,windowShown=false;
+  let level,route,hero,started=false,paused=false,ended=false,blocking=false,suspended=false,raf,last=0,clock=0,elapsed=0,x=55,y=0,vy=0,grounded=true,target=null,falls=0,shield=false,checkpoint=55,stamp=0,msgTill=0,camera=0,scale=1,camY=0,airGrace=0,jumpBuffer=0,face=1,windowShown=false;
   let stride=0, running=false, relay=false, atTerminal=false, touchDirections=[], sparks=new Set(), motes=[];
+  let outing=0,issuing=null;
   const spriteHeight={captain:91,assistant:86,blue:91,son:82,daughter:75,robot:97,plane:67};
   const loadRunner=h=>load('runner-'+h,'./art/runners/'+h+'.webp');
   const sparkSites=()=>[[176,level.floor-32],[337,level.floor-67],[route.goal-62,route.goalY-30]];
@@ -21,55 +22,112 @@ export function createField(ui){
   const props=()=>heroes[hero]||heroes.captain;
   const opened=()=>level.tasks.every(([id])=>doneFor(level.id).includes(id));
   function speak(msg,secs=3.1){status.textContent=msg;msgTill=clock+secs;}
-  function clearMovement(){keys.clear();resetPads();target=null;running=false;}
+  function clearMovement(){keys.clear();resetPads();target=null;running=false;jumpBuffer=0;}
   function spawn(pos=55){x=pos;y=level.floor;vy=0;grounded=true;airGrace=.1;clearMovement();}
   function start(l,h){
     const same=level?.id===l.id&&started&&!ended;
     level=l;hero=h;relay=l.id.startsWith('pair-');route=layout(l);load(l.art);loadRunner(h);['deck','cell','relay','wraith'].forEach(a=>load(a));
-    if(!same){stride=0;face=1;atTerminal=false;sparks=new Set(relay?[]:state.stages[l.id]?.sparks||[]);clearDust();clock=0;elapsed=0;ended=false;blocking=false;falls=0;checkpoint=55;shield=!!props().shield;windowShown=false;status.textContent='';spawn();}started=true;paused=false;last=0;overlay.hidden=true;run();draw();
+    if(!same){outing++;issuing=null;stride=0;face=1;atTerminal=false;sparks=new Set(relay?[]:state.stages[l.id]?.sparks||[]);clearDust();clock=0;elapsed=0;ended=false;blocking=false;falls=0;checkpoint=55;shield=!!props().shield;windowShown=false;status.textContent='';spawn();}started=true;paused=false;last=0;overlay.hidden=true;run();draw();
   }
-  function leave(){clearMovement();paused=true;if(raf)cancelAnimationFrame(raf);raf=0;}
+  function leave(){outing++;issuing=null;blocking=false;clearMovement();paused=true;if(raf)cancelAnimationFrame(raf);raf=0;}
   function suspend(v){suspended=v;clearMovement();last=0;if(!v)run();}
   function run(){if(!raf&&started&&!paused&&!ended&&!suspended)raf=requestAnimationFrame(tick);}
   function pause(){if(ended||!started||blocking)return;if(paused){paused=false;overlay.hidden=true;last=0;run();return;}
     paused=true;clearMovement();if(raf)cancelAnimationFrame(raf);raf=0;ui.pauseMenu(resume,warp);}
   function resume(){if(ended)return;paused=false;overlay.hidden=true;last=0;run();canvas.focus({preventScroll:true});}
   function warp(){spawn(Math.max(55,route.gate-45));checkpoint=x;speak('Телепорт к реле выполнен.');resume();}
-  function fall(){falls++;if(!relay)ui.fell(falls);if(shield){shield=false;checkpoint=Math.max(55,Math.floor(x-35));if(route.jumpGap&&checkpoint>route.jumpGap[0]-12&&checkpoint<route.jumpGap[1])checkpoint=route.jumpGap[0]-20;speak('Стабилизатор Робота удержал позицию.');}
+  function fall(){falls++;if(!relay)ui.fell(falls);if(shield){shield=false;checkpoint=Math.max(55,Math.floor(x-35));for(const gap of [route.jumpGap,opened()?null:route.gap])if(gap&&checkpoint>gap[0]-12&&checkpoint<gap[1])checkpoint=gap[0]-20;speak('Стабилизатор Робота удержал позицию.');}
     else speak(falls>=2?'Контрольная точка. Коснись капсулы — герой сам подберёт момент для прыжка.':'Возврат на контрольную точку · бесплатно');spawn(checkpoint);stamp=clock;}
-  function jump(){if(!paused&&!ended&&!suspended&&started&&(grounded||airGrace>0)){vy=-(props().jump||430);grounded=false;airGrace=0;}}
-  async function collect(){
-    if(!started||ended||paused||suspended||blocking)return;
-    if(!opened()){const n=readyTasks(level,doneFor())[0];speak(n?'Сначала дай приказ: '+moves[n].name.toLowerCase()+'.':'Экипаж ещё в пути.');return;}
-    if(Math.abs(x-route.goal)>(props().reach||44)||Math.abs(y-route.goalY)>(props().reach?53:40)){speak('Подойди к капсуле и прыгни. Можно коснуться её на карте.');return;}
-    if(relay){if(atTerminal)return;atTerminal=true;clearMovement();ui.relayTerminal();return;}
-    blocking=true;clearMovement();const orig=level.id;
-    try{if(await ui.won(orig)){ended=true;ui.finish(level);}else speak('Проверь задания экипажа.');}finally{blocking=false;}
+  function launchJump(){
+    vy=-(props().jump||430);grounded=false;airGrace=0;jumpBuffer=0;
   }
-  function use(){if(paused||suspended||ended)return;const reach=props().reach||50;
-    if(Math.abs(x-route.goal)<reach+10){atTerminal=false;collect();return;}
-    if(relay){autoGoal();speak('Иду к посту. На последней платформе включится терминал.');return;}
-    if(!opened()){const n=readyTasks(level,doneFor())[0];if(n)ui.orderHint(moves[n].example);speak('Приказ можно уточнить в рации.');}else{autoGoal();speak('Иду к капсуле.');}}
+  function jump(){
+    if(paused||ended||suspended||!started||blocking)return;
+    if(grounded||airGrace>0)launchJump();else jumpBuffer=.14;
+  }
+  // Contact is measured against the runner and the capsule, both anchored at their feet.
+  function touchingGoal(manual=false){
+    const reach=manual?(props().reach||44):(props().reach?35:26);
+    const base=route.goalY,head=y-spriteHeight[hero]*.78;
+    return Math.abs(x-route.goal)<=reach&&head<=base+3&&y>=base-(relay?56:37)-5&&
+      (y<=base+(manual?36:23)||!grounded&&y<=base+36);
+  }
+  async function collect(manual=false){
+    if(!started||ended||paused||suspended||blocking||!opened()||!touchingGoal(manual))return false;
+    if(relay){if(atTerminal)return false;atTerminal=true;clearMovement();ui.relayTerminal();return true;}
+    blocking=true;clearMovement();const ticket=outing,l=level;
+    try{
+      if(await ui.won(l.id)&&ticket===outing){ended=true;ui.finish(l);}
+    }finally{if(ticket===outing)blocking=false;}
+    return true;
+  }
+  async function issue(id){
+    if(!started||paused||suspended||ended||blocking||issuing||relay)return;
+    if(!readyTasks(level,doneFor(level.id)).includes(id))return;
+    const ticket=outing;issuing=id;
+    try{
+      const result=await ui.order(level.id,id);
+      if(ticket!==outing||!result||result.discarded||ended||paused||suspended)return;
+      const next=readyTasks(level,doneFor(level.id))[0];
+      speak(next?'Готово. Теперь — '+moves[next].name.toLowerCase()+'.':'Путь открыт. Прыгай к золотой капсуле.');
+      if(!next&&Math.abs(x-route.goal)<(props().reach||50)+10){
+        if(touchingGoal(true))await collect(true);else autoGoal();
+      }
+    }catch{if(ticket===outing)speak('Приказ не прошёл. Нажми ещё раз.');}
+    finally{if(ticket===outing)issuing=null;}
+  }
+  function use(){
+    if(!started||paused||suspended||ended||blocking)return;
+    const next=readyTasks(level,doneFor(level.id))[0];
+    if(next){issue(next);return;}
+    if(touchingGoal(true)){atTerminal=false;collect(true);return;}
+    autoGoal();
+    speak(relay?'Иду к терминалу.':'Иду за капсулой.',1.3);
+  }
+  function steerToTarget(active){
+    const delta=target-x,direction=Math.abs(delta)<1?0:Math.sign(delta);
+    if(grounded){
+      const gap=route.jumpGap;
+      if(gap&&(direction>0&&x>=gap[0]-48&&x<gap[0]&&target>=gap[1]||
+        direction<0&&x<=gap[1]+48&&x>gap[1]&&target<=gap[0]))launchJump();
+      else if(route.ledges.some(([a,b,top])=>top<y-6&&(
+        target>=a&&target<=b&&x>=a-60&&x<=b+60||
+        direction>0&&target>a&&x>=a-60&&x<=b-15||
+        direction<0&&target<b&&x<=b+60&&x>=a+15)))launchJump();
+    }
+    if(!direction&&(!active||target!==route.goal||touchingGoal()))target=null;
+    return direction;
+  }
   function step(dt){
     clock+=dt;elapsed+=dt;if(status.textContent&&clock>msgTill)status.textContent='';
     const limit=60+(props().time||0),left=Math.max(0,Math.ceil(limit-elapsed));const display=left?'Окно связи · '+left+' с':'Резервный канал';const clockLabel=relay?'Связь между постами':display;if(time.textContent!==clockLabel)time.textContent=clockLabel;
     if(!relay&&!left&&!windowShown){windowShown=true;speak('Окно закрылось. Экипаж перешёл на резервный канал, миссия продолжается.');}
     const active=opened(),px=x,py=y;
     const held=k=>keys.has(k)||touchDirections.includes(k);let direction=Number(held('right'))-Number(held('left'));
-    if(!direction&&target!==null){
-      if(Math.abs(x-target)<3)target=null;else direction=Math.sign(target-x);
-      if(grounded&&direction>0&&target!==null&&route.jumpGap&&x>=route.jumpGap[0]-48&&x<route.jumpGap[0]-4&&target>route.jumpGap[1])jump();
-      if(grounded&&direction>0&&target!==null&&route.ledges.some(([a,b,top])=>target>=a&&x>a-72&&x<b-22&&top<y-6))jump();
+    const guided=!direction&&target!==null,aim=target;
+    if(guided)direction=steerToTarget(active);
+    if(direction)face=direction;
+    const distance=guided?Math.min(Math.abs(aim-x),220*dt):220*dt;
+    x=clamp(x+direction*distance,15,W-15);
+    // Only an actual, unbridged drop has a safety stop at its lip. Airborne runners stay free.
+    if(!active&&route.gap&&grounded&&y>=level.floor-2){
+      const [left,right]=route.gap;
+      if(px<=left-8&&x>left-8)x=left-8;
+      if(px>=right+8&&x<right+8)x=right+8;
+      if(x===px&&direction&&clock-stamp>3){
+        const next=readyTasks(level,doneFor(level.id))[0];
+        if(next)speak('У обрыва нажми «'+moves[next].name+'».',2);
+        stamp=clock;
+      }
     }
-    if(direction)face=direction;x=clamp(x+direction*220*dt,15,W-15);
-    if(!active&&x>route.gate-12){x=route.gate-12;target=null;if(clock-stamp>2){stamp=clock;const id=readyTasks(level,doneFor())[0];speak(id?'Преграда активна. '+moves[id].example:'Проверь задачу экипажа.');}}
     vy+=G*(props().glide&&vy>0?.74:1)*dt;y+=vy*dt;const oldGround=grounded;grounded=false;
     const platforms=[...route.ground,...route.ledges];if(active&&level.id==='dock')platforms.push([408,458,level.floor-32]);if(active&&route.gap)platforms.push([route.gap[0]-4,route.gap[1]+4,level.floor]);
     if(vy>=0){let top=Infinity;for(const [a,b,t] of platforms)if(x>=a&&x<=b&&py<=t+1&&y>=t)top=Math.min(top,t);
       if(Number.isFinite(top)){y=top;vy=0;grounded=true;airGrace=.1;}}
     running=grounded&&Math.abs(x-px)>.002;
     if(running){const prev=Math.floor(stride/20);stride+=Math.abs(x-px);if(Math.floor(stride/20)!==prev)dust(1);}
-    if(grounded&&!oldGround)dust(4);
+    if(grounded&&!oldGround){dust(4);if(jumpBuffer>0)launchJump();}
+    jumpBuffer=Math.max(0,jumpBuffer-dt);
     for(const p of motes){p.age+=dt;p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=75*dt;}motes=motes.filter(p=>p.age<.32);
     if(!relay)sparkSites().forEach(([sx,sy],i)=>{
       if(!sparks.has(i)&&Math.abs(x-sx)<23&&Math.abs(y-30-sy)<35){sparks.add(i);ui.spark(level.id,i);speak('Искра найдена · '+sparks.size+' / 3',1.4);}
@@ -80,7 +138,7 @@ export function createField(ui){
     if(route.shadow&&active&&clock-stamp>1.8&&Math.abs(x-(590+48*Math.sin(clock*.9)))<23&&y>level.floor-23){
       if(target!==null&&px<x){vy=-420;grounded=false;}else {fall();return;}}
     if(y>H+44){fall();return;}
-    if(active&&Math.abs(x-route.goal)<25&&Math.abs(y-route.goalY)<27)collect();
+    if(active&&touchingGoal())collect();
   }
   function sprite(key,cx,base,h,w=null){const im=imgs.get(key);if(!im?.complete||!im.naturalWidth)return;const width=w||h*im.naturalWidth/im.naturalHeight;c.drawImage(im,cx-width/2,base-h,width,h);}
   function deck(a,b,y){const n=Math.ceil((b-a)/100);for(let i=0;i<n;i++)sprite('deck',a+(i+.5)*(b-a)/n,y+11,14,(b-a)/n+1);}
@@ -93,9 +151,15 @@ export function createField(ui){
     const active=opened(),b=reduce?0:Math.sin(clock*3)*2,g=level.floor;
     if(route.jumpGap){const [a,bx]=route.jumpGap;const pit=c.createLinearGradient(0,g-1,0,H);pit.addColorStop(0,'#322039');pit.addColorStop(.55,'#21182e');pit.addColorStop(1,level.theme==='lava'?'#df804c':'#7253ae');c.fillStyle=pit;c.fillRect(a,g-2,bx-a,H-g+2);c.strokeStyle='#d6a6e8';c.lineWidth=2;c.strokeRect(a+1,g-1,bx-a-2,4);}
     for(const [a,z,t] of route.ledges)deck(a,z,t);if(route.gap&&active)deck(route.gap[0]-4,route.gap[1]+4,g);if(active&&level.id==='dock')deck(408,458,g-32);
-    if(!active){const gate=route.gate;const beam=c.createLinearGradient(gate-9,0,gate+9,0);beam.addColorStop(0,'#b283fc00');beam.addColorStop(.5,'#edd1ffdc');beam.addColorStop(1,'#b283fc00');c.fillStyle=beam;c.fillRect(gate-9,g-116,18,116);sprite('relay',gate-14,g+1,30);}
+    if(!active&&route.gap){const gate=route.gate;const beam=c.createLinearGradient(gate-9,0,gate+9,0);beam.addColorStop(0,'#b283fc00');beam.addColorStop(.5,'#edd1ffdc');beam.addColorStop(1,'#b283fc00');c.fillStyle=beam;c.fillRect(gate-9,g-116,18,116);sprite('relay',gate-14,g+1,30);}
     if(route.shadow&&active)sprite('wraith',590+48*Math.sin(clock*.9),g-2+b,49);
     const glow=c.createRadialGradient(route.goal,route.goalY-18,1,route.goal,route.goalY-18,32);glow.addColorStop(0,'#ffe599a0');glow.addColorStop(1,'#ffe59900');c.fillStyle=glow;c.fillRect(route.goal-35,route.goalY-55,70,70);sprite(relay?'relay':'cell',route.goal,route.goalY+(relay?0:b),relay?56:37);
+    const label=relay?'РЕЛЕ':'КАПСУЛА',labelY=route.goalY-(relay?68:54);
+    c.save();c.font='bold 11px Rubik, sans-serif';c.textAlign='center';c.textBaseline='middle';
+    const labelWidth=c.measureText(label).width+16;
+    c.fillStyle='#2d2231';c.fillRect(route.goal-labelWidth/2,labelY-8,labelWidth,16);
+    c.fillStyle='#ffe39b';c.fillText(label,route.goal,labelY);
+    c.beginPath();c.moveTo(route.goal-4,labelY+8);c.lineTo(route.goal,labelY+12);c.lineTo(route.goal+4,labelY+8);c.fill();c.restore();
     if(props().glide||props().scan){c.strokeStyle='#94ffdb';c.lineWidth=2;c.beginPath();c.ellipse(route.goal,route.goalY,26,5,0,0,Math.PI*2);c.stroke();}
     if(!relay)sparkSites().forEach(([sx,sy],i)=>{
       if(sparks.has(i))return;const yy=sy+(reduce?0:Math.sin(clock*3+i)*3);
@@ -117,14 +181,17 @@ export function createField(ui){
     if(!started||document.querySelector('#field').hidden||document.querySelector('dialog[open]')||e.target.closest?.('input,textarea,select')||e.altKey||e.ctrlKey||e.metaKey)return;
     if(e.code==='Escape'&&down&&!e.repeat){pause();return;}
     const names={ArrowLeft:'left',KeyA:'left',ArrowRight:'right',KeyD:'right',Space:'jump',ArrowUp:'jump',KeyW:'jump',KeyE:'use'};const move=names[e.code];
-    if(!move||paused||ended||suspended||e.code==='Space'&&e.target.closest?.('button'))return;e.preventDefault();
-    if(move==='left'||move==='right'){if(down){keys.add(move);target=null;}else keys.delete(move);}else if(down&&!e.repeat){if(move==='jump')jump();else use();}
+    if(!move||paused||ended||suspended)return;
+    // Space must continue to activate a focused radio/menu button for keyboard users.
+    if(e.code==='Space'&&e.target.closest?.('button'))return;
+    e.preventDefault();
+    if(move==='left'||move==='right'){if(down){canvas.focus({preventScroll:true});keys.add(move);target=null;}else keys.delete(move);}else if(down&&!e.repeat){if(move==='jump')jump();else use();}
   }
   window.addEventListener('keydown',e=>key(e,true));window.addEventListener('keyup',e=>key(e,false));window.addEventListener('blur',clearMovement);
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&!paused&&!ended&&started&&!document.querySelector('#field').hidden)pause();});
   const resetPads=bindFieldPads({movement:dirs=>{touchDirections=dirs;if(dirs.length)target=null;},jump,use});
-  function autoGoal(){if(!started||ended||paused||suspended)return;target=route.goal;if(relay&&Math.abs(x-route.goal)<35){atTerminal=false;collect();}}
-  canvas.onpointerdown=e=>{if(ended||paused||suspended)return;canvas.focus({preventScroll:true});const r=canvas.getBoundingClientRect();const dest=clamp(camera+(e.clientX-r.left)/scale,16,W-16);const yy=camY+(e.clientY-r.top)/scale;if(Math.abs(dest-x)<80&&yy<y-20)jump();target=Math.abs(dest-route.goal)<50?route.goal:dest;};
+  function autoGoal(){if(!started||ended||paused||suspended)return;canvas.focus({preventScroll:true});target=route.goal;if(relay&&touchingGoal(true)){atTerminal=false;collect(true);}}
+  canvas.onpointerdown=e=>{if(ended||paused||suspended)return;canvas.focus({preventScroll:true});const r=canvas.getBoundingClientRect();const dest=clamp(camera+(e.clientX-r.left)/scale,16,W-16);const yy=camY+(e.clientY-r.top)/scale;if(Math.abs(dest-route.goal)<42&&yy>=route.goalY-77&&yy<=route.goalY+20){autoGoal();const next=readyTasks(level,doneFor(level.id))[0];if(next)issue(next);return;}if(Math.abs(dest-x)<80&&yy<y-20)jump();target=dest;};
   document.querySelector('#pause').onclick=pause;document.querySelector('#field-target').onclick=autoGoal;
-  new ResizeObserver(draw).observe(canvas);return {start,leave,suspend,draw,resume,warp,forget(){started=false;leave();},get active(){return started&&!ended;},setHero(h){hero=h;loadRunner(h);}};
+  new ResizeObserver(draw).observe(canvas);return {start,leave,suspend,draw,resume,warp,issue,forget(){started=false;leave();},get stageId(){return started?level.id:null;},get active(){return started&&!ended;},setHero(h){hero=h;loadRunner(h);}};
 }
