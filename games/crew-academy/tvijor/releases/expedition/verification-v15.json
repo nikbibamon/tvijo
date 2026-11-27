@@ -1,0 +1,41 @@
+{
+  "release": "expedition-v15",
+  "date": "2026-11-27",
+  "code_commit": "cbb404c21b6898b3c2169130fa3b5359f3a3d694",
+  "sites": {
+    "commit": "081f46a5d873753eef53f4afaaecd19eadfa2e65",
+    "version": 15,
+    "url": "https://tvijo-crew-academy.be9ava.chatgpt.site",
+    "deployment": "appgdep_6b09b75b198c81918641e5cd77e18fd7",
+    "status": "succeeded",
+    "assets": 95
+  },
+  "recording": {
+    "path": "web/audio/glass-dome.mp3",
+    "text": "Стеклянный купол снова пропускает свет.",
+    "source": "eSpeak NG Russian voice",
+    "duration_seconds": 2.88,
+    "byte_length": 11756,
+    "sha256": "0bbabaf0ce78c42d206d829a0432cc2fda895a861994c3529eef2dd3b569ad97"
+  },
+  "verification": {
+    "node_passed": 59,
+    "fastapi_passed": 3,
+    "worker_sha256": "8c4917547fc88288fc7f9b0339a20bc250902279513b781c68ed319b95f1a099",
+    "worker_mp3": {
+      "get": 200,
+      "head": 200,
+      "type": "audio/mpeg",
+      "matched_bytes": true
+    },
+    "sqlite_pair": "Passed with two test sessions",
+    "browser": "Managed preview browser timed out. Shell requests to the public origin returned 403 from this environment.",
+    "physical_phone": "pending",
+    "m1_player_attempts": 0
+  },
+  "biba2": {
+    "update": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v15/update.patch",
+    "sha256": "ef7cee491d53be0b334933139fb109374861b54b3d78ef903e9e31dfc0abb963",
+    "status": "Patch saved and size confirmed; candidate rebuild pending"
+  }
+}
