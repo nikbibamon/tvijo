@@ -1,0 +1,360 @@
+{
+  "siteCommit": "3127f3673a72ac1d7e9439add56ec233971e4535",
+  "githubCommit": "a55dde63c7186b5de078f6fd08ad50405e089dc3",
+  "files": {
+    ".gitignore": {
+      "sha256": "4c94ffe275c971c19847abbe290907fe81baf388cb588e255326db828e3303b7"
+    },
+    ".openai/hosting.json": {
+      "sha256": "a499e902f8296669af3c5769422802e28b1d9c71038075e46c23560609be9451"
+    },
+    "SERVER.md": {
+      "sha256": "710a929d05617ce94e77d5a621af31c61e8fa40aaa3a90f8b40ef0686060f905"
+    },
+    "drizzle/0000_crew_pilot.sql": {
+      "sha256": "c1a314174e3cc5139a35bee8913568e7eaed2fd91cc169326b2e4cba83ad1dad"
+    },
+    "drizzle/0001_crew_social.sql": {
+      "sha256": "0512039c53588ed8436836b731a2925cfc7b441bb47125d8e1c44fb40caa6a94"
+    },
+    "drizzle/0002_paired_beacons.sql": {
+      "sha256": "08061f95bccc01181b8d43555afd18f5134d6004f4d9bf1061cc044524675dbf"
+    },
+    "drizzle/0003_flight_referrals.sql": {
+      "sha256": "47dc5c40bc8ee57f2336dea633d52addc20206c532d0c6ea1da3e20b2ccf29ae"
+    },
+    "drizzle/meta/_journal.json": {
+      "sha256": "68351af7b20f0cc45107836eca4f06af870b25cd224a1e860d1d119c4bf0b3fd"
+    },
+    "package.json": {
+      "sha256": "6332a37507e840e9512a840c79e53d632f30b4394b13262206b6b7b3adfeee44"
+    },
+    "server/herdr_server.py": {
+      "sha256": "a206afba36d099905d28472c24b625b42c8828ffd95312197bf069e6dd918298"
+    },
+    "server/pilot.js": {
+      "sha256": "3784d49b08e441f7f0be8e71775bf10fd16c985a2d9728bb0e707056c876f639"
+    },
+    "server/platform_contract.py": {
+      "sha256": "b91ff03756e99f65f72ee0810cf159e44e77dbc965ba08a954fb3163baccf1db"
+    },
+    "server/portal/frontend/scripts/crew-handoff.test.mjs": {
+      "sha256": "59b256861a7dbfba72065875855f05f00dcb28c4a1ae593d080228385ebf435a"
+    },
+    "server/portal/frontend/src/app/[locale]/game/academy-connect/page.tsx": {
+      "sha256": "3192fdebab0584d9dae79084b14e7a868ccdf0b983398fff02b4254387e25918"
+    },
+    "server/portal/frontend/src/app/api/game/academy-proof/route.ts": {
+      "sha256": "a1de4417ced9aa258e4411e45e956afc56c4a0362517123c527f31226a92ca0e"
+    },
+    "server/portal/frontend/src/lib/crew-handoff.ts": {
+      "sha256": "36150a96b116611d9ca0b5f094adecc6881f032d8d20c530790011db08149b16"
+    },
+    "server/requirements.txt": {
+      "sha256": "ce9b409561c4ab12b3ef095e95a0fb5eaaf3653b45c9a0f4a3751e06b03d10b8"
+    },
+    "server/rules-worker.mjs": {
+      "sha256": "2e91f95cea0afc2f33a1b837f2316b640ae31e74cdb38b54e9a3cb6834f4bdb9"
+    },
+    "server/social.js": {
+      "sha256": "8209f574a385451c71058da211de27e45d0319017b3f4d611a4876598edb55cb"
+    },
+    "server/worker-entry.txt": {
+      "sha256": "f68d58bc759abd3bafc3452de78e988fc70cb34e9684bd4627a01d680b7acc71"
+    },
+    "tests/field-controls.test.mjs": {
+      "sha256": "94969fef4a5ba380ce5a3421fe8a2e4ab60fb207237d18b2ec2b912351ca53a6"
+    },
+    "tests/field-interaction.test.mjs": {
+      "sha256": "7ac2c8003783e5803d6d232c11900c2e5edcfdea095557a1cb8ed5e97ecf8bd7"
+    },
+    "tests/game.test.mjs": {
+      "sha256": "1c3b42591727a9089d4c46df5ea67567ed83fbd0850ba6a6e876f223944b1821"
+    },
+    "tests/service.test.mjs": {
+      "sha256": "efe7fefaaf81bd202e91ce0459af5552959d546064a88720a099461de183b9ad"
+    },
+    "tests/social.test.mjs": {
+      "sha256": "d7d6a66038a3079cbd83417411af3dca950161fa23e44a6c48e832e6ce9188d9"
+    },
+    "tests/test_server.py": {
+      "sha256": "501df795883e27dbc9b4b6563fd9bcfccecbc723dd3de8f4e1776f38531ffa09"
+    },
+    "tools/build.mjs": {
+      "sha256": "7cf29b01278378b7bfc04a9c49105af4cc4c26cb8e0d08cf7161ecc559bd9c95"
+    },
+    "tools/preview-db.mjs": {
+      "sha256": "0e93ae8a62f054b0ece88bb7d379b3dde9de9844f9b7e0888dbd271885595b24"
+    },
+    "tools/preview.mjs": {
+      "sha256": "b50f3dec01b604bc6803980675833509f2aaa20ff3a5126d58e13b98a20752a9"
+    },
+    "web/app.js": {
+      "sha256": "670e0c84e9d8fa7b97ce44275bb1ecf4cfb23c6b0baab4ce3385f843e9a29516"
+    },
+    "web/art/badges/architect.webp": {
+      "sha256": "63d3068c296350c5af7a7254457847dca799cdb9329e568a8d07f0abc52c6590",
+      "width": 128,
+      "height": 128,
+      "kind": "badge"
+    },
+    "web/art/badges/capsule.webp": {
+      "sha256": "6d68a168b2ffe866d9edebf9e0bd29fce54a704c148cf830bde85b8c32babc7c",
+      "width": 128,
+      "height": 128,
+      "kind": "badge"
+    },
+    "web/art/badges/conductor.webp": {
+      "sha256": "0c4fc215cc1c09ca1506db7fa560defc563948e4b770fc08e860aedf3181c653",
+      "width": 128,
+      "height": 128,
+      "kind": "badge"
+    },
+    "web/art/badges/crew.webp": {
+      "sha256": "e40471e6d8e77bf7e6a5975fa1e61d75313a92499550ab0c5d44596d658733ad",
+      "width": 128,
+      "height": 128,
+      "kind": "badge"
+    },
+    "web/art/badges/drone.webp": {
+      "sha256": "194536681a3cd1c44f8f99f232c0d1a4c06b89ab56451c79c7aec540e926efd8",
+      "width": 128,
+      "height": 128,
+      "kind": "badge"
+    },
+    "web/art/badges/robot.webp": {
+      "sha256": "f2019f19a4deb3dd26106bd460fa5dc124f048b402feb913d863e1dd04b7bf87",
+      "width": 128,
+      "height": 128,
+      "kind": "badge"
+    },
+    "web/art/beacon.webp": {
+      "sha256": "961e13370c28338114433fc294a1db2d7facaf4b8cd9782c258d9fb9a67b27bd",
+      "width": 1840,
+      "height": 855,
+      "kind": "scene"
+    },
+    "web/art/cell.webp": {
+      "sha256": "a7758730b49588c7f7d2ac464b6fcdd5dd5d898cf0a22ef625c9d905455acafc",
+      "width": 128,
+      "height": 220,
+      "kind": "scene"
+    },
+    "web/art/crew/assistant.webp": {
+      "sha256": "ec0e6ef1bd2ee41972d5bb585e1dd108c6d97c78f9d144fae1a024be821af18a",
+      "width": 218,
+      "height": 218,
+      "kind": "portrait"
+    },
+    "web/art/crew/blue.webp": {
+      "sha256": "24f5915bd570b83ca56c6785d95f6bf6024ff6aa3a9a0f03bbc201f223dcfcf3",
+      "width": 225,
+      "height": 225,
+      "kind": "portrait"
+    },
+    "web/art/crew/captain.webp": {
+      "sha256": "4e035dd26612d56bef520f892871de7b8e1103058e64d68fec34b912e7a5f187",
+      "width": 233,
+      "height": 233,
+      "kind": "portrait"
+    },
+    "web/art/crew/crew.webp": {
+      "sha256": "975470f8eab28db6aa9ec9b4bffe34503cab8618b8533107dd7d9c4d8eff042b",
+      "width": 315,
+      "height": 340,
+      "kind": "cast"
+    },
+    "web/art/crew/daughter.webp": {
+      "sha256": "e88c239c0ae5791f4185e930ca6e7be0a6d448b7598ba8670f0ccf956b611acd",
+      "width": 238,
+      "height": 238,
+      "kind": "portrait"
+    },
+    "web/art/crew/plane.webp": {
+      "sha256": "e7ab697451772acfc2d76af5a6b326187dabd80fae7b7a9dec52861c65f4e301",
+      "width": 194,
+      "height": 194,
+      "kind": "portrait"
+    },
+    "web/art/crew/robot.webp": {
+      "sha256": "74e4fcb7ad6c4a15a4f1b38fc50f17fbe988349c8528d9d5937973af81b62fff",
+      "width": 223,
+      "height": 223,
+      "kind": "portrait"
+    },
+    "web/art/crew/son.webp": {
+      "sha256": "9bf9830cfb958523252ca4afaa5828081f7ce817626f4b1e6559e37684746176",
+      "width": 212,
+      "height": 212,
+      "kind": "portrait"
+    },
+    "web/art/deck.webp": {
+      "sha256": "40670ea6e99ddbde2b1f8ced642e75d64e546e0720b03fd8598f09f8a5281ac1",
+      "width": 220,
+      "height": 49,
+      "kind": "scene"
+    },
+    "web/art/dock.webp": {
+      "sha256": "81faba7d88cfaabf069ed54a972d61c9bfbe32a5487c9597923019fb76b63268",
+      "width": 1838,
+      "height": 856,
+      "kind": "scene"
+    },
+    "web/art/expedition-cover.webp": {
+      "sha256": "4ea2e046bc653dcae3ddb1fbe951d69029d1d7ec40c854639990d8891cc0e417",
+      "width": 1400,
+      "height": 595,
+      "kind": "scene"
+    },
+    "web/art/foundry.webp": {
+      "sha256": "89f438dcd60deb32ba84fceeb952612ffd87641c56a2f279786c4aabd2892fd6",
+      "width": 1440,
+      "height": 672,
+      "kind": "scene"
+    },
+    "web/art/greenhouse.webp": {
+      "sha256": "740beb072b59772934b102ffe069e49e18f40d928a5c812277c2c51a5df577a2",
+      "width": 1440,
+      "height": 672,
+      "kind": "scene"
+    },
+    "web/art/mine.webp": {
+      "sha256": "7b70ef51c19e02877c9d9b8cbb5d3461ab7e750a57b1d634917de67a32a860c7",
+      "width": 1837,
+      "height": 856,
+      "kind": "scene"
+    },
+    "web/art/relay.webp": {
+      "sha256": "16757bc2b65461b8404c0383434fd723d87579277223760cd2af1ce733d16d7e",
+      "width": 192,
+      "height": 220,
+      "kind": "scene"
+    },
+    "web/art/rift.webp": {
+      "sha256": "93220e4de49c5a38a404d570dd2f73fdc9947b6f9ed5f33516d99439959c7721",
+      "width": 1840,
+      "height": 855,
+      "kind": "scene"
+    },
+    "web/art/runners/assistant.webp": {
+      "sha256": "5063913233720374ff5267916a20217ef2c4d1f7663ccfd8e8454408f049f642",
+      "width": 512,
+      "height": 128,
+      "kind": "runner"
+    },
+    "web/art/runners/blue.webp": {
+      "sha256": "f09a8dbdbee99839dd6cb076a58d9b34a0dc8e93688be1eaa2b032a9b50ec01d",
+      "width": 512,
+      "height": 128,
+      "kind": "runner"
+    },
+    "web/art/runners/captain.webp": {
+      "sha256": "b0126b6ce9e47bbb5f68da9917834d85ecc63f2500df399955a9849d5307bf28",
+      "width": 512,
+      "height": 128,
+      "kind": "runner"
+    },
+    "web/art/runners/daughter.webp": {
+      "sha256": "ef05fd2b67f7feb7855f43da3ab38e9d9964e389a42a2c7b1af58794bd6ca808",
+      "width": 512,
+      "height": 128,
+      "kind": "runner"
+    },
+    "web/art/runners/plane.webp": {
+      "sha256": "0a256df7d4648fed570e1c8bddc9aaf2f0224b7d391efc2934b33e534d0a81f2",
+      "width": 512,
+      "height": 128,
+      "kind": "runner"
+    },
+    "web/art/runners/robot.webp": {
+      "sha256": "877e6ed726e27c8fb58e5853f24a8cb6e574c8e4fa9273b477897092d1d6d3e8",
+      "width": 512,
+      "height": 128,
+      "kind": "runner"
+    },
+    "web/art/runners/son.webp": {
+      "sha256": "584357587bf0deff36e4d6fe79df99fe0887363f8cebd0edb066fa9d8f477759",
+      "width": 512,
+      "height": 128,
+      "kind": "runner"
+    },
+    "web/art/sector.webp": {
+      "sha256": "a0a0cb3f80812481529152d9cdde4aceaa291f3073f512727c67376ac9ac9cdd",
+      "width": 1817,
+      "height": 866,
+      "kind": "scene"
+    },
+    "web/art/tvijo.png": {
+      "sha256": "cb34988fe0efcb95a0a206da6273ac61284e5cb0175eb96aae5d0826062825a5",
+      "width": 186,
+      "height": 156,
+      "kind": "scene"
+    },
+    "web/art/wraith.webp": {
+      "sha256": "8de5abba0d334f2c8c3b30651a1ce140466e34388179810aeca5e7a32e46a2e9",
+      "width": 220,
+      "height": 206,
+      "kind": "scene"
+    },
+    "web/catalog.js": {
+      "sha256": "36ff1fdfa7c7222c73dce7fd8f18d8f28161ce8d46daec39caeb54106f77bf23"
+    },
+    "web/club.js": {
+      "sha256": "640b022cf9d12b48162af173f229fb53b1c5148d702f4b72ff3ae0685f52d69d"
+    },
+    "web/crewLabels.js": {
+      "sha256": "4e8c7287dd0c78d2a2e7a9cff728d44ebd636f762789f9cb95ec178257ae9b2a"
+    },
+    "web/field.js": {
+      "sha256": "18baac1e6cf25253ab745185c9caa6d38a7ea84f7e108c4bcf714123d486756c"
+    },
+    "web/fieldControls.js": {
+      "sha256": "62a921b9fab886862285d9cfa2df5e4cfa6ae2351ab991bae7d2b9c2aedac1c4"
+    },
+    "web/flightAwards.js": {
+      "sha256": "03f35ec70b156e1478a1365a6af0a594184578828dc5195aff0a0c5a8105831c"
+    },
+    "web/fonts/LICENSE.txt": {
+      "sha256": "bdc64ed8f50f98b1c52a6e50fd4a7da22d4847ff83ba543beeed4d68c7af8ced"
+    },
+    "web/fonts/rubik-bold.woff": {
+      "sha256": "5916cd326ebe763b9dadfb8017a610161cbabf859151b99766f4465217cf85b9"
+    },
+    "web/fonts/rubik-regular.woff": {
+      "sha256": "09d13578e043f7df6b84f466aa29556db50b37bc2d6d58fc518f8a6b4f585874"
+    },
+    "web/icons.js": {
+      "sha256": "d2fe5ee7ecbc221fca5d2b3fc186b268e856b7efdb4aaee03e08cb7dc0e50978"
+    },
+    "web/index.html": {
+      "sha256": "7fafadc30b8d5e4f15c1f4afa4f0ef276048237ab2f3279cce34e575f46d8a47"
+    },
+    "web/pixelAvatar.js": {
+      "sha256": "d58a37366034f1ab30746e4c31b4b9d24f4b952a5fbe4d58ce700d7fa35cb537"
+    },
+    "web/relayConsole.js": {
+      "sha256": "dcfcf656814fc041b5b471ea381a0228016ade48ab1063aded5521def05a4133"
+    },
+    "web/relayMission.js": {
+      "sha256": "93f4f1cdd792cbbca5c1dd7c8afd3b53630a25ba836ea14ba864984acec9697a"
+    },
+    "web/sceneArt.js": {
+      "sha256": "2a5f590a18826f90d79a9753b51db353ff201fc9f90cde7e5ebc3357c2db8794"
+    },
+    "web/strategy.js": {
+      "sha256": "a0821674d98fddd732b1852bd48a019b48a8db48e55bfcbddae65243998cd816"
+    },
+    "web/style.css": {
+      "sha256": "3929b73648d3626cd503618324163fa1ba2af31e688209add06e10f205fbd391"
+    },
+    "web/tvijoService.js": {
+      "sha256": "a37762dc158bef7716d47763e296e9f718b4734ec077ca5826842d3caf40379e"
+    },
+    "web/workshop.js": {
+      "sha256": "1fc5c50f9defd6d6981c9e9bdacd2ac6be6421142cef2793e86372ac9e103171"
+    },
+    "web/worlds.js": {
+      "sha256": "f22d9e5c0c6ea87f331209f0d6b10bb2105ed62b1ddae8a96662393da268e864"
+    }
+  }
+}
