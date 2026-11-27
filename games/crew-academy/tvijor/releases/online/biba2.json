@@ -1,0 +1,101 @@
+{
+  "sourceCommit": "7de3ec31129dbe0fd8664b08b5fffab49466760e",
+  "path": "/srv/remdesk/workspace/tvijo-crew-academy-online/game",
+  "filesVerified": 112,
+  "publicHTTPS": null,
+  "productionService": "pending",
+  "telegramMainApp": "pending",
+  "telegramBot": "@tvijobot",
+  "trialCount": 0,
+  "node": "v20.20.0",
+  "python": "3.12.3",
+  "sqlite": "3.45.1",
+  "checks": {
+    "build": {
+      "status": "passed",
+      "exitCode": 0,
+      "log": "build.log"
+    },
+    "game-art": {
+      "status": "passed",
+      "exitCode": 0,
+      "log": "check-art.log",
+      "result": {
+        "lockedAssets": 34,
+        "approvedHeroes": 7,
+        "posesPerHero": 4
+      }
+    },
+    "game-routes": {
+      "status": "passed",
+      "exitCode": 0,
+      "log": "check-routes.log",
+      "result": {
+        "campaign": [
+          "Солнечный причал",
+          "Кристальный разлом",
+          "Шахта эха",
+          "Сердце маяка",
+          "Оранжерея дронов",
+          "Кузница орбиты"
+        ],
+        "generated": 900,
+        "seedsPerConfiguration": 5
+      }
+    },
+    "game-build": {
+      "status": "passed",
+      "exitCode": 0,
+      "log": "check-build.log",
+      "result": {
+        "workerBytes": 4384233,
+        "workerSHA256": "0fe37402b98e7ef4cc413f5d5d0d29dfa58c8d1607bcead3ad124868b3002f74",
+        "homepage": 200,
+        "health": 200,
+        "runner": 200,
+        "billing": "demo"
+      }
+    },
+    "online": {
+      "status": "failed",
+      "exitCode": 1,
+      "log": "online.log",
+      "tests": [
+        "not ok 1 - /srv/remdesk/workspace/tvijo-crew-academy-online/game/tests/online.test.mjs"
+      ],
+      "blocker": "RemDesk Codex sandbox denied binding 127.0.0.1 (EPERM). No external server test in this sandbox."
+    },
+    "studio": {
+      "status": "passed",
+      "exitCode": 0,
+      "log": "studio.log"
+    },
+    "storageRestart": {
+      "status": "passed",
+      "transport": "in-process Worker Requests and a real Python SQLite subprocess restarted on the same file",
+      "roles": [
+        "scout",
+        "engineer"
+      ],
+      "resumed": "sent",
+      "duplicateFinishAwardsPerPilot": 1
+    }
+  },
+  "workerSHA256": "0fe37402b98e7ef4cc413f5d5d0d29dfa58c8d1607bcead3ad124868b3002f74",
+  "verificationScope": "Staging copy on biba2. The Codex job cannot bind ports; the HTTP restart test passed in the build workspace.",
+  "pilotSite": {
+    "url": "https://tvijo-crew-academy-pilot.be9ava.chatgpt.site",
+    "sitesCommit": "8b0f2acc8d751f66781899c8add7522c2d6eede5",
+    "version": 1
+  },
+  "automatedBuildWorkspace": {
+    "nodeTests": 41,
+    "fastAPITests": 3,
+    "studioTests": 6,
+    "tcpRestart": "passed"
+  },
+  "livePlayers": {
+    "attempts": 0,
+    "goal": "4/5 unaided within 180 seconds, including at least one actual phone"
+  }
+}
