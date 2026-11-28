@@ -15,3 +15,8 @@
 @media(max-width:520px){.bridge-routes a:last-child:nth-child(odd){grid-column:1/-1;}}
 
 @media(min-width:801px){.crew-doors:has(a[href="./rescue-together.html"]){grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+.exp-door.playground-entry {
+  border-color:#476b72;
+  background:repeating-linear-gradient(127deg,#2c5f6813 0 16px,transparent 16px 32px),linear-gradient(109deg,#194248,#211f38 76%);
+}
