@@ -8,7 +8,7 @@ const output = process.argv[2] ? resolve(process.argv[2]) : join(root,'dist','ca
 const web = join(root,'web');
 const files = [
   'campaign','chronicles','clockwork','playground','fonts','art/crew','art/runners','art/tvijo.png',
-  'expedition/expedition.css','catalog.js','crewLabels.js','domeRecording.js','flightAwards.js',
+  'expedition/expedition.css','expedition/mirror-path.js','catalog.js','crewLabels.js','domeRecording.js','flightAwards.js',
   'narration.js','pixelAvatar.js','strategy.js','tvijoService.js','worlds.js'
 ];
 const [page,clockwork,playground] = await Promise.all(['chronicles','clockwork','playground']

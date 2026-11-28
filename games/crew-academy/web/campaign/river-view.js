@@ -73,13 +73,15 @@ export function mountRiverChapter(openEnding) {
 
   function puzzleControls(scene) {
     if (finished(run)) {
+      const lighthouse = element('a','camp-button camp-primary','К маяку двух времён');
+      lighthouse.href = '#lighthouse';
       const workshop = element('a','camp-button','В мастерскую');
       workshop.href = '#workshop';
       const story = element('a','camp-button','К Лире и Яну');
       story.href = '#stories';
       const map = element('a','camp-button','На карту');
       map.href = '#atlas';
-      return [control('Смотреть финал','film',openEnding,'camp-primary'),story,workshop,map];
+      return [lighthouse,control('Смотреть финал','film',openEnding),story,workshop,map];
     }
     if (run.cleared) {
       return [control('Дальше · '+scenes[run.step+1].short,'next',()=>act('next'),'camp-primary')];

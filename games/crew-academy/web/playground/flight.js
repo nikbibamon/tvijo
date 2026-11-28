@@ -3,7 +3,7 @@ import {directionNames,directions,neighbor} from './grid.js';
 const width=9, height=5, deck=2;
 const index=(x,y)=>y*width+x;
 
-function layout(rows) {
+export function flightLayout(rows) {
   const tiles=rows.join('');
   const switches=[];
   for (let point=0;point<tiles.length;point++) {
@@ -12,7 +12,7 @@ function layout(rows) {
   return {width,height,tiles,start:tiles.indexOf('S'),switches};
 }
 
-const first=layout([
+const first=flightLayout([
   '#########',
   '###~T~###',
   '#...S..G#',
@@ -36,7 +36,7 @@ function generate(level,pick) {
 
   branch(4,lowerHatch,level>=5?2+pick(2):1);
   if (level>=3) branch(0,2+pick(5),level>=4?1+pick(2):0);
-  return layout(rows.map(row=>row.join('')));
+  return flightLayout(rows.map(row=>row.join('')));
 }
 
 function passable(layout,point,actor,open) {

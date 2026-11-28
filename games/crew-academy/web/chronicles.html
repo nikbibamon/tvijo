@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="./playground/playground.css">
   <link rel="stylesheet" href="./playground/duel.css">
   <link rel="stylesheet" href="./campaign/style.css">
+  <link rel="stylesheet" href="./campaign/lighthouse.css">
 </head>
 <body class="ch-body camp-body">
   <header class="camp-header">
@@ -40,10 +41,16 @@
         </div>
       </div>
       <div class="camp-atlas-head"><h2>Карта приключений</h2><span id="camp-overview"></span></div>
-      <a class="camp-chapter-card" href="#journey">
-        <img src="./campaign/art/river.webp" alt="" loading="lazy">
-        <span><small>Италия и Египет · 1939–1941</small><strong>Чаша приливов</strong><span id="camp-chapter-summary">Музей, поезд, река и подземные рельсы.</span></span>
-      </a>
+      <div class="camp-chapters">
+        <a class="camp-chapter-card" href="#journey">
+          <img src="./campaign/art/river.webp" alt="" loading="lazy">
+          <span><small>Италия и Египет · 1939–1941</small><strong>Чаша приливов</strong><span id="camp-chapter-summary">Музей, поезд, река и подземные рельсы.</span></span>
+        </a>
+        <a class="camp-chapter-card camp-lighthouse-card" href="#lighthouse">
+          <img src="./campaign/art/lighthouse-2041.webp" alt="" loading="lazy">
+          <span><small>Египет · 1941 и 2041</small><strong>Маяк двух времён</strong><span id="camp-lighthouse-summary">Откроется после «Чаши приливов».</span></span>
+        </a>
+      </div>
       <div class="camp-sidequests">
         <a href="#stories"><strong>Приключения Лиры и Яна</strong><span id="camp-stories-summary">Три эпохи и Семейные часы</span></a>
         <a href="#workshop"><strong>Мастерская</strong><span id="camp-workshop-summary">Лестница к Семейным часам</span></a>
@@ -78,6 +85,43 @@
         </aside>
       </div>
       <ol id="camp-stops" class="camp-stops" aria-label="Маршрут Чаши приливов"></ol>
+    </section>
+    <section class="camp-panel" id="camp-lighthouse" data-campaign-panel="lighthouse" hidden>
+      <div class="camp-journey-heading">
+        <div><p>Египет · Речной маяк</p><h1 tabindex="-1">Маяк двух времён</h1></div>
+        <span id="lh-progress"></span>
+      </div>
+      <div class="camp-task" id="lh-locked">
+        <h2>Нужен оттиск Чаши приливов</h2>
+        <p>На рисунке Мины есть отметка, по которой семья найдёт речной маяк.</p>
+        <a class="camp-button camp-primary" href="#journey">К Чаше приливов</a>
+      </div>
+      <div id="lh-play" hidden>
+        <div id="lh-years" class="lh-years" role="group" aria-label="Семейные часы">
+          <button class="camp-button" id="lh-past" type="button">1941 · Прошлое</button>
+          <button class="camp-button" id="lh-future" type="button">2041 · Будущее</button>
+        </div>
+        <div class="camp-scene-layout">
+          <figure class="camp-scene">
+            <div class="camp-scene-frame lh-frame" id="lh-frame">
+              <img id="lh-image" alt="">
+              <div class="lh-lit" aria-hidden="true"></div>
+              <button class="camp-button camp-pin lh-pin" id="lh-pin" type="button" hidden>✦</button>
+            </div>
+            <figcaption class="camp-spoken">
+              <img id="lh-portrait" alt="" width="62" height="62">
+              <div><strong id="lh-speaker"></strong><p id="lh-line"></p></div>
+            </figcaption>
+          </figure>
+          <aside class="camp-task" aria-labelledby="lh-goal">
+            <h2 id="lh-goal"></h2>
+            <div id="lh-puzzle"></div>
+            <p id="lh-feedback" role="status"></p>
+            <button type="button" class="camp-button camp-small" id="lh-hint" hidden>Подсказка</button>
+          </aside>
+        </div>
+        <ol id="lh-steps" class="camp-stops lh-steps" aria-label="Задачи маяка"></ol>
+      </div>
     </section>
     <section class="camp-panel" id="camp-stories" data-campaign-panel="stories" aria-label="Приключения Лиры и Яна" hidden>
     <section id="ch-game" aria-labelledby="ch-chapter">

@@ -1,0 +1,34 @@
+{
+  "release": 31,
+  "site": {
+    "url": "https://tvijo-crew-academy.be9ava.chatgpt.site/chronicles.html#lighthouse",
+    "sourceCommit": "79443bf00c7a43505f0c84a38e463899ac64ddad",
+    "status": "succeeded",
+    "checks": [
+      "locked chapter",
+      "completion unlock after Tide Bowl",
+      "1941 and 2041 scene assets",
+      "hatch opens after repair",
+      "same document atlas"
+    ]
+  },
+  "local": {
+    "nodeTestsPassed": 124,
+    "workerRebuildMatches": true,
+    "offlineCampaignBuilt": true,
+    "chromeChecks": [
+      "full lighthouse chapter",
+      "reload after first switch",
+      "four mirror receiver",
+      "three closing frames",
+      "one journal reward",
+      "finish survives reload"
+    ]
+  },
+  "mirror": {
+    "directory": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v31",
+    "baseSiteCommit": "d788ffcd9237a53bdfc63ba0bf801b7e39f73dae",
+    "patchParts": 7,
+    "patchSha256": "941506386d5c004a944664e73fa98bb7dbc14f37deed64207c25f76eb5c6361a"
+  }
+}

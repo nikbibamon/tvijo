@@ -3,9 +3,11 @@ import {element} from '../playground/boards.js';
 import {games, savedRun} from '../playground/levels.js';
 import {current, model, movieUnlocked} from '../chronicles/progress.js';
 import {restore as workshopState} from '../clockwork/game.js';
-import {crew, ending, scenes} from './river-story.js';
+import {crew, ending, scenes, title as riverTitle} from './river-story.js';
 import {clearedStops, finished, riverState} from './river-progress.js';
 import {mountRiverChapter} from './river-view.js';
+import {chart,lens,lighthouseAvailable,lighthouseFilm,lighthouseTitle,restoreLighthouse} from './lighthouse.js';
+import {mountLighthouse} from './lighthouse-view.js';
 
 const el = id=>document.getElementById('camp-'+id);
 const panels = [...document.querySelectorAll('[data-campaign-panel]')];
@@ -16,7 +18,7 @@ const modules = {
 };
 const notes = el('notes');
 const film = el('ending');
-let screen, currentHash, noteType, frame = 0;
+let screen, currentHash, noteType, frames, frame = 0;
 let routeChange = 0;
 const filmArt = id=>'./campaign/art/'+id+'.webp';
 
@@ -25,11 +27,16 @@ function target(value) {
   if (hash==='#ch-choices') return {screen:'stories',hash,choices:true};
   if (hash==='#training' || /^#training\/(?:ice|wire|post|flight|duel)$/.test(hash)) return {screen:'training',hash};
   const key = hash.slice(1);
-  return ['journey','stories','workshop'].includes(key) ? {screen:key,hash} : {screen:'atlas',hash:'#atlas'};
+  return ['journey','lighthouse','stories','workshop'].includes(key) ? {screen:key,hash} : {screen:'atlas',hash:'#atlas'};
 }
 
 function inventory(run) {
   const stash = scenes.slice(0,clearedStops(run)).map(scene=>scene.item);
+  if (finished(run)) {
+    const light = restoreLighthouse(state.lighthouse);
+    if (light.entered) stash.push(lens);
+    if (light.signaled) stash.push(chart);
+  }
   const story = model(state.chronicles);
   const chapters = story.generated ? ['origin','bridge','generated'] : ['origin','bridge'];
   const oldItems = new Set(chapters.flatMap(active=>current({...story,active}).pocket));
@@ -72,40 +79,53 @@ function renderAtlas() {
   const found = clearedStops(run);
   const pack = inventory(run).length;
   const saved = target(state.campaignScreen??'');
+  const unlocked = finished(run);
+  const light = restoreLighthouse(state.lighthouse);
   const story = model(state.chronicles);
   const chapters = ['origin','bridge'].filter(id=>movieUnlocked(story,id)).length;
   const blueprints = workshopState(state.clockwork).wins.length;
   const training = Object.keys(games).filter(id=>savedRun(state,id).best>0).length;
   el('pack-count').textContent = String(pack);
   el('pack-count').hidden = !pack;
-  el('overview').textContent = found ? found+' / '+scenes.length+' остановок пройдено' : '';
+  el('overview').textContent = unlocked ? (light.signaled?'2':'1')+' / 2 главы пройдено' : found ? found+' / '+scenes.length+' остановок пройдено' : '';
   el('chapter-summary').textContent = finished(run) ? 'Глава пройдена · финал открыт' : found ? 'Следующая остановка · '+scenes[Math.min(found,scenes.length-1)].short : 'Музей, поезд, река и подземные рельсы.';
+  el('lighthouse-summary').textContent = !unlocked ? 'Откроется после «Чаши приливов».'
+    : light.signaled ? 'Переправа открыта · финал доступен'
+    : light.braced || light.era==='past' ? 'Продолжить работу на маяке' : 'Восстанови путь к переправе.';
   el('stories-summary').textContent = chapters ? chapters+' / 2 главы пройдено' : 'Три эпохи и Семейные часы';
   el('workshop-summary').textContent = blueprints ? blueprints+' / 3 чертежей готово' : 'Лестница к Семейным часам';
   el('training-summary').textContent = training ? training+' / 5 заданий освоено' : 'Пять коротких вылазок';
   const resume = el('continue');
-  resume.href = saved.screen==='atlas' ? '#journey' : saved.hash;
+  if (['atlas','journey'].includes(saved.screen) && unlocked) resume.href = '#lighthouse';
+  else if (saved.screen==='atlas' || saved.screen==='lighthouse' && !unlocked) resume.href = '#journey';
+  else resume.href = saved.hash;
   resume.textContent = saved.screen!=='atlas' || found ? 'Продолжить игру' : 'Начать с музея';
   if (notes.open) renderNotes(run);
 }
 
 function playFrame() {
-  const line = ending[frame];
+  const line = frames[frame];
+  const name = line.actor==='lira' ? 'Лира' : crew[line.actor].name;
   el('ending-image').src = filmArt(line.scene);
-  el('ending-actor').src = filmArt(line.actor);
-  el('ending-line').textContent = crew[line.actor].name+' · «'+line.text+'»';
-  el('ending-next').textContent = frame===ending.length-1 ? 'Готово' : 'Дальше';
+  el('ending-actor').src = line.actor==='lira' ? './art/crew/daughter.webp' : filmArt(line.actor);
+  el('ending-line').textContent = name+' · «'+line.text+'»';
+  el('ending-next').textContent = frame===frames.length-1 ? 'Готово' : 'Дальше';
 }
 
-function openEnding() {
-  if (!finished(riverState(state.riverChronicle)) || film.open) return;
+function openEnding(chapter) {
+  const lighthouse = chapter==='lighthouse';
+  const unlocked = lighthouse ? lighthouseAvailable(state) && restoreLighthouse(state.lighthouse).signaled
+    : finished(riverState(state.riverChronicle));
+  if (!unlocked || film.open) return;
+  frames = lighthouse ? lighthouseFilm : ending;
+  el('ending-title').textContent = 'Мультсцена · '+(lighthouse ? lighthouseTitle : riverTitle);
   frame = 0;
   playFrame();
   film.showModal();
 }
 
 el('ending-next').onclick = ()=>{
-  if (frame===ending.length-1) film.close();
+  if (frame===frames.length-1) film.close();
   else {frame++;playFrame();}
 };
 el('pack-open').onclick = ()=>openNotes('pack');
@@ -121,6 +141,7 @@ async function route() {
   if (screen==='atlas') el('map-link').setAttribute('aria-current','page');
   else el('map-link').removeAttribute('aria-current');
   const active = panels.find(panel=>!panel.hidden);
+  if (screen==='lighthouse') showLighthouse();
   const load = modules[screen];
   if (load) {
     try {await load();}
@@ -142,10 +163,13 @@ async function route() {
       }
     }
   }
-  if (screen!=='atlas' && state.campaignScreen!==view.hash) void write(profile=>{profile.campaignScreen = view.hash;});
+  if (screen!=='atlas' && (screen!=='lighthouse' || lighthouseAvailable(state)) && state.campaignScreen!==view.hash) {
+    void write(profile=>{profile.campaignScreen = view.hash;});
+  }
 }
 
-mountRiverChapter(openEnding);
+mountRiverChapter(()=>openEnding('river'));
+const showLighthouse = mountLighthouse(()=>openEnding('lighthouse'));
 bus.addEventListener('change',renderAtlas);
 renderAtlas();
 window.addEventListener('hashchange',route);

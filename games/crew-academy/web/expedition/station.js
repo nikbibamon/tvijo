@@ -1,3 +1,5 @@
+import {traceMirrorPath} from './mirror-path.js';
+
 const SIZE = 5;
 const CELLS = SIZE * SIZE;
 const DIRECTIONS = ['up', 'right', 'down', 'left'];
@@ -6,7 +8,7 @@ const SOURCE = 15;
 const RECEIVER = 24;
 const MIRRORS = [17, 7, 9];
 const WALLS = [4, 5, 22];
-const REFLECTION = [[1, 0, 3, 2], [3, 2, 1, 0]];
+const MIRROR_LAYOUT = {width:SIZE, height:SIZE, source:SOURCE, receiver:RECEIVER, mirrors:MIRRORS, walls:WALLS};
 const ARCHIVE = ['##E##', '#CT##', '#o###', '#oT##', '##S##'].join('');
 const ARCHIVE_START = ARCHIVE.indexOf('S');
 const KEY_DIRECTIONS = {ArrowUp: 'up', ArrowRight: 'right', ArrowDown: 'down', ArrowLeft: 'left'};
@@ -19,24 +21,7 @@ function neighbor(cell, direction) {
 }
 
 export function traceMirrors(angles) {
-  const beams = Array.from({length: CELLS}, () => []);
-  let cell = SOURCE;
-  let direction = 1;
-  const seen = new Set();
-
-  while (!seen.has(cell * 4 + direction)) {
-    seen.add(cell * 4 + direction);
-    const next = neighbor(cell, direction);
-    if (next < 0) break;
-    beams[cell].push(DIRECTIONS[direction]);
-    beams[next].push(DIRECTIONS[(direction + 2) % 4]);
-    if (next === RECEIVER) return {beams, reaches: true};
-    if (WALLS.includes(next)) break;
-    const mirror = MIRRORS.indexOf(next);
-    if (mirror !== -1) direction = REFLECTION[angles[mirror]][direction];
-    cell = next;
-  }
-  return {beams, reaches: false};
+  return traceMirrorPath(MIRROR_LAYOUT,angles);
 }
 
 export function freshMirrors() {
