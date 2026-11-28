@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {applyCircuit,ballAt,chainRun,circuitRoute,machine,trajectory} from '../web/chain/rules.js';
+import {applyCircuit,ballAt,chainRun,circuitPrompt,circuitRoute,machine,trajectory} from '../web/chain/rules.js';
 
 const play=(profile,station,...actions)=>actions.map(action=>applyCircuit(profile,station,action,null,27)).at(-1);
 
@@ -49,4 +49,37 @@ test('installation keeps a previous successful lamp and restores an old unfinish
   const partial=chainRun({},'lamp',{board:{ramp:true,contact:false,result:'gap'}});
   assert.equal(partial.guide,true);
   assert.equal(partial.lever,false);
+});
+
+test('a restored miss replaces the main action with return, then points to the right control',()=>{
+  const profile={expeditionRewards:[]};
+  play(profile,'lamp','open','launch');
+  const fromV23=JSON.parse(JSON.stringify(profile));
+  const stopped=circuitPrompt('lamp',chainRun(fromV23,'lamp'));
+  assert.equal(stopped.action,'return');
+  assert.match(stopped.message,/в корзине/);
+
+  const returned=play(fromV23,'lamp','return').run;
+  assert.equal(returned.attempts,1);
+  assert.equal(circuitPrompt('lamp',returned).control,'guide');
+  assert.equal(circuitPrompt('lamp',play(fromV23,'lamp','guide').run).control,'lever');
+  const aligned=play(fromV23,'lamp','lever').run;
+  assert.equal(circuitPrompt('lamp',aligned).action,'launch');
+  assert.equal(circuitPrompt('lamp',aligned).control,undefined);
+  assert.equal(circuitPrompt('lamp',play(fromV23,'lamp','launch').run).action,'next');
+
+  const pump=play(fromV23,'pump','open','launch').run;
+  assert.match(circuitPrompt('pump',pump).message,/дошёл до лампы/);
+  assert.equal(circuitPrompt('pump',play(fromV23,'pump','return').run).control,'branch');
+});
+
+test('opening the pump in another tab cannot strand the ball in the lamp room',()=>{
+  const profile={expeditionRewards:['chain']};
+  play(profile,'lamp','open','launch');
+  const pump=play(profile,'pump','open').run;
+  const ball=play(profile,'lamp','return').run;
+  assert.equal(ball.last,null);
+  assert.equal(ball.attempts,1);
+  assert.deepEqual(chainRun(profile,'pump'),pump);
+  assert.equal(play(profile,'lamp','return'),null);
 });

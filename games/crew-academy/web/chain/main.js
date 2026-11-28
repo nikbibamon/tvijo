@@ -1,5 +1,5 @@
 import {state, write, note} from '../tvijoService.js';
-import {applyCircuit, arrival, chainRun, chainUnlocked, stations, trajectory, circuitLine} from './rules.js';
+import {applyCircuit, circuitPrompt, chainRun, chainUnlocked, stations, trajectory, circuitLine} from './rules.js';
 import {drawCircuit} from './field.js';
 
 const template = `
@@ -14,22 +14,25 @@ const template = `
       <canvas width="960" height="540" aria-hidden="true"></canvas>
     </div>
     <div class="circuit-console">
-      <div class="circuit-brief"><p class="circuit-goal"></p><p class="circuit-status" role="status"></p></div>
+      <div class="circuit-step">
+        <p class="circuit-status" role="status"></p>
+        <button class="circuit-launch" type="button" data-play>Пуск шара</button>
+        <a class="circuit-launch" data-next hidden></a>
+      </div>
+      <p class="circuit-goal"></p>
       <fieldset class="circuit-tools"><legend>Настроить стенд</legend>
         <button type="button" data-action="guide">Повернуть желоб<strong></strong></button>
         <button type="button" data-action="lever">Переставить рычаг<strong></strong></button>
         <button type="button" data-action="branch">Перевести стрелку<strong></strong></button>
       </fieldset>
       <div class="circuit-actions">
-        <button class="circuit-launch" type="button" data-action="launch">Пуск шара</button>
-        <button type="button" data-action="return">Вернуть шар</button>
         <button type="button" data-action="replay">Пройти ещё раз</button>
         <span class="circuit-tries"></span>
         <a class="circuit-back" href="#chain/lamp" hidden>К сигнальной лампе</a>
       </div>
       <div class="circuit-result" hidden>
         <div><strong></strong><p></p></div>
-        <div class="circuit-next"><a class="circuit-launch" data-next></a><a href="./#journal">Журнал смены</a></div>
+        <a href="./#journal">Журнал смены</a>
       </div>
     </div>
   </section>`;
@@ -45,12 +48,15 @@ export function mountCircuit(root, api) {
   const get = selector => root.querySelector(selector);
   const getButton = action => get('[data-action='+action+']');
   const canvas = get('canvas');
-  const controls = Object.fromEntries(['guide','lever','branch','launch','return','replay'].map(action=>[action,getButton(action)]));
+  const controls = Object.fromEntries(['guide','lever','branch','replay'].map(action=>[action,getButton(action)]));
   const status = get('.circuit-status');
+  const panel = get('.circuit-step');
+  const primary = get('[data-play]');
+  const goal = get('.circuit-goal');
   let run = chainRun(state,station,previous);
   let disposed = false, busy = true, frame = 0;
   get('h2').textContent = chapter.name;
-  get('.circuit-goal').textContent = chapter.goal;
+  goal.textContent = chapter.goal;
   controls.branch.hidden = station!=='pump';
   get('.circuit-back').hidden = station!=='pump';
   const next = get('[data-next]');
@@ -68,12 +74,20 @@ export function mountCircuit(root, api) {
     controls.guide.querySelector('strong').textContent = run.guide?'К рычагу':'В ловушку';
     controls.lever.querySelector('strong').textContent = run.lever?'У контакта':'На дальней опоре';
     controls.branch.querySelector('strong').textContent = run.branch==='lamp'?'Верхняя · лампа':'Нижняя · насос';
-    for (const action of ['guide','lever','branch','launch']) controls[action].disabled = busy||!!run.last||run.solved;
+    const prompt = circuitPrompt(station,run);
+    for (const action of ['guide','lever','branch']) {
+      controls[action].disabled = busy||prompt.action!=='launch';
+      controls[action].toggleAttribute('data-hint',action===prompt.control);
+    }
     controls.guide.setAttribute('aria-pressed',String(run.guide));
     controls.lever.setAttribute('aria-pressed',String(run.lever));
     controls.branch.setAttribute('aria-pressed',String(run.branch==='pump'));
-    controls.return.hidden = !run.last||run.solved;
-    controls.return.disabled = busy;
+    primary.hidden = prompt.action==='next';
+    primary.disabled = busy;
+    primary.dataset.play = prompt.action;
+    primary.textContent = prompt.action==='return'?'Вернуть шар':'Пуск шара';
+    next.hidden = prompt.action!=='next';
+    goal.hidden = run.attempts>0 || run.solved;
     controls.replay.hidden = !run.solved;
     controls.replay.disabled = busy;
     get('.circuit-tries').textContent = 'Пуски · '+run.attempts;
@@ -83,17 +97,17 @@ export function mountCircuit(root, api) {
       result.querySelector('strong').textContent = station==='lamp'?'Лампа зажжена':'Энергоблок запущен';
       result.querySelector('p').textContent = station==='lamp'?'Получено Световое реле.':'Получен Ключ насоса. Радиомастерская снова принимает вызовы.';
     }
-    const outcome = run.last==='lamp'&&station==='pump'?'Шар дошёл до лампы. Верни шар и переведи стрелку на насос.':arrival[run.last];
-    status.textContent = outcome || 'Шар в подающем лотке.';
-    status.dataset.outcome = run.solved?'won':run.last?'miss':'';
+    status.textContent = prompt.message;
+    panel.dataset.outcome = prompt.outcome || '';
     show();
+    return prompt;
   }
 
   function mutate(action) {
     const operation = write(profile=>{
       const result=applyCircuit(profile,station,action,previous,Date.now());
       if (result?.report) note(profile,'field','Цепная реакция · '+circuitLine(result.report));
-      return result;
+      return result ?? {run:chainRun(profile,station,previous)};
     });
     api.pending(operation.catch(()=>{}));
     return operation;
@@ -103,18 +117,20 @@ export function mountCircuit(root, api) {
     if (busy || disposed) return;
     busy = true;
     for (const control of Object.values(controls)) control.disabled = true;
+    primary.disabled = true;
     try {
       const result = await mutate(action);
       if (disposed) return;
       if (!result?.shot) {
         if (result) run = result.run;
         busy = false;
-        render();
-        if (action==='return') controls.launch.focus({preventScroll:true});
+        const prompt = render();
+        if (action==='return') (controls[prompt.control] ?? (run.solved?next:primary)).focus();
+        if (action==='replay') primary.focus();
         return;
       }
       status.textContent = 'Шар идёт по желобу…';
-      status.dataset.outcome = '';
+      panel.dataset.outcome = '';
       const start = performance.now();
       const duration = matchMedia('(prefers-reduced-motion: reduce)').matches?170:1650;
       const advance = time=>{
@@ -128,7 +144,7 @@ export function mountCircuit(root, api) {
         busy=false;
         render();
         if (run.solved) api.say(status.textContent);
-        else controls.return.focus({preventScroll:true});
+        (run.solved?next:primary).focus();
       };
       frame=requestAnimationFrame(advance);
     } catch {
@@ -140,6 +156,7 @@ export function mountCircuit(root, api) {
   }
 
   for (const [action,control] of Object.entries(controls)) control.onclick = ()=>act(action);
+  primary.onclick = ()=>act(primary.dataset.play);
   mutate('open').then(result=>{
     if (disposed) return;
     run=result?.run??run;

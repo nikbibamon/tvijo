@@ -1,14 +1,20 @@
 # Tvijo «Академия экипажа» · передача проекта
 
-**Действующий выпуск v23 · 28 ноября 2026.** В штабе открываются два задания Энергоблока и совместное спасение. [Цепная реакция](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#chain) · [Линия спасения](https://tvijo-crew-academy.be9ava.chatgpt.site/rescue-together.html) · [Парный маяк](https://tvijo-crew-academy.be9ava.chatgpt.site/#beacon) · [Штаб](https://tvijo-crew-academy.be9ava.chatgpt.site/#hq) · [Журнал](https://tvijo-crew-academy.be9ava.chatgpt.site/#journal)
+**Действующий выпуск v24 · 28 ноября 2026.** В штабе открываются два задания Энергоблока и совместное спасение. [Цепная реакция](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#chain) · [Линия спасения](https://tvijo-crew-academy.be9ava.chatgpt.site/rescue-together.html) · [Парный маяк](https://tvijo-crew-academy.be9ava.chatgpt.site/#beacon) · [Штаб](https://tvijo-crew-academy.be9ava.chatgpt.site/#hq) · [Журнал](https://tvijo-crew-academy.be9ava.chatgpt.site/#journal)
 
 На Солнечном причале прикажи Роботу закрепить мост и забери капсулу. После доставки доступен маяк. [Первая смена](https://tvijo-crew-academy.be9ava.chatgpt.site/first-shift.html) · [Алфавит маяка](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#alphabet) · [Комнаты Разлома](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#rift-rooms) · [Станция времени](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#station) · [Орбитальный шторм](https://tvijo-crew-academy.be9ava.chatgpt.site/storm.html)
 
 ### Первое сообщение для нового чата по игровому дизайну
 
-> Продолжаем Tvijo «Академия экипажа» с v23. Возьми этот файл и PR №20. Оба пуска «Цепной реакции» и «Линия спасения» опубликованы. Следующая приёмка — пять первых прохождений «Первой смены», затем приглашение в «Парный маяк» и спасение с двух физических устройств. Зафиксируй время, восстановление после разрыва связи, награду в рюкзаке и звук. Серверный HTTPS biba2 проверяй как отдельный запуск.
+> Продолжаем Tvijo «Академия экипажа» с v24. Возьми этот файл и PR №20. Оба пуска «Цепной реакции» и «Линия спасения» опубликованы. Следующая приёмка — пять первых прохождений «Первой смены», затем приглашение в «Парный маяк» и спасение с двух физических устройств. Зафиксируй время, восстановление после разрыва связи, награду в рюкзаке и звук. Серверный HTTPS biba2 проверяй как отдельный запуск.
 
 [Исходники и рабочая ветка в PR №20](https://github.com/nikbibamon/tvijo/pull/20) · [Этот файл в рабочей ветке](https://github.com/nikbibamon/tvijo/blob/feat/remdesk-crew-expedition/games/crew-academy/TVIJOR-START.md)
+
+## Возврат шара в «Цепной реакции» · v24
+
+После промаха «Пуск шара» сменяется кнопкой «Вернуть шар» рядом с игровым полем. После возврата подсвечивается нужный механизм. Успешный пуск открывает следующее задание на месте пусковой кнопки. Сохранения с шаром в корзине продолжаются с того же места.
+
+Проверены прежнее сохранение v23, перезагрузка после промаха на публичном сайте, портретная и альбомная компоновки и переход от лампы к насосу и Радиомастерской. Прошли 99 тестов Node. Источник публикации `53b35fbcefc45b163b9e997b828c0dda9ac7975e`. Патч v24 на biba2 в `releases/expedition-v24/update.patch`, хеш SHA-256 `5c4e3160059b1afe891dd68e219bc3b4b7ee8acd3e7929a7e52b63b78fa28a53`.
 
 ## Энергоблок и совместное спасение · v22–v23
 
@@ -189,7 +195,7 @@
 | Игра | Статус и адрес | Восстановление |
 |---|---|---|
 | «Ночной штаб» | Первая самостоятельная игра. Публикация Sites v2 доступна по разрешениям владельца. [Вылазка](https://tvijo-night-hq.be9ava.chatgpt.site/#field) | [Серверная адаптация AIOS №537](https://github.com/nikbibamon/aios/pull/537) |
-| «Академия экипажа» | Вторая игра и основной продукт. Принятая база v7. Текущая публикация v23. [Вылазка](https://tvijo-crew-academy.be9ava.chatgpt.site/#field) | [Принятые 84 файла](https://github.com/nikbibamon/tvijo/tree/a55dde63c7186b5de078f6fd08ad50405e089dc3/games/crew-academy) |
+| «Академия экипажа» | Вторая игра и основной продукт. Принятая база v7. Текущая публикация v24. [Вылазка](https://tvijo-crew-academy.be9ava.chatgpt.site/#field) | [Принятые 84 файла](https://github.com/nikbibamon/tvijo/tree/a55dde63c7186b5de078f6fd08ad50405e089dc3/games/crew-academy) |
 | tvijor | Рабочий каркас игровой разработки, версия 0.1.1. Шесть ролей, пять проектных инструкций, два исполняемых пайплайна. Код M1 вошёл в PR №16, серверное продолжение находится в PR №17 | [PR №15](https://github.com/nikbibamon/tvijo/pull/15) · [зафиксированное ТЗ и бэклог](https://github.com/nikbibamon/tvijo/blob/afa423dbc466f284798129b238985f53e41432c6/games/crew-academy/tvijor/START-HERE.md) · [как запустить](https://github.com/nikbibamon/tvijo/blob/afa423dbc466f284798129b238985f53e41432c6/games/crew-academy/tvijor/README.md) |
 
 Принятый исходный коммит Академии в Sites — `3127f3673a72ac1d7e9439add56ec233971e4535`. Ему соответствует GitHub `a55dde63c7186b5de078f6fd08ad50405e089dc3`. Снимок передачи tvijor — `afa423dbc466f284798129b238985f53e41432c6`. Для сервера используй PR №17. Для истории Гуманоида и Шпуля — PR №18 и две главы, указанные в начале файла.

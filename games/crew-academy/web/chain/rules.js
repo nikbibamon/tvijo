@@ -4,12 +4,34 @@ export const stations = {
   lamp: {name:'Сигнальная лампа', prize:'chain', goal:'Поверни желоб к рычагу и подведи рычаг к контакту. Затем пусти шар.'},
   pump: {name:'Контур охлаждения', prize:'chain-pump', goal:'Лампа горит. Переведи стрелку на нижнюю ветку и запусти насос.'}
 };
-export const arrival = {
-  pocket:'Шар скатился в ловушку. Поверни желоб к рычагу.',
-  gap:'Шар провалился перед рычагом. Подведи рычаг к контакту.',
+const arrival = {
   lamp:'Контакт замкнут. Сигнальная лампа горит!',
   pump:'Насос включился. Жидкость пошла по контуру охлаждения!'
 };
+
+const corrections = {
+  pocket:{message:'Шар в корзине.', hint:'Поверни желоб к рычагу.', control:'guide'},
+  gap:{message:'Шар провалился перед рычагом.', hint:'Подведи рычаг к контакту.', control:'lever'},
+  lamp:{message:'Шар дошёл до лампы.', hint:'Переведи стрелку на нижнюю ветку.', control:'branch'}
+};
+
+export function circuitPrompt(station, run) {
+  if (run.solved) return {action:'next', outcome:'won', message:arrival[station]};
+  if (run.last) {
+    const correction = corrections[run.last];
+    const message = correction?.message || 'Шар остановился.';
+    return {action:'return', outcome:'miss', message:message+' Верни шар.'};
+  }
+  if (run.attempts>0) {
+    const {outcome} = trajectory(station,run);
+    const correction = corrections[outcome];
+    if (outcome!==station && correction) {
+      return {action:'launch',message:correction.hint,control:correction.control};
+    }
+    return {action:'launch',message:'Стенд настроен. Пусти шар.'};
+  }
+  return {action:'launch',message:'Шар в подающем лотке.'};
+}
 
 export const machine = {
   feed:[[158,191],[203,204],[306,242]],
@@ -85,7 +107,7 @@ export function applyCircuit(profile, station, action, previous, time) {
     keepRun(profile,station,fresh);
     return {run:fresh};
   }
-  if (run.solved || profile.chainLab?.active!==station) return null;
+  if (run.solved || !profile.chainLab?.runs?.[station]) return null;
   let next, shot, report;
   if (action==='return' && run.last) {
     next={...run,last:null};
