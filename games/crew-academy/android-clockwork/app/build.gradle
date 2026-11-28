@@ -1,0 +1,38 @@
+plugins {
+    id 'com.android.application' version '8.13.2'
+}
+
+def projectRoot = rootProject.projectDir.parentFile
+def webAssets = layout.buildDirectory.dir('generated/clockwork/assets')
+def buildWorkshop = tasks.register('buildWorkshop', Exec) {
+    workingDir projectRoot
+    commandLine providers.gradleProperty('nodeExecutable').getOrElse('node'),
+        'tools/build-store.mjs', 'android', webAssets.get().asFile
+    inputs.file new File(projectRoot, 'tools/build-store.mjs')
+    inputs.file new File(projectRoot, 'web/clockwork.html')
+    inputs.dir new File(projectRoot, 'web/clockwork')
+    outputs.dir webAssets
+}
+
+android {
+    namespace 'com.tvijo.clockwork'
+    compileSdk 36
+    defaultConfig {
+        applicationId 'com.tvijo.clockwork'
+        minSdk 26
+        targetSdk 36
+        versionCode 1
+        versionName '0.1.0'
+    }
+    sourceSets.main.assets.srcDir(webAssets)
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+tasks.named('preBuild') { dependsOn buildWorkshop }
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.15.0'
+}

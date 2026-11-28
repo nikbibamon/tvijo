@@ -88,7 +88,7 @@
 #ch-empty {color:var(--ch-muted);font-size:.875rem;margin-top:3px}
 .ch-choices {margin-top:clamp(22px,4vw,39px);scroll-margin-top:10px}
 .ch-choices h2 {margin-bottom:10px;letter-spacing:-.04em}
-.ch-choice-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.ch-choice-grid {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:11px}
 .ch-choice {
   min-height:230px;min-width:0;padding:clamp(12px,2vw,20px);display:grid;align-content:end;gap:6px;
   border:1px solid #6c566e;border-radius:12px;overflow:hidden;color:#fff1df;
@@ -97,6 +97,7 @@
 .ch-choice[data-art=palace] {--ch-card:url(./art/palace.webp)}
 .ch-choice[data-art=canopy] {--ch-card:url(./art/canopy.webp)}
 .ch-choice[data-art=harbor] {--ch-card:url(./art/harbor.webp)}
+.ch-choice.ch-workshop {--ch-card:url(./art/palace.webp);background-position:center 26%}
 .ch-choice h3 {font-size:1.2rem;line-height:1.13;text-shadow:0 1px 3px #120d20}
 .ch-choice p,.ch-choice label {font-size:.9rem;color:#eee0e6}
 .ch-choice div,.ch-extra {display:flex;gap:7px;flex-wrap:wrap}
@@ -139,6 +140,7 @@
 @keyframes ch-seed {0% {opacity:.2;transform:translate(0,16px)} 53% {opacity:1} 100% {opacity:0;transform:translate(38px,-28px)}}
 @keyframes ch-arrival {from {opacity:0} to {opacity:1}}
 @media(max-width:880px) {
+  .ch-choice-grid {grid-template-columns:repeat(2,minmax(0,1fr))}
   .ch-layout {grid-template-columns:minmax(0,1fr)}
   .ch-panel {grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);align-items:start;gap:8px}
   .ch-roles {grid-column:1 / -1}
