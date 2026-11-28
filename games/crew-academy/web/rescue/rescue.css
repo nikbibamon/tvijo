@@ -20,7 +20,7 @@
 .rescue-view[data-phase=mark][data-lane=upper] .lower,.rescue-view[data-phase=mark][data-lane=lower] .upper{background:repeating-linear-gradient(90deg,#d5868c 0 7px,transparent 7px 12px)}
 .rescue-robot,.rescue-flight,.rescue-capsule{position:absolute;z-index:2;width:clamp(28px,13%,102px);aspect-ratio:1;transform:translate(-50%,-62%);background-size:400% 100%;background-repeat:no-repeat;image-rendering:pixelated}
 .rescue-robot{left:14%;top:46%;background-image:url(../art/runners/robot.webp)}
-.rescue-flight{left:22%;top:39%;background-image:url(../art/runners/plane.webp);transition:left .95s ease,top .55s ease;z-index:3}
+.rescue-flight{left:22%;top:39%;background:url(../art/crew/plane.webp) center/contain no-repeat;transition:left .95s ease,top .55s ease;z-index:3}
 .rescue-capsule{left:77%;top:52%;width:clamp(23px,7%,64px);background:url(../art/badges/capsule.webp) center/contain no-repeat;transition:left 1.15s ease,top .65s ease}
 .rescue-view[data-phase=pull] .rescue-flight{left:76%}
 .rescue-view[data-lane=lower][data-phase=pull] :is(.rescue-flight,.rescue-capsule){top:59%}

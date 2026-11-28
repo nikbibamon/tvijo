@@ -1,5 +1,6 @@
 import {angles, capsulePoint, forecast, strengths} from './post.js';
 import {ports, power} from './wire.js';
+import {canActivate} from './flight.js';
 
 export function element(tag, name, content) {
   const node = document.createElement(tag);
@@ -23,6 +24,45 @@ function grid(layout, name) {
   return board;
 }
 
+function planeToken(board,layout,position,motion) {
+  const x=position%layout.width, y=Math.floor(position/layout.width);
+  const actor=element('span','pg-sprite plane pg-plane-token');
+  actor.style.left=(x+.5)*100/layout.width+'%';
+  actor.style.top=(y+.5)*100/layout.height+'%';
+  board.append(actor);
+  if (motion && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const fromX=motion.from%layout.width, fromY=Math.floor(motion.from/layout.width);
+    actor.animate([
+      {left:(fromX+.5)*100/layout.width+'%',top:(fromY+.5)*100/layout.height+'%'},
+      {left:actor.style.left,top:actor.style.top}
+    ],{duration:200,easing:'ease-out'});
+  }
+}
+
+function flightBoard(layout,state,motion) {
+  const root=element('div','pg-flight-schematic');
+  const board=grid(layout,'pg-airlock');
+  const open=state.lit.length===layout.switches.length;
+  const gate=open?'Шлюз открыт':'Шлюз закрыт';
+  const switches='Переключатели · '+state.lit.length+' / '+layout.switches.length;
+  const x=state.position%layout.width+1, y=Math.floor(state.position/layout.width)+1;
+  board.setAttribute('role','img');
+  board.setAttribute('aria-label','Самолётик: ряд '+y+', столбец '+x+'. '+switches+'. '+gate+'.');
+  const surfaces={'#':'pg-bulkhead','.':'pg-deck',S:'pg-deck',G:'pg-deck pg-gate',
+    T:'pg-airway pg-switch',H:'pg-airway pg-hatch','~':'pg-airway'};
+  for (const [index,tile] of Array.from(layout.tiles).entries()) {
+    const cell=element('div','pg-cell '+surfaces[tile]);
+    if (tile==='G') cell.classList.toggle('open',open);
+    if (tile==='T') cell.classList.toggle('on',state.lit.includes(index));
+    board.append(cell);
+  }
+  planeToken(board,layout,state.position,motion);
+  const status=element('div','pg-airlock-status');
+  status.append(element('span','',switches),element('strong',open?'open':'',gate));
+  root.append(board,status);
+  return root;
+}
+
 function iceBoard(layout, state, respond, motion) {
   const board = grid(layout,'pg-ice');
   board.setAttribute('role','img');
@@ -36,16 +76,7 @@ function iceBoard(layout, state, respond, motion) {
     if (layout.goal===index) cell.append(element('span','pg-beacon'));
     board.append(cell);
   }
-  const actor = element('span','pg-sprite plane pg-ice-token');
-  actor.style.left = (x+.5)*100/layout.width+'%';
-  actor.style.top = (y+.5)*100/layout.height+'%';
-  board.append(actor);
-  if (motion && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-    const fromX = motion.from % layout.width, fromY = Math.floor(motion.from/layout.width);
-    const dx = (fromX-x)*100/layout.width+'%', dy = (fromY-y)*100/layout.height+'%';
-    actor.animate([{left:`calc(${actor.style.left} + ${dx})`,top:`calc(${actor.style.top} + ${dy})`},
-      {left:actor.style.left,top:actor.style.top}],{duration:250,easing:'ease-out'});
-  }
+  planeToken(board,layout,state.position,motion);
   board.onclick = event=>{
     const tile=event.target.closest('[data-cell]');
     if (!tile) return;
@@ -151,6 +182,7 @@ function postBoard(layout,state,motion) {
 }
 
 export function showBoard(id, layout, state, respond, motion) {
+  if (id==='flight') return flightBoard(layout,state,motion);
   if (id==='ice') return iceBoard(layout,state,respond,motion);
   if (id==='wire') return wireBoard(layout,state,respond);
   return postBoard(layout,state,motion);
@@ -162,7 +194,7 @@ const dpad = [
 
 export function showControls(id, layout, state, respond) {
   const root=element('div','pg-device');
-  if (id==='ice') {
+  if (id==='ice' || id==='flight') {
     const pad=element('div','pg-pad');
     for (const [direction,icon,label] of dpad) {
       const key=button(icon,direction,()=>respond(direction));
@@ -170,6 +202,11 @@ export function showControls(id, layout, state, respond) {
       pad.append(key);
     }
     root.append(pad);
+  }
+  if (id==='flight') {
+    const activate=button('Включить переключатель','activate',()=>respond('activate'),'pg-button primary');
+    activate.disabled=!canActivate(layout,state);
+    root.append(activate);
   }
   if (id==='post') {
     const choices=(label,setting,values,options)=>{

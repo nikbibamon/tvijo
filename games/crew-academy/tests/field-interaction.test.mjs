@@ -32,7 +32,10 @@ async function play(level=levels[0],hero='captain',viewport=[390,844]){
     clearRect(){labels.length=0;firstScale=true;firstTranslate=true;},fillText(value){labels.push(value);},
     scale(value){if(firstScale){sceneScale=value;firstScale=false;}},
     translate(x,y){translation={x,y};if(firstTranslate){camera={x,y};firstTranslate=false;}},
-    drawImage(img,...args){if(img.src.includes('/runners/')&&args.length===8)latest={...translation,pose:args[0]/128};},
+    drawImage(img,...args){
+      if(img.src.includes('/runners/')&&args.length===8)latest={...translation,pose:args[0]/128};
+      if(img.src.endsWith('/crew/plane.webp')&&args.length===4)latest={...translation,hover:-(args[1]+args[3])};
+    },
     createLinearGradient:()=>({addColorStop(){}}),createRadialGradient:()=>({addColorStop(){}}),
     measureText:()=>({width:45})
   },{get:(o,k)=>o[k]??(()=>{})});canvas.getContext=()=>ctx;
@@ -58,6 +61,7 @@ async function play(level=levels[0],hero='captain',viewport=[390,844]){
   await advance(20);
   return {pads,key,tap,advance,field,go:()=>doc.querySelector('#field-target').onclick(),
     get labels(){return [...labels];},get label(){return doc.querySelector('#grab span').textContent;},
+    get lift(){return doc.querySelector('#jump span').textContent;},
     get message(){return doc.querySelector('#field-feedback').textContent;},
     worldPoint:(x,y)=>[(x+camera.x)*sceneScale,(y+camera.y)*sceneScale],
     touchWorld:(x,y)=>canvas.onpointerdown({clientX:(x+camera.x)*sceneScale,clientY:(y+camera.y)*sceneScale}),
@@ -97,6 +101,18 @@ test('all seven pilots can call for the capsule from either bank after locking t
     assert.equal(p.finished,0);p.tap('use');await p.advance(4300);
     assert.equal(p.finished,1,hero);assert.equal(p.falls,0,hero);p.field.leave();
   }
+});
+
+test('the aircraft hovers above the deck in the sortie and lifts off with its flight control',async()=>{
+  const level=levels[0],p=await play(level,'plane');
+  assert.equal(p.lift,'Взлёт');
+  assert.equal(p.actor.y,level.floor);
+  assert.ok(p.actor.hover>4);
+  p.tap('jump');await p.advance(160);
+  assert.ok(p.actor.y<level.floor-20);
+  p.field.setHero('captain');
+  assert.equal(p.lift,'Прыжок');
+  p.field.leave();
 });
 
 test('the rift waits on its real bank and resumes the route after the three field controls',async()=>{

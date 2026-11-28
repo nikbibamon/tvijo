@@ -1,14 +1,24 @@
 # Tvijo «Академия экипажа» · передача проекта
 
-**Действующий выпуск v25 · 28 ноября 2026.** В «Игровом полигоне» три короткие игры с экипажем. После первого задания следующий уровень собирается в браузере за 0 кредитов. [Игровой полигон](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html) · [Цепная реакция](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#chain) · [Линия спасения](https://tvijo-crew-academy.be9ava.chatgpt.site/rescue-together.html) · [Парный маяк](https://tvijo-crew-academy.be9ava.chatgpt.site/#beacon) · [Штаб](https://tvijo-crew-academy.be9ava.chatgpt.site/#hq) · [Журнал](https://tvijo-crew-academy.be9ava.chatgpt.site/#journal)
+**Действующий выпуск v26 · 28 ноября 2026.** В «Игровом полигоне» четыре короткие игры. Самолётик летает без ног и добирается до переключателей у потолка и под настилом. [Воздушный обход](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html#flight). После первого задания следующий уровень собирается в браузере за 0 кредитов. [Игровой полигон](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html) · [Цепная реакция](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#chain) · [Линия спасения](https://tvijo-crew-academy.be9ava.chatgpt.site/rescue-together.html) · [Парный маяк](https://tvijo-crew-academy.be9ava.chatgpt.site/#beacon) · [Штаб](https://tvijo-crew-academy.be9ava.chatgpt.site/#hq) · [Журнал](https://tvijo-crew-academy.be9ava.chatgpt.site/#journal)
 
 На Солнечном причале прикажи Роботу закрепить мост и забери капсулу. После доставки доступен маяк. [Первая смена](https://tvijo-crew-academy.be9ava.chatgpt.site/first-shift.html) · [Алфавит маяка](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#alphabet) · [Комнаты Разлома](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#rift-rooms) · [Станция времени](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#station) · [Орбитальный шторм](https://tvijo-crew-academy.be9ava.chatgpt.site/storm.html)
 
 ### Первое сообщение для нового чата по игровому дизайну
 
-> Продолжаем Tvijo «Академия экипажа» с v25. Открой «Игровой полигон», этот файл и tvijor/MECHANICS.md в PR №20. Пройди первый уровень каждой игры и собери второй за 0 кредитов. По каталогу возьми одну новую механику с одним действием на первом уровне. Генератор должен сохранять расстановку, проверять проходимость и усложнять задачу по шагам. На biba2 есть копия для ревью DeepSeek в releases/expedition-v25.
+> Продолжаем Tvijo «Академия экипажа» с v26. Открой «Воздушный обход», этот файл и tvijor/MECHANICS.md в PR №20. Самолётик летает без ног. Давай ему задания в воздушных проходах, куда пеший экипаж не попадает. Пройди переключатель у потолка и следующий уровень под настилом за 0 кредитов. Продолжай с одной новой механикой за выпуск. Путь для DeepSeek на biba2 приведён ниже.
 
 [Исходники и рабочая ветка в PR №20](https://github.com/nikbibamon/tvijo/pull/20) · [Этот файл в рабочей ветке](https://github.com/nikbibamon/tvijo/blob/feat/remdesk-crew-expedition/games/crew-academy/TVIJOR-START.md)
+
+## Воздушный обход · v26
+
+Самолётик — воздушный разведчик в корпусе с крыльями, без ног. Он зависает над настилом и пролетает через узкие люки. На первом уровне включи переключатель у потолка, на втором нырни к переключателю под настилом. С третьего уровня шлюз открывают два переключателя. Пешие герои остаются на настиле. Для новых миссий добавляй действие в воздушном проходе и проверяй ограничение на пеших героев. Для всех сцен используй `web/art/crew/plane.webp`.
+
+[Играть в «Воздушный обход»](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html#flight) · [Правила](https://github.com/nikbibamon/tvijo/blob/feat/remdesk-crew-expedition/games/crew-academy/tvijor/MECHANICS.md) · [Квитанция v26](https://github.com/nikbibamon/tvijo/blob/feat/remdesk-crew-expedition/games/crew-academy/tvijor/releases/expedition/verification-v26.json)
+
+На опубликованном сайте проверено открытие верхнего шлюза. В предварительной версии пройдены оба уровня и проверено восстановление позиции после перезагрузки. Прошли 106 тестов Node, включая 1536 сгенерированных раскладок четырёх игр. Сгенерированный уровень сохраняет расстановку и собирается за 0 кредитов. Источник выпуска `0a10ec2f57dc78042eaaacfeb175a112f544a84b`.
+
+На biba2 для DeepSeek используй `/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v26`. В `tvijor/DEEPSEEK-REVIEW.md` есть сценарий проверки и команда для теста.
 
 ## Игровой полигон · v25
 

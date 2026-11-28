@@ -40,6 +40,16 @@ export function companionsFor(level){
   if(level.spec)return ({build:['robot'],rescue:['plane'],survey:['plane'],signal:['robot'],duet:['plane','robot']})[level.spec.path];
   if(level.id==='greenhouse')return ['plane'];if(level.id==='foundry')return ['plane','robot'];return [];
 }
+
+export function runnerImage(id) {
+  return './art/'+(id==='plane'?'crew/':'runners/')+id+'.webp';
+}
+
+export function drawRunner(ctx,img,id,frame,x,y,size) {
+  if (id==='plane') ctx.drawImage(img,x,y,size,size);
+  else ctx.drawImage(img,frame*128,0,128,128,x,y,size,size);
+}
+
 const previewImages=new Map();
 function previewImage(src){
   if(!previewImages.has(src)){const img=new Image();img.src=src;previewImages.set(src,img);}
@@ -49,7 +59,7 @@ export function drawBlueprint(canvas,spec){
   const level=worldLevel(spec),route=layout(level),ctx=canvas.getContext('2d');
   const stamp=canvas.dataset.blueprint=String(spec.seed)+level.id;
   const bg=previewImage('./art/'+level.art+'.webp'),cell=previewImage('./art/cell.webp');
-  const crew=companionsFor(level).map(h=>[h,previewImage('./art/runners/'+h+'.webp')]);
+  const crew=companionsFor(level).map(h=>[h,previewImage(runnerImage(h))]);
   function draw(){
     if(canvas.dataset.blueprint!==stamp)return;
     ctx.clearRect(0,0,960,448);drawBackdrop(ctx,level,bg);
@@ -60,7 +70,7 @@ export function drawBlueprint(canvas,spec){
       ctx.fillStyle='#282437';ctx.fillRect(a,y,b-a,9);ctx.fillStyle='#8ef0df';ctx.fillRect(a,y,b-a,3);
     }
     if(cell.complete&&cell.naturalWidth)ctx.drawImage(cell,route.goal-15,route.goalY-42,30,42);
-    crew.forEach(([id,img],i)=>{if(img.complete&&img.naturalWidth){const size=id==='plane'?62:81;ctx.drawImage(img,0,0,128,128,355+i*130,level.floor-size-(id==='plane'?50:0),size,size);}});
+    crew.forEach(([id,img],i)=>{if(img.complete&&img.naturalWidth){const size=id==='plane'?62:81;drawRunner(ctx,img,id,0,355+i*130,level.floor-size-(id==='plane'?50:0),size);}});
   }
   draw();for(const im of [bg,cell,...crew.map(x=>x[1])])if(!im.complete)im.addEventListener('load',draw,{once:true});
 }

@@ -11,23 +11,25 @@
 .pg-cover-art::after {content:"";position:absolute;inset:0;background:linear-gradient(90deg,#1b3048,transparent 50%)}
 .pg-cover-art i {position:absolute;inset:19% 12% 18% 32%;border:3px dashed #d3b5769c;border-radius:54%;transform:rotate(-13deg)}
 .pg-sprite {display:block;aspect-ratio:1;background-repeat:no-repeat;background-size:400% 100%;image-rendering:pixelated;pointer-events:none}
-.pg-sprite.plane {background-image:url(../art/runners/plane.webp)}
+.pg-sprite.plane {background:url(../art/crew/plane.webp) center/contain no-repeat}
 .pg-sprite.daughter {background-image:url(../art/runners/daughter.webp)}
 .pg-sprite.robot {background-image:url(../art/runners/robot.webp)}
 .pg-cover-art .pg-sprite {position:absolute;z-index:1;width:25%;filter:drop-shadow(0 8px 8px #10233fa8)}
 .pg-cover-art .plane {right:8%;top:8%;transform:rotate(-11deg)}
 .pg-cover-art .daughter {right:30%;top:36%}
 .pg-cover-art .robot {right:9%;bottom:5%}
-.pg-cards {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:15px}
+.pg-cards {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:15px}
 .pg-card {--card-color:#9debd9;--card-ink:#205164;display:grid;grid-template-rows:auto 1fr;overflow:hidden;border:1px solid #535672;border-radius:10px;background:#23253b;transition:border-color .16s,transform .16s}
 .pg-card[data-game=wire] {--card-color:#ffd489;--card-ink:#63466a}
 .pg-card[data-game=post] {--card-color:#febfb2;--card-ink:#614360}
+.pg-card[data-game=flight] {--card-color:#c4f4aa;--card-ink:#2d5360}
 .pg-card:hover {border-color:var(--card-color);transform:translateY(-2px)}
 .pg-card-art {position:relative;isolation:isolate;overflow:hidden;height:124px;background:repeating-linear-gradient(0deg,#d3d1f618 0 1px,transparent 1px 19px),repeating-linear-gradient(90deg,#d3d1f618 0 1px,transparent 1px 19px),linear-gradient(128deg,#20213b,var(--card-ink))}
 .pg-card-art .pg-sprite {position:absolute;z-index:1;inset:7px auto auto 11%;width:115px}
 .pg-card-object {position:absolute;right:14%;top:14%;width:27%;height:62%;border-radius:50%;border:3px dashed var(--card-color);transform:rotate(-15deg);opacity:.75}
 .pg-card[data-game=wire] .pg-card-object {border-style:solid;border-right-color:transparent;border-radius:25%;box-shadow:inset 0 0 10px #ffe19933}
 .pg-card[data-game=post] .pg-card-object {height:80%;border-radius:50% 50% 0 0;border-color:var(--card-color) transparent transparent;transform:rotate(10deg)}
+.pg-card[data-game=flight] .pg-card-object {width:19%;height:55%;border:solid var(--card-color);border-width:5px 3px;border-radius:5px;transform:rotate(0);background:linear-gradient(90deg,#181b39,transparent);opacity:.9}
 .pg-card-copy {display:grid;grid-template-rows:auto auto 1fr auto;gap:4px;padding:13px 15px}
 .pg-card-copy small {color:var(--card-color)}
 .pg-card-copy h2 {font-size:clamp(1.11rem,2.1vw,1.5rem);line-height:1.15}
@@ -52,9 +54,23 @@
 .pg-cell {display:grid;position:relative;place-items:center;min-width:0;min-height:0;border:1px solid #aec9ee36;background:#193d55;touch-action:manipulation}
 .pg-ice .pg-cell {background:linear-gradient(145deg,#397b9560,#20628230 56%),#193d55;cursor:pointer}
 .pg-ice .wall {background:repeating-linear-gradient(135deg,#56678b 0 6px,#435574 6px 12px);box-shadow:inset 0 0 0 2px #6c82a4}
-.pg-ice-token {position:absolute;width:calc(100% / var(--cols) * 1.16);transform:translate(-50%,-50%);z-index:2;filter:drop-shadow(0 4px 4px #152641)}
+.pg-plane-token {position:absolute;width:calc(100% / var(--cols) * 1.05);transform:translate(-50%,-50%);z-index:2;filter:drop-shadow(0 4px 4px #152641)}
 .pg-beacon {width:58%;height:58%;border-radius:50%;border:2px dashed #ffe29e;background:#dba25e35;box-shadow:0 0 14px #ffbf6d9a}
 .pg-beacon::after {content:"";position:absolute;inset:33%;background:#ffd287;transform:rotate(45deg);border:2px solid #fff0bd;border-radius:3px}
+.pg-airlock {background:#162546;--passage:#74cfca55}
+.pg-airlock .pg-cell {border:0}
+.pg-airlock .pg-bulkhead {background:repeating-linear-gradient(135deg,#292c45 0 6px,#2e324b 6px 7px,#292c45 7px 11px);box-shadow:inset 0 0 0 1px #5a5c713f}
+.pg-airlock .pg-deck {background:linear-gradient(180deg,#1d4656,#173044);border-bottom:5px solid #648699}
+.pg-airlock .pg-airway {background:#123145;box-shadow:inset 0 0 0 1px var(--passage)}
+.pg-hatch::before {content:"";width:68%;height:100%;border-inline:3px dashed #83d8c9;background:#79bab81b}
+.pg-switch::before {content:"";position:absolute;width:44%;aspect-ratio:1;top:7%;right:6%;border:2px solid #ffc878;border-radius:18%;background:radial-gradient(circle,#fff5c5 0 20%,#eca75d 21% 38%,#573932 39%);box-shadow:0 0 8px #ffbf7159}
+.pg-switch.on::before {border-color:#b2efd3;background:radial-gradient(circle,#f1ffdb 0 20%,#80d8a9 21% 38%,#25594c 39%);box-shadow:0 0 11px #a2eea799}
+.pg-airlock .pg-plane-token {width:calc(100% / var(--cols) * .86)}
+.pg-gate::before {content:"";height:89%;width:69%;align-self:end;border:2px solid #b19a8d;border-radius:6px 6px 0 0;background:repeating-linear-gradient(#51404c 0 5px,#71535b 6px 7px)}
+.pg-gate.open::before {border-color:#8defce;background:linear-gradient(90deg,#1f514f,#285e54 90%)}
+.pg-airlock-status {display:flex;justify-content:space-between;gap:7px 12px;flex-wrap:wrap;padding:7px 10px;color:#e3e9ee;background:#1b263a;font-size:.88rem}
+.pg-airlock-status strong {color:#ffce99}
+.pg-airlock-status .open {color:#bcf4c6}
 .pg-wire .pg-blank {background:#28263b;border-color:#70608744;background-image:radial-gradient(circle at center,#5948667a 0 2px,transparent 2px)}
 .pg-module {padding:0;background:#393042;border-color:#765884;--cable:#b5a1c4}
 .pg-module.lit {background:#493d41;--cable:#ffcd77}
@@ -79,6 +95,7 @@
 .pg-button[aria-pressed=true] {border-color:#83beaf;background:#294949}
 .pg-button:hover:not(:disabled) {border-color:#ffd7a0}
 .pg-button:disabled {cursor:default}
+.pg-button.primary:disabled {background:#362e43;color:#d6c7dd;border-color:#786885}
 .pg [data-clue] {outline:2px solid #ffd88e;outline-offset:-2px;box-shadow:inset 0 0 10px #ffd88e38}
 .pg-pad {display:grid;grid-template-columns:repeat(4,minmax(44px,1fr));gap:7px}
 .pg-pad button {min-width:45px;font-size:1.25rem}
@@ -88,7 +105,7 @@
 #pg-finish .primary {justify-self:start}
 @media(max-width:760px){
   .pg-layout {grid-template-columns:1fr}
-  .pg-cards {gap:8px}
+  .pg-cards {grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   .pg-cover {min-height:210px}
   .pg-card-copy {padding:9px}
   .pg-card-art {height:105px}

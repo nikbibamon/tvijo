@@ -46,12 +46,13 @@ function presentRun(result={}) {
   byId('pg-portrait').className='pg-sprite '+game.sprite;
   byId('pg-level').textContent='Уровень '+run.level;
   byId('pg-board-note').textContent=run.won?'Готово':gameId==='post'?'Броски · '+run.moves:'Ходы · '+run.moves;
-  detail.textContent=gameId==='post'&&run.level>1 ? 'Подбери дугу и силу. Пунктир покажет, где остановится капсула.' : game.instructions;
+  detail.textContent=gameId==='flight' ? game.instructions(layout,run.level) :
+    gameId==='post'&&run.level>1 ? 'Подбери дугу и силу. Пунктир покажет, где остановится капсула.' : game.instructions;
   board.replaceChildren(showBoard(gameId,layout,run.board,move,result.motion));
   controls.replaceChildren(showControls(gameId,layout,run.board,move));
   controls.hidden = run.won;
   for (const item of board.querySelectorAll('button')) item.disabled=run.won;
-  feedback.textContent = run.won ? ({ice:'Самолётик причалил к маяку.',wire:'Лампа горит.',post:'Капсула на площадке.'}[gameId])
+  feedback.textContent = run.won ? ({flight:'Самолётик открыл шлюз.',ice:'Самолётик причалил к маяку.',wire:'Лампа горит.',post:'Капсула на площадке.'}[gameId])
     : result.message ?? '';
   byId('pg-finish').hidden=!run.won;
   next.textContent='Собрать уровень '+(run.level+1)+' · 0 кредитов';
@@ -115,7 +116,7 @@ restart.onclick=()=>take('restart');
 hint.onclick=propose;
 window.addEventListener('hashchange',route);
 window.addEventListener('keydown', event=>{
-  if (gameId!=='ice'||event.altKey||event.ctrlKey||event.metaKey||!Object.hasOwn(arrows,event.key)) return;
+  if (!['flight','ice'].includes(gameId)||event.altKey||event.ctrlKey||event.metaKey||!Object.hasOwn(arrows,event.key)) return;
   event.preventDefault();
   take('move',arrows[event.key]);
 });

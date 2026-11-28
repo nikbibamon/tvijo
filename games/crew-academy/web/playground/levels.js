@@ -1,9 +1,10 @@
 import {seededRandom} from './grid.js';
+import {flight} from './flight.js';
 import {ice} from './ice.js';
 import {wire} from './wire.js';
 import {post} from './post.js';
 
-export const games = {ice,wire,post};
+export const games = {flight,ice,wire,post};
 const version = 1;
 
 export function makeLevel(id, level, seed) {
