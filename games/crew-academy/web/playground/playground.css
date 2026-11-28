@@ -18,7 +18,7 @@
 .pg-cover-art .plane {right:8%;top:8%;transform:rotate(-11deg)}
 .pg-cover-art .daughter {right:30%;top:36%}
 .pg-cover-art .robot {right:9%;bottom:5%}
-.pg-cards {display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:15px}
+.pg-cards {display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:14px;margin-top:15px}
 .pg-card {--card-color:#9debd9;--card-ink:#205164;display:grid;grid-template-rows:auto 1fr;overflow:hidden;border:1px solid #535672;border-radius:10px;background:#23253b;transition:border-color .16s,transform .16s}
 .pg-card[data-game=wire] {--card-color:#ffd489;--card-ink:#63466a}
 .pg-card[data-game=post] {--card-color:#febfb2;--card-ink:#614360}
@@ -103,6 +103,7 @@
 #pg-finish a {color:#bcf5df;padding:6px 0;text-decoration:underline;text-underline-offset:3px}
 #pg-finish strong {color:#caffea;font-size:1.15rem}
 #pg-finish .primary {justify-self:start}
+@media(max-width:970px){.pg-cards {grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:760px){
   .pg-layout {grid-template-columns:1fr}
   .pg-cards {grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}

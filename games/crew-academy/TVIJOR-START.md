@@ -1,14 +1,24 @@
 # Tvijo «Академия экипажа» · передача проекта
 
-**Действующий выпуск v26 · 28 ноября 2026.** В «Игровом полигоне» четыре короткие игры. Самолётик летает без ног и добирается до переключателей у потолка и под настилом. [Воздушный обход](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html#flight). После первого задания следующий уровень собирается в браузере за 0 кредитов. [Игровой полигон](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html) · [Цепная реакция](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#chain) · [Линия спасения](https://tvijo-crew-academy.be9ava.chatgpt.site/rescue-together.html) · [Парный маяк](https://tvijo-crew-academy.be9ava.chatgpt.site/#beacon) · [Штаб](https://tvijo-crew-academy.be9ava.chatgpt.site/#hq) · [Журнал](https://tvijo-crew-academy.be9ava.chatgpt.site/#journal)
+**Действующий выпуск v27 · 28 ноября 2026.** На «Игровом полигоне» пять игр. [Пружинная дуэль](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html#duel) добавляет пошаговые броски с разрушаемыми островками. Самолётик летает без ног и добирается до переключателей у потолка и под настилом. [Воздушный обход](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html#flight). После первого задания следующий уровень собирается в браузере за 0 кредитов. [Игровой полигон](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html) · [Цепная реакция](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#chain) · [Линия спасения](https://tvijo-crew-academy.be9ava.chatgpt.site/rescue-together.html) · [Парный маяк](https://tvijo-crew-academy.be9ava.chatgpt.site/#beacon) · [Штаб](https://tvijo-crew-academy.be9ava.chatgpt.site/#hq) · [Журнал](https://tvijo-crew-academy.be9ava.chatgpt.site/#journal)
 
 На Солнечном причале прикажи Роботу закрепить мост и забери капсулу. После доставки доступен маяк. [Первая смена](https://tvijo-crew-academy.be9ava.chatgpt.site/first-shift.html) · [Алфавит маяка](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#alphabet) · [Комнаты Разлома](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#rift-rooms) · [Станция времени](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#station) · [Орбитальный шторм](https://tvijo-crew-academy.be9ava.chatgpt.site/storm.html)
 
 ### Первое сообщение для нового чата по игровому дизайну
 
-> Продолжаем Tvijo «Академия экипажа» с v26. Открой «Воздушный обход», этот файл и tvijor/MECHANICS.md в PR №20. Самолётик летает без ног. Давай ему задания в воздушных проходах, куда пеший экипаж не попадает. Пройди переключатель у потолка и следующий уровень под настилом за 0 кредитов. Продолжай с одной новой механикой за выпуск. Путь для DeepSeek на biba2 приведён ниже.
+> Продолжаем Tvijo «Академия экипажа» с v27. Открой «Игровой полигон», «Пружинную дуэль» и tvijor/MECHANICS.md в PR №20. Пройди первый бросок и собери арену с ветром за 0 кредитов. Новые мини-игры должны сохранять прогресс и проверять проходимость. Самолётик летает без ног. Для ревью на biba2 используй путь ниже.
 
 [Исходники и рабочая ветка в PR №20](https://github.com/nikbibamon/tvijo/pull/20) · [Этот файл в рабочей ветке](https://github.com/nikbibamon/tvijo/blob/feat/remdesk-crew-expedition/games/crew-academy/TVIJOR-START.md)
+
+## Пружинная дуэль · v27
+
+Робот и Гуманоид бросают упругие капсулы по очереди. Пунктир показывает траекторию. Попадания сбивают щит, оставляют воронки и сдвигают игроков. Если герой соскользнул в воду, его забирает страховочный луч. На первом уровне достаточно запустить настроенную капсулу. Следующий уровень генерируется за 0 кредитов и добавляет ветер, с третьего появляется уступ. «Шаг назад» отменяет бросок и ответ вместе. Щиты, грунт и позиция сохраняются.
+
+[Играть в «Пружинную дуэль»](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html#duel) · [Каталог механик](https://github.com/nikbibamon/tvijo/blob/feat/remdesk-crew-expedition/games/crew-academy/tvijor/MECHANICS.md) · [Квитанция v27](https://github.com/nikbibamon/tvijo/blob/feat/remdesk-crew-expedition/games/crew-academy/tvijor/releases/expedition/verification-v27.json)
+
+На предварительном сайте пройдены первые два уровня, проверены ответ Гуманоида, отмена, перезагрузка и видимость кнопки запуска при ширине окна 360 и 390 пикселей. Опубликованный первый экран открыт и проверен. Прошли 110 тестов, включая 384 расстановки «Пружинной дуэли» и 1536 расстановок прежних игр. Источник публикации `91f747941039f333f0139611c701603f1022ba0c`.
+
+Для ревью на biba2 используй `/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v27` и `tvijor/DEEPSEEK-REVIEW.md`.
 
 ## Воздушный обход · v26
 

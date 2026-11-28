@@ -3,8 +3,9 @@ import {flight} from './flight.js';
 import {ice} from './ice.js';
 import {wire} from './wire.js';
 import {post} from './post.js';
+import {duel} from './duel.js';
 
-export const games = {flight,ice,wire,post};
+export const games = {duel,flight,ice,wire,post};
 const version = 1;
 
 export function makeLevel(id, level, seed) {
@@ -31,6 +32,7 @@ export function applyPlayground(profile, id, action, entropy) {
   const run = savedRun(profile,id);
   const {level,seed,best} = run;
   if (level!==action.level || seed!==action.seed) return {run};
+  if (id==='duel' && action.turn!==undefined && action.turn!==run.board.turn) return {run};
   const keep = (next, meta={}) => {
     profile.playground = {...profile.playground,[id]:next};
     return {run:next,...meta};

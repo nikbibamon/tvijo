@@ -1,0 +1,93 @@
+.pg[data-game=duel] {--pg-accent:#ffc58d;--pg-bg:#202239;--pg-line:#575577}
+.pg[data-game=duel] .pg-main {max-width:1320px}
+.pg-card[data-game=duel] {--card-color:#ffd199;border-color:#8a6c7a}
+.pg-card[data-game=duel] .pg-card-art {
+  background:linear-gradient(90deg,#18214056,#42244a35),url(../art/rift.webp) center 34%/cover;
+}
+.pg-card[data-game=duel] .pg-card-object {
+  right:2%;
+  top:20%;
+  width:76px;
+  height:76px;
+  border:0;
+  opacity:1;
+  border-radius:0;
+  transform:scaleX(-1);
+  background:url(../art/runners/blue.webp) 0 0/400% 100% no-repeat;
+  image-rendering:pixelated;
+}
+.duel-board {background:#1d2037}
+.duel-scores {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:clamp(12px,4vw,38px);
+  padding:10px 13px 12px;
+  background:#1c2036;
+}
+.duel-score-caption {display:flex;justify-content:space-between;flex-wrap:wrap;gap:2px 8px;margin-bottom:5px}
+.duel-score-caption span {color:var(--team);font-weight:720}
+.duel-score-caption strong {color:#f2e8ff;font-size:.87rem;font-weight:650}
+.duel-meter {height:6px;overflow:hidden;border-radius:3px;background:#494763}
+.duel-meter i {display:block;height:100%;background:var(--team)}
+.duel-arena {
+  position:relative;
+  aspect-ratio:120/70;
+  isolation:isolate;
+  overflow:hidden;
+  background:linear-gradient(0deg,#120f3e8f,#1c285582 49%,#12203f3b),url(../art/rift.webp) center top/auto 152% no-repeat,#1e315d;
+}
+.duel-arena canvas {position:absolute;inset:0;width:100%;height:100%}
+.duel-turn {
+  position:absolute;
+  top:8px;
+  left:50%;
+  transform:translateX(-50%);
+  min-width:max-content;
+  padding:4px 9px;
+  border:1px solid #9289ac;
+  border-radius:6px;
+  color:#fff3df;
+  background:#1e1d3ce8;
+  font-size:.87rem;
+}
+.duel-actor {
+  position:absolute;
+  left:var(--x);
+  top:var(--y);
+  width:8%;
+  aspect-ratio:1;
+  transform:translate(-50%,-96%);
+  background:var(--sprite) left top/400% 100% no-repeat;
+  filter:drop-shadow(0 2px 4px #110e28);
+  image-rendering:pixelated;
+}
+.duel-actor::after {
+  content:"";
+  position:absolute;
+  inset:1px 42% auto;
+  height:3px;
+  border-radius:2px;
+  background:var(--team);
+}
+.duel-robot {--sprite:url(../art/runners/robot.webp)}
+.duel-blue {--sprite:url(../art/runners/blue.webp);transform:translate(-50%,-96%) scaleX(-1)}
+.duel-actor.spent {opacity:.4}
+.duel-forecast {min-height:2.3rem;padding:8px 10px;color:#f1e6ff;background:#29273f;font-size:.88rem}
+.duel-device {gap:11px}
+.duel-device .pg-choice {width:100%}
+.duel-device .pg-choice button {min-width:44px;padding-inline:8px;font-variant-numeric:tabular-nums}
+.duel-device .primary {width:100%}
+.duel-wind {color:#ffe1a9;font-size:.9rem}
+@media(min-width:761px) {
+  .pg[data-game=duel] .pg-layout {grid-template-columns:minmax(0,2.12fr) minmax(275px,1fr)}
+}
+@media(max-width:520px) {
+  .pg[data-game=duel] .pg-main {padding-top:9px}
+  .pg[data-game=duel] .pg-heading {flex-wrap:nowrap;align-items:center;gap:7px}
+  .pg[data-game=duel] .pg-heading h1 {font-size:clamp(1.36rem,5.8vw,1.9rem);overflow-wrap:normal}
+  .pg[data-game=duel] .pg-kicker {font-size:.76rem}
+  .pg[data-game=duel] #pg-level {font-size:.8rem;padding:5px 6px}
+  .duel-scores {padding:7px 9px 8px}
+  .duel-score-caption span {font-size:.875rem}
+  .duel-score-caption strong {font-size:.8rem}
+}

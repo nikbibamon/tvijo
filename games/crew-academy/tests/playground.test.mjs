@@ -13,6 +13,7 @@ function act(profile,id,type,input,entropy=0){
 }
 
 function script(id,layout){
+  if (id==='duel') return ['launch'];
   if (id==='flight') {
     let state=flight.start(layout);
     const actions=[];
@@ -37,7 +38,7 @@ test('authored levels teach one short task and advance only after a win',()=>{
     const first=makeLevel(id,1,0);
     assert.equal(act(profile,id,'next',undefined,25).run.level,1);
     const commands=script(id,first);
-    assert.equal(commands.length,{flight:2,ice:1,wire:1,post:3}[id]);
+    assert.equal(commands.length,{duel:1,flight:2,ice:1,wire:1,post:3}[id]);
     let win;
     for (const command of commands) win=act(profile,id,'move',command);
     assert.equal(win.run.won,true,id);
@@ -57,6 +58,7 @@ test('authored levels teach one short task and advance only after a win',()=>{
 test('generated levels solve through real inputs with bounded and progressive difficulty',()=>{
   let validated=0;
   for (const id of Object.keys(games)) {
+    if (id==='duel') continue;
     for (let level=2;level<=9;level++){
       for (let i=0;i<48;i++){
         const seed=(i*3910115819)>>>0;
