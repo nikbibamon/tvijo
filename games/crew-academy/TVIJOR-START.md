@@ -1,14 +1,26 @@
 # Tvijo «Академия экипажа» · передача проекта
 
-**Действующий выпуск v27 · 28 ноября 2026.** На «Игровом полигоне» пять игр. [Пружинная дуэль](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html#duel) добавляет пошаговые броски с разрушаемыми островками. Самолётик летает без ног и добирается до переключателей у потолка и под настилом. [Воздушный обход](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html#flight). После первого задания следующий уровень собирается в браузере за 0 кредитов. [Игровой полигон](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html) · [Цепная реакция](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#chain) · [Линия спасения](https://tvijo-crew-academy.be9ava.chatgpt.site/rescue-together.html) · [Парный маяк](https://tvijo-crew-academy.be9ava.chatgpt.site/#beacon) · [Штаб](https://tvijo-crew-academy.be9ava.chatgpt.site/#hq) · [Журнал](https://tvijo-crew-academy.be9ava.chatgpt.site/#journal)
+**Действующий выпуск v28 · 28 ноября 2026.** Добавлены [«Хроники Центавра»](https://tvijo-crew-academy.be9ava.chatgpt.site/chronicles.html). Семья путешествует по трём эпохам, а две готовые главы открывают мультсцены. На «Игровом полигоне» пять игр. [Пружинная дуэль](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html#duel) добавляет пошаговые броски с разрушаемыми островками. Самолётик летает без ног и добирается до переключателей у потолка и под настилом. [Воздушный обход](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html#flight). После первого задания следующий уровень собирается в браузере за 0 кредитов. [Игровой полигон](https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html) · [Цепная реакция](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#chain) · [Линия спасения](https://tvijo-crew-academy.be9ava.chatgpt.site/rescue-together.html) · [Парный маяк](https://tvijo-crew-academy.be9ava.chatgpt.site/#beacon) · [Штаб](https://tvijo-crew-academy.be9ava.chatgpt.site/#hq) · [Журнал](https://tvijo-crew-academy.be9ava.chatgpt.site/#journal)
 
 На Солнечном причале прикажи Роботу закрепить мост и забери капсулу. После доставки доступен маяк. [Первая смена](https://tvijo-crew-academy.be9ava.chatgpt.site/first-shift.html) · [Алфавит маяка](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#alphabet) · [Комнаты Разлома](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#rift-rooms) · [Станция времени](https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#station) · [Орбитальный шторм](https://tvijo-crew-academy.be9ava.chatgpt.site/storm.html)
 
 ### Первое сообщение для нового чата по игровому дизайну
 
-> Продолжаем Tvijo «Академия экипажа» с v27. Открой «Игровой полигон», «Пружинную дуэль» и tvijor/MECHANICS.md в PR №20. Пройди первый бросок и собери арену с ветром за 0 кредитов. Новые мини-игры должны сохранять прогресс и проверять проходимость. Самолётик летает без ног. Для ревью на biba2 используй путь ниже.
+> Продолжаем Tvijo «Академия экипажа» с v28. Открой «Хроники Центавра», этот файл и tvijor/CHRONICLES.md в PR №20. Пройди готовую главу до мультсцены, собери свою вылазку за 0 кредитов и проверь сохранение героя. Самолётик летает без ног. Следующее занятие — воксельная мастерская. Рабочая копия выпуска на biba2 указана ниже.
 
 [Исходники и рабочая ветка в PR №20](https://github.com/nikbibamon/tvijo/pull/20) · [Этот файл в рабочей ветке](https://github.com/nikbibamon/tvijo/blob/feat/remdesk-crew-expedition/games/crew-academy/TVIJOR-START.md)
+
+## Хроники Центавра · v28
+
+Король Ориан, королева Селена, Лира и Ян ищут потерянное завтра. Лира читает знаки, Ян чинит механизмы. Три рисованные эпохи и три набора костюмов: Дворец маятников, Лунная гавань и Город крон с архивариусом Таи. Чтобы починить часы в прошлом, нужно принести семя из будущего.
+
+Обе готовые главы доступны за 0 кредитов. После прохождения открываются мультсцены с субтитрами, паузой и повтором. Внизу страницы доступны выбор главы, сборка героя и генерация вылазки. Первая вылазка содержит один знак, со второй нужны два. Игра сохраняет героя, шаги и находки в браузере.
+
+[Играть в «Хроники Центавра»](https://tvijo-crew-academy.be9ava.chatgpt.site/chronicles.html) · [Правила](https://github.com/nikbibamon/tvijo/blob/feat/remdesk-crew-expedition/games/crew-academy/tvijor/CHRONICLES.md) · [Квитанция v28](https://github.com/nikbibamon/tvijo/blob/feat/remdesk-crew-expedition/games/crew-academy/tvijor/releases/expedition/verification-v28.json)
+
+В браузере пройдены обе главы, проверены открытие мультсцены, выбор героя, сборка следующей вылазки и перезагрузка. 114 тестов прошли. Источник публикации `722da0c5fd80774f57b62b8209580cb4a39d1222`. Копия для ревью на biba2 в `/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v28`.
+
+Следующее занятие для нижней панели — воксельная песочница. Первый маршрут — построить из блоков лестницу к Семейным часам.
 
 ## Пружинная дуэль · v27
 

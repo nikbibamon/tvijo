@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#141320">
+  <meta name="description" content="Бесплатные приключения семьи Центавра. Путешествуй во времени, решай загадки и открывай мультсцены.">
+  <title>Хроники Центавра · Tvijo</title>
+  <link rel="icon" href="./art/tvijo.png">
+  <link rel="stylesheet" href="./expedition/expedition.css">
+  <link rel="stylesheet" href="./chronicles/chronicles.css">
+</head>
+<body class="ch-body">
+  <header class="exp-nav ch-nav">
+    <div class="exp-bar">
+      <a class="exp-brand" href="./#hq"><img src="./art/tvijo.png" alt="">Tvijo</a>
+      <nav aria-label="Академия экипажа">
+        <a href="./#hq">Штаб</a>
+        <a href="./playground.html">Полигон</a>
+        <a href="#ch-choices">Главы и герои</a>
+      </nav>
+    </div>
+  </header>
+  <main class="ch-main">
+    <header class="ch-intro">
+      <h1>Хроники Центавра</h1>
+      <p>Король Ориан и королева Селена умеют путешествовать во времени. Сегодня их дети Лира и Ян ищут пропавшее завтра.</p>
+    </header>
+    <section id="ch-game" aria-labelledby="ch-chapter">
+      <header class="ch-chapter-bar">
+        <div>
+          <p class="ch-kicker" id="ch-label"></p>
+          <h2 id="ch-chapter" tabindex="-1"></h2>
+        </div>
+        <p id="ch-meter"></p>
+      </header>
+      <nav id="ch-eras" class="ch-eras" aria-label="Переход между эпохами"></nav>
+      <div class="ch-layout">
+        <figure class="ch-scene">
+          <div class="ch-plate" id="ch-plate">
+            <img id="ch-scene-art" alt="">
+            <div class="ch-hotspots" id="ch-hotspots"></div>
+          </div>
+          <figcaption><strong id="ch-scene-name"></strong><span id="ch-costume"></span></figcaption>
+        </figure>
+        <aside class="ch-panel" aria-label="Действия в главе">
+          <div id="ch-roles" class="ch-roles" aria-label="Выбрать героя"></div>
+          <div class="ch-task">
+            <h3 id="ch-task-title"></h3>
+            <p id="ch-goal"></p>
+            <div id="ch-task-actions" class="ch-task-actions"></div>
+          </div>
+          <p id="ch-feedback" role="status" aria-live="polite"></p>
+          <section aria-labelledby="ch-pocket-title" class="ch-pocket">
+            <h3 id="ch-pocket-title">Находки</h3>
+            <ul id="ch-pocket"></ul>
+            <p id="ch-empty">Пока пусто</p>
+          </section>
+        </aside>
+      </div>
+    </section>
+    <section class="ch-choices" id="ch-choices" aria-labelledby="ch-choices-title">
+      <h2 id="ch-choices-title">Выбери приключение</h2>
+      <div class="ch-choice-grid">
+        <article class="ch-choice" data-art="palace">
+          <h3>Завтра застряло в часах</h3>
+          <p>Почини часы семьи. После финала откроется мультсцена.</p>
+          <div id="ch-origin"></div>
+        </article>
+        <article class="ch-choice" data-art="canopy">
+          <h3>Мост для Таи</h3>
+          <p>Верни свет в Город крон. Готовая глава доступна сразу.</p>
+          <div id="ch-bridge"></div>
+        </article>
+        <article class="ch-choice" data-art="harbor">
+          <h3>Своя вылазка</h3>
+          <label for="ch-start-era">Начать в эпохе</label>
+          <select id="ch-start-era"></select>
+          <button type="button" class="ch-button" id="ch-assemble">Собрать вылазку · 0 кредитов</button>
+        </article>
+      </div>
+      <div class="ch-extra">
+        <button type="button" class="ch-button" id="ch-avatar-open">Собрать своего героя · 0 кредитов</button>
+        <a class="ch-button" href="./playground.html">Игровой полигон</a>
+      </div>
+    </section>
+  </main>
+  <dialog class="ch-dialog ch-film" id="ch-film" aria-labelledby="ch-film-title">
+    <header class="ch-dialog-head">
+      <h2 id="ch-film-title">Мультсцена</h2>
+      <button type="button" class="ch-button ch-close" id="ch-film-close" aria-label="Закрыть мультсцену">×</button>
+    </header>
+    <div class="ch-film-stage" id="ch-film-stage" aria-hidden="true"></div>
+    <p class="ch-subtitles" id="ch-subtitles" aria-live="polite"></p>
+    <div class="ch-player">
+      <button type="button" class="ch-button" id="ch-film-play">Пауза</button>
+      <button type="button" class="ch-button" id="ch-film-next">Следующий кадр</button>
+      <span id="ch-film-position"></span>
+    </div>
+  </dialog>
+  <dialog class="ch-dialog ch-avatar-dialog" id="ch-avatar-dialog" aria-labelledby="ch-avatar-title">
+    <header class="ch-dialog-head">
+      <h2 id="ch-avatar-title">Свой герой</h2>
+      <button type="button" class="ch-button ch-close" id="ch-avatar-close" aria-label="Закрыть настройку героя">×</button>
+    </header>
+    <div class="ch-avatar-preview" id="ch-avatar-preview"></div>
+    <div class="ch-avatar-fields" id="ch-avatar-fields"></div>
+    <div class="ch-avatar-actions">
+      <button type="button" class="ch-button" id="ch-avatar-random">Собрать случайного</button>
+      <button type="button" class="ch-button" id="ch-avatar-family">Выбрать Лиру и Яна</button>
+      <button type="button" class="ch-button primary" id="ch-avatar-save">Играть своим героем</button>
+    </div>
+  </dialog>
+  <noscript>Включи JavaScript, чтобы отправиться в прошлое.</noscript>
+  <script type="module" src="./chronicles/main.js"></script>
+</body>
+</html>
