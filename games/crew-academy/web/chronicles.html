@@ -1,31 +1,85 @@
 <!doctype html>
-<html lang="ru">
+<html lang="ru" data-edition="site">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#141320">
-  <meta name="description" content="Бесплатные приключения семьи Центавра. Путешествуй во времени, решай загадки и открывай мультсцены.">
+  <meta name="theme-color" content="#171826">
+  <meta name="description" content="Большое путешествие семьи Центавра. Найди Чашу приливов, решай головоломки и строй в мастерской Семейных часов.">
   <title>Хроники Центавра · Tvijo</title>
   <link rel="icon" href="./art/tvijo.png">
   <link rel="stylesheet" href="./expedition/expedition.css">
   <link rel="stylesheet" href="./chronicles/chronicles.css">
+  <link rel="stylesheet" href="./clockwork/style.css">
+  <link rel="stylesheet" href="./playground/playground.css">
+  <link rel="stylesheet" href="./playground/duel.css">
+  <link rel="stylesheet" href="./campaign/style.css">
 </head>
-<body class="ch-body">
-  <header class="exp-nav ch-nav">
-    <div class="exp-bar">
-      <a class="exp-brand" href="./#hq"><img src="./art/tvijo.png" alt="">Tvijo</a>
-      <nav aria-label="Академия экипажа">
-        <a href="./#hq">Штаб</a>
-        <a href="./playground.html">Полигон</a>
-        <a href="#ch-choices">Главы и герои</a>
+<body class="ch-body camp-body">
+  <header class="camp-header">
+    <div class="camp-bar">
+      <a class="camp-brand" href="#atlas" aria-label="Хроники Центавра · карта"><img src="./art/tvijo.png" width="32" height="32" alt=""><span>Хроники Центавра</span></a>
+      <nav class="camp-nav" aria-label="Навигация кампании">
+        <a href="#atlas" id="camp-map-link">Карта</a>
+        <button type="button" id="camp-pack-open">Рюкзак <span id="camp-pack-count" hidden></span></button>
+        <button type="button" id="camp-log-open">Журнал</button>
       </nav>
     </div>
   </header>
-  <main class="ch-main">
-    <header class="ch-intro">
-      <h1>Хроники Центавра</h1>
-      <p>Король Ориан и королева Селена умеют путешествовать во времени. Сегодня их дети Лира и Ян ищут пропавшее завтра.</p>
-    </header>
+  <main class="ch-main camp-main">
+    <section class="camp-panel" id="camp-atlas" data-campaign-panel="atlas">
+      <div class="camp-cover">
+        <img class="camp-cover-art" src="./campaign/art/museum.webp" alt="" fetchpriority="high">
+        <div class="camp-cover-copy">
+          <h1 tabindex="-1">Хроники Центавра</h1>
+          <p>Лира и Ян находят в Семейных часах рисунок старинной чаши. Стоит повернуть стрелку, и они увидят, где впервые встретились их родители.</p>
+          <a class="camp-button camp-primary" id="camp-continue" href="#journey">Начать с музея</a>
+        </div>
+        <div class="camp-cover-cast" aria-label="Герои главы">
+          <figure><img src="./campaign/art/orian.webp" width="112" height="112" alt=""><figcaption>Ориан</figcaption></figure>
+          <figure><img src="./campaign/art/selena.webp" width="112" height="112" alt=""><figcaption>Селена</figcaption></figure>
+        </div>
+      </div>
+      <div class="camp-atlas-head"><h2>Карта приключений</h2><span id="camp-overview"></span></div>
+      <a class="camp-chapter-card" href="#journey">
+        <img src="./campaign/art/river.webp" alt="" loading="lazy">
+        <span><small>Италия и Египет · 1939–1941</small><strong>Чаша приливов</strong><span id="camp-chapter-summary">Музей, поезд, река и подземные рельсы.</span></span>
+      </a>
+      <div class="camp-sidequests">
+        <a href="#stories"><strong>Приключения Лиры и Яна</strong><span id="camp-stories-summary">Три эпохи и Семейные часы</span></a>
+        <a href="#workshop"><strong>Мастерская</strong><span id="camp-workshop-summary">Лестница к Семейным часам</span></a>
+        <a href="#training"><strong>Задания экипажа</strong><span id="camp-training-summary">Пять коротких вылазок</span></a>
+      </div>
+      <div class="camp-atlas-footer"><a href="./#hq">Вернуться в штаб Академии</a></div>
+    </section>
+    <section class="camp-panel" id="camp-journey" data-campaign-panel="journey" hidden>
+      <div class="camp-journey-heading">
+        <div><p id="camp-scene-place"></p><h1 id="camp-scene-title" tabindex="-1"></h1></div>
+        <span id="camp-scene-progress"></span>
+      </div>
+      <div class="camp-progress" id="camp-progress" aria-hidden="true"></div>
+      <div class="camp-scene-layout">
+        <figure class="camp-scene">
+          <div class="camp-scene-frame" id="camp-scene-frame">
+            <img id="camp-scene-image" alt="">
+            <div id="camp-scene-effect" aria-hidden="true"></div>
+            <div id="camp-hotspot"></div>
+          </div>
+          <figcaption id="camp-spoken" class="camp-spoken">
+            <img id="camp-actor-image" alt="" width="62" height="62">
+            <div><strong id="camp-actor"></strong><p id="camp-line"></p></div>
+          </figcaption>
+        </figure>
+        <aside class="camp-task" aria-labelledby="camp-goal">
+          <div id="camp-task-status" class="camp-task-status" hidden></div>
+          <h2 id="camp-goal"></h2>
+          <div id="camp-puzzle"></div>
+          <p id="camp-feedback" role="status"></p>
+          <button class="camp-button camp-small" id="camp-hint" type="button" hidden>Подсказка</button>
+        </aside>
+      </div>
+      <ol id="camp-stops" class="camp-stops" aria-label="Маршрут Чаши приливов"></ol>
+    </section>
+    <section class="camp-panel" id="camp-stories" data-campaign-panel="stories" aria-label="Приключения Лиры и Яна" hidden>
     <section id="ch-game" aria-labelledby="ch-chapter">
       <header class="ch-chapter-bar">
         <div>
@@ -69,7 +123,7 @@
         </article>
         <article class="ch-choice" data-art="canopy">
           <h3>Мост для Таи</h3>
-          <p>Верни свет в Город крон. Готовая глава доступна сразу.</p>
+          <p>Верни свет в Город крон.</p>
           <div id="ch-bridge"></div>
         </article>
         <article class="ch-choice" data-art="harbor">
@@ -81,13 +135,20 @@
         <article class="ch-choice ch-workshop">
           <h3>Лестница к Семейным часам</h3>
           <p>Построй путь из блоков и зажги часы.</p>
-          <a class="ch-button" href="./clockwork.html">Открыть мастерскую</a>
+          <a class="ch-button" href="#workshop">Открыть мастерскую</a>
         </article>
       </div>
       <div class="ch-extra">
         <button type="button" class="ch-button" id="ch-avatar-open">Собрать своего героя · 0 кредитов</button>
-        <a class="ch-button" href="./playground.html">Игровой полигон</a>
+        <a class="ch-button" href="#training">Игровой полигон</a>
       </div>
+    </section>
+    </section>
+    <section class="camp-panel cw-embed" id="camp-workshop" data-campaign-panel="workshop" aria-label="Мастерская" hidden>
+      <!-- campaign:clockwork -->
+    </section>
+    <section class="camp-panel pg" id="camp-training" data-campaign-panel="training" aria-label="Задания экипажа" hidden>
+      <!-- campaign:playground -->
     </section>
   </main>
   <dialog class="ch-dialog ch-film" id="ch-film" aria-labelledby="ch-film-title">
@@ -116,7 +177,17 @@
       <button type="button" class="ch-button primary" id="ch-avatar-save">Играть своим героем</button>
     </div>
   </dialog>
+  <dialog id="camp-notes" class="camp-dialog" aria-labelledby="camp-note-title">
+    <header><h2 id="camp-note-title"></h2><form method="dialog"><button class="camp-button camp-small" aria-label="Закрыть">×</button></form></header>
+    <div id="camp-note-body"></div>
+  </dialog>
+  <dialog id="camp-ending" class="camp-dialog camp-ending" aria-labelledby="camp-ending-title">
+    <header><h2 id="camp-ending-title">Мультсцена · Чаша приливов</h2><form method="dialog"><button class="camp-button camp-small" aria-label="Закрыть мультсцену">×</button></form></header>
+    <img id="camp-ending-image" alt="">
+    <div class="camp-ending-speech"><img id="camp-ending-actor" alt="" width="56" height="56"><p id="camp-ending-line" aria-live="polite"></p></div>
+    <button type="button" class="camp-button camp-primary" id="camp-ending-next"></button>
+  </dialog>
   <noscript>Включи JavaScript, чтобы отправиться в прошлое.</noscript>
-  <script type="module" src="./chronicles/main.js"></script>
+  <script type="module" src="./campaign/main.js"></script>
 </body>
 </html>

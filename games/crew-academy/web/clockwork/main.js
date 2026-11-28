@@ -7,6 +7,7 @@ const isSite=document.documentElement.dataset.edition==='site';
 const store=isSite?await import('./site-store.js'):localStore;
 const lang=isSite&&new URLSearchParams(location.search).get('lang')!=='en'?'ru':'en';
 const t=strings(lang);
+const embedded=Boolean(document.getElementById('camp-workshop'));
 const el=id=>document.getElementById('cw-'+id);
 const canvas=el('canvas'),ctx=canvas.getContext('2d'),marker=el('marker'),actionButton=el('action');
 const media=matchMedia('(prefers-reduced-motion: reduce)');
@@ -18,8 +19,10 @@ const labels={
   finished:t.finished,ending:t.ending,close:t.close
 };
 for (const [id,label] of Object.entries(labels)) el(id).textContent=label;
-document.title=t.title+' · '+t.series;
-document.documentElement.lang=lang;
+if (!embedded) {
+  document.title=t.title+' · '+t.series;
+  document.documentElement.lang=lang;
+}
 canvas.setAttribute('aria-label',t.boardHelp);
 el('movie').setAttribute('aria-labelledby','cw-finished');
 el('materials').setAttribute('aria-label',t.choose);
@@ -39,7 +42,7 @@ if (isSite) {
   const language=document.createElement('a');
   language.href=lang==='ru'?'?lang=en':'./clockwork.html';
   language.textContent=lang==='ru'?'English':'Русский';
-  el('site-nav').append(back,language);
+  if (!embedded) el('site-nav').append(back,language);
 }
 
 function chooseRoom(id) {

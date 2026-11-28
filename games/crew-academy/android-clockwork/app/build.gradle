@@ -4,13 +4,12 @@ plugins {
 
 def projectRoot = rootProject.projectDir.parentFile
 def webAssets = layout.buildDirectory.dir('generated/clockwork/assets')
-def buildWorkshop = tasks.register('buildWorkshop', Exec) {
+def buildCampaign = tasks.register('buildCampaign', Exec) {
     workingDir projectRoot
     commandLine providers.gradleProperty('nodeExecutable').getOrElse('node'),
-        'tools/build-store.mjs', 'android', webAssets.get().asFile
-    inputs.file new File(projectRoot, 'tools/build-store.mjs')
-    inputs.file new File(projectRoot, 'web/clockwork.html')
-    inputs.dir new File(projectRoot, 'web/clockwork')
+        'tools/build-campaign.mjs', webAssets.get().asFile
+    inputs.files fileTree(new File(projectRoot, 'tools')) { include 'build-campaign.mjs', 'assemble-campaign.mjs' }
+    inputs.dir new File(projectRoot, 'web')
     outputs.dir webAssets
 }
 
@@ -18,11 +17,11 @@ android {
     namespace 'com.tvijo.clockwork'
     compileSdk 36
     defaultConfig {
-        applicationId 'com.tvijo.clockwork'
+        applicationId 'com.tvijo.centaur.chronicles'
         minSdk 26
         targetSdk 36
         versionCode 1
-        versionName '0.1.0'
+        versionName '0.2.0'
     }
     sourceSets.main.assets.srcDir(webAssets)
     compileOptions {
@@ -31,7 +30,7 @@ android {
     }
 }
 
-tasks.named('preBuild') { dependsOn buildWorkshop }
+tasks.named('preBuild') { dependsOn buildCampaign }
 
 dependencies {
     implementation 'androidx.webkit:webkit:1.15.0'

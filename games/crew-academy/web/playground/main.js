@@ -8,6 +8,8 @@ const byId = id=>document.getElementById(id);
 const lobby=byId('pg-lobby'), room=byId('pg-run'), board=byId('pg-board');
 const controls=byId('pg-controls'), detail=byId('pg-description'), feedback=byId('pg-feedback'), next=byId('pg-next');
 const undo=byId('pg-undo'), hint=byId('pg-hint'), restart=byId('pg-restart');
+const embedded=document.getElementById('camp-training');
+const host=embedded??document.body;
 const arrows={ArrowUp:'up', ArrowRight:'right', ArrowDown:'down', ArrowLeft:'left'};
 let gameId, run, layout, busy=false;
 
@@ -15,7 +17,7 @@ function presentLobby() {
   const cards = Object.entries(games).map(([id,game])=>{
     const progress=savedRun(state,id);
     const card=element('a','pg-card');
-    card.href='#'+id;
+    card.href=(embedded?'#training/':'#')+id;
     card.dataset.game=id;
     const art=element('div','pg-card-art');
     art.setAttribute('aria-hidden','true');
@@ -75,18 +77,18 @@ function presentRun(result={}) {
 }
 
 function route() {
-  const id = location.hash.slice(1);
+  const id = location.hash.slice(embedded ? '#training/'.length : 1);
   gameId=Object.hasOwn(games,id)?id:null;
   lobby.hidden=Boolean(gameId);
   room.hidden=!gameId;
-  document.body.dataset.game=gameId??'lobby';
+  host.dataset.game=gameId??'lobby';
   if (gameId) {
     run=savedRun(state,gameId);
     presentRun();
-    document.title=games[gameId].title+' · Игровой полигон';
+    if (!embedded) document.title=games[gameId].title+' · Игровой полигон';
   } else {
     presentLobby();
-    document.title='Игровой полигон · Академия экипажа';
+    if (!embedded) document.title='Игровой полигон · Академия экипажа';
   }
 }
 
@@ -134,6 +136,7 @@ restart.onclick=()=>take('restart');
 hint.onclick=propose;
 window.addEventListener('hashchange',route);
 window.addEventListener('keydown', event=>{
+  if (embedded && (embedded.hidden || document.querySelector('dialog[open]'))) return;
   if (!['flight','ice'].includes(gameId)||event.altKey||event.ctrlKey||event.metaKey||!Object.hasOwn(arrows,event.key)) return;
   event.preventDefault();
   take('move',arrows[event.key]);
