@@ -165,9 +165,44 @@ dialog:has(.blueprint-view),dialog:has(.medal-grid){width:min(650px,calc(100vw -
 @media(orientation:landscape) and (max-height:540px){.dock-run .dock-objective{margin:0;padding:2px 8px}.dock-run .dock-objective img{width:28px;height:28px}.dock-run .dock-objective span{display:none}.dock-run .dock-objective button{min-height:36px}.dock-run .play-frame canvas{height:calc(100svh - 108px - env(safe-area-inset-bottom))}.dock-run.compact-result .play-frame{display:none}}
 .shift-replay{margin:8px 0 0}.dock-run .tasks-panel>.section-heading,.dock-run #field-tasks{display:none}.dock-run .tasks-panel{padding:0 12px}.dock-run .mission-tools{border:0;margin:0}
 
+/* Main campaign entry points also work as ordinary direct links. */
+#start-mission,.exp-door a,.rift-entrance a,.shift-finish-actions a,.map-detail a{text-decoration:none}
+.exp-door.chronicles-entry{background:linear-gradient(90deg,#251a2eed 0%,#2d2036b8 58%,#2a203a42),url(./chronicles/art/palace.webp) center 45%/cover}
+.exp-door{position:relative;isolation:isolate;overflow:hidden;border:1px solid #655475;border-radius:12px;margin:13px 0;padding:16px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:linear-gradient(90deg,#21192af7,#251a30e0 55%,#2b2142b2),url(./art/rift.webp) center 58%/cover}.exp-door h2{font-size:clamp(1.25rem,2vw,1.7rem);line-height:1.1;letter-spacing:-.035em;margin:2px 0 4px}.exp-door p{font-weight:650;color:var(--gold);font-size:.86rem}.exp-door span,.rift-entrance span{display:block;color:#ded6e2;font-size:.94rem}.exp-door small,.rift-loot{display:block;color:var(--mint);margin-top:3px}.exp-door-actions,.rift-entrance{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.exp-door-actions{justify-content:flex-end}.exp-door a,.rift-entrance a{min-height:43px}.shift-replay{font-size:.96rem}.rift-entrance{background:#292135;border:1px solid #655574;border-radius:9px;padding:12px;margin-top:10px}.rift-entrance div{margin-right:auto}.rift-entrance strong{display:block;color:var(--gold)}
+@media(max-width:800px){.exp-door{display:block;padding:12px}.exp-door-actions{margin-top:10px;justify-content:flex-start}.hero-actions{flex-wrap:wrap}.exp-door a,.rift-entrance a{font-size:.91rem}.shift-finish-actions{flex-wrap:wrap}}
+@media(max-width:380px){#start-mission{font-size:.86rem;padding-inline:9px}.exp-door a{padding:7px 9px}.rift-entrance{gap:5px}}
+
 body.in-telegram {
   padding-top: max(env(safe-area-inset-top), var(--tg-safe-area-inset-top, 0px), var(--tg-content-safe-area-inset-top, 0px));
   padding-right: max(env(safe-area-inset-right), var(--tg-content-safe-area-inset-right, 0px));
   padding-bottom: max(env(safe-area-inset-bottom), var(--tg-content-safe-area-inset-bottom, 0px));
   padding-left: max(env(safe-area-inset-left), var(--tg-content-safe-area-inset-left, 0px));
+}
+#field-sound, #radio-sound, #result-sound { display:none; }
+[data-voice] svg { width:20px; height:20px; }
+.voice-problem { margin:4px 0 8px; color:#ffda94; font-size:.875rem; }
+@media (max-width:800px), (orientation:landscape) and (max-height:540px) {
+  .in-field #field-sound, .in-field.field-radio-open #radio-sound {
+    display:grid; place-items:center; min-width:44px; min-height:44px; padding:5px;
+  }
+}
+@media (orientation:landscape) and (max-height:540px) {
+  .in-field .dock-run.compact-result #result-sound { display:grid; place-items:center; width:44px; height:44px; }
+}
+
+.storm-entry {
+  background: linear-gradient(90deg,#20162ae8,#281d36ac 66%,#24163344),
+    url(./storm/orbital-storm.webp) right 56% / cover;
+  min-height: 92px;
+}
+
+@media (min-width: 801px) and (max-width: 1000px) {
+  .head-inner {
+    flex-wrap: wrap;
+    gap: 6px 12px;
+    padding-inline: 14px;
+  }
+  .head-inner .brand { padding-right: 10px; }
+  .topbar .nav-item { padding-inline: 6px; gap: 5px; white-space: nowrap; }
+  .head-inner .account { gap: 6px; }
 }

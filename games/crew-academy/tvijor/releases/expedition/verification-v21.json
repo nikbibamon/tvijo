@@ -1,0 +1,149 @@
+{
+  "release": 21,
+  "date": "2026-11-27",
+  "game": "Tvijo · Академия экипажа",
+  "site": {
+    "url": "https://tvijo-crew-academy.be9ava.chatgpt.site",
+    "entry": "https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#cargo",
+    "source": "f637120e76622ed78634f973e0bafe200127d6d3",
+    "version": 21,
+    "version_id": "appgprj_6b08be8d319881918d089d9ce576a41f~appgver_fb274ee1927481919d6fb57449cb51f2",
+    "deployment_id": "appgdep_6b09f5169b9c8191b9a3b474ac1ee238",
+    "status": "succeeded",
+    "assets": 128,
+    "worker_sha256": "29a13af10023baccb1dfbb8711e74dc6d10b1392a661843f0536312fde85c543"
+  },
+  "repo": {
+    "slug": "nikbibamon/tvijo",
+    "pr": 20,
+    "branch": "feat/remdesk-crew-expedition",
+    "game_commit": "97da0a5bc69c3012026037599323ea74a0417a98",
+    "changed_files": 16
+  },
+  "automated": {
+    "node": {
+      "passed": 93,
+      "failed": 0,
+      "new_warehouse": 7
+    },
+    "fastapi": {
+      "passed": 3,
+      "failed": 0
+    },
+    "worker_routes_matching_status_mime_bytes": 128,
+    "fastapi_routes_matching_get_and_head": 128,
+    "qa_page_absent_from_release": true
+  },
+  "browser": {
+    "engine": "Chrome",
+    "public_v21": {
+      "hq_tile": "Склад Робота",
+      "first_job": {
+        "name": "Погрузочная линия",
+        "partial_plates": 1,
+        "partial_moves": 4,
+        "hq_resume_and_reload": true,
+        "finished_plates": 2,
+        "pushes": 5,
+        "returns": 0
+      },
+      "express": {
+        "name": "Экспресс-сортировка",
+        "observed_wrong_receiver": "Энергоячейка на плите «Охлаждение»",
+        "wrong_receiver_survived_reload": true,
+        "returned_to_diverter": true,
+        "finished_plates": 2,
+        "pushes": 5,
+        "roller_trips": 2,
+        "returns": 1
+      },
+      "sluice": {
+        "accepted": [
+          "Энергоячейка",
+          "Хладагент"
+        ],
+        "receipt_persisted_after_reload": true,
+        "repeat_accept_controls": 0
+      },
+      "journal_confirmed_both_jobs_and_delivery": true
+    },
+    "preview": {
+      "first_job_push_checkpoint_restored_after_walking": true,
+      "matched_board_after_hq_and_reload": true,
+      "legacy_training_5_by_5_reachable": true,
+      "adjacent_tap_and_keyboard_moves": true
+    },
+    "viewport_measurements": [
+      {
+        "size": [
+          375,
+          667
+        ],
+        "first_board": [
+          316,
+          210
+        ],
+        "express_board": [
+          316,
+          184
+        ]
+      },
+      {
+        "size": [
+          390,
+          844
+        ],
+        "first_board": [
+          331,
+          220
+        ],
+        "express_board": [
+          331,
+          192
+        ]
+      },
+      {
+        "size": [
+          844,
+          390
+        ],
+        "first_board": [
+          250,
+          157
+        ],
+        "express_board": [
+          286,
+          157
+        ]
+      }
+    ],
+    "all_measured_boards": {
+      "horizontal_overflow": 0,
+      "visible_elements_beyond_right_edge": 0,
+      "direction_button": [
+        44,
+        44
+      ]
+    },
+    "physical_phone": false,
+    "hardware_audio_verified": false
+  },
+  "remdesk": {
+    "path": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v21",
+    "based_on": "c7d1ff8c2da434f9aa4498f1421788044d9913a7",
+    "patch": "update.patch.part-01 … update.patch.part-17",
+    "parts": 17,
+    "bytes": 572143,
+    "sha256": "0719dbcd7c9dde4537c6d3dbc3d5166a20f5c6e523e4df5d9f40606972747485",
+    "all_parts_readback_exact": true,
+    "clean_rebuild_matches_publication_package": true,
+    "biba2_process_v21_verified": false
+  },
+  "open": [
+    "Verify warehouse touch on a physical phone and existing speech playback on hardware.",
+    "Verify the paired beacon with two independently controlled clients.",
+    "Independent first-shift M1 playtests.",
+    "Verify a running v21 service on biba2."
+  ],
+  "next_room": "Цепная реакция"
+}

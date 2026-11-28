@@ -1,0 +1,27 @@
+{
+  "version": 26,
+  "date": "2026-11-28",
+  "url": "https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html#flight",
+  "sourceCommit": "0a10ec2f57dc78042eaaacfeb175a112f544a84b",
+  "deployment": "appgdep_6b0aab83eeec81919b19029c34c2841c",
+  "verification": {
+    "nodeTestsPassed": 106,
+    "generatedLayoutsSolved": 1536,
+    "bundledAssets": 147,
+    "previewUpperSwitch": true,
+    "previewLowerSwitch": true,
+    "reloadPreservedPosition": true,
+    "productionUpperSwitch": true,
+    "keyboardAndOnScreenControls": true,
+    "humanCannotReachFlightSwitches": true,
+    "priorSortiePilotsReachCapsule": true
+  },
+  "mirror": {
+    "host": "biba2",
+    "release": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v26",
+    "exactReadbackFiles": 17,
+    "patchParts": 4,
+    "patchSha256": "4917b60fe286383e489e66cb948030f021461d10171b5adc69ebd8ad70e2c7b7",
+    "rebuiltWorkerSha256": "0f110547f97ed6dfa2fb1ed5313c52d27c002a553c29d81f134dd63f5b172fc5"
+  }
+}

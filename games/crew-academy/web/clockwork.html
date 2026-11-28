@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ru" data-edition="site">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#151a2a">
+  <title>Лестница к Семейным часам · Tvijo</title>
+  <link rel="stylesheet" href="./clockwork/style.css">
+</head>
+<body class="cw-page">
+  <!-- campaign-view:start -->
+  <main class="cw-shell">
+    <header class="cw-header">
+      <div><p class="cw-series" id="cw-series"></p><h1 id="cw-title"></h1></div>
+      <div class="cw-nav" id="cw-site-nav"></div>
+    </header>
+    <section class="cw-layout" id="cw-game" hidden>
+      <div class="cw-stage">
+        <div class="cw-stage-title"><h2 id="cw-room"></h2><span id="cw-state"></span></div>
+        <div class="cw-board">
+          <canvas id="cw-canvas" width="730" height="424" tabindex="0"></canvas>
+          <button type="button" id="cw-marker" class="cw-marker"></button>
+        </div>
+        <p id="cw-feedback" class="cw-feedback" role="status"></p>
+      </div>
+      <aside class="cw-console">
+        <p class="cw-objective" id="cw-objective"></p>
+        <div id="cw-materials" class="cw-materials"></div>
+        <div class="cw-tools">
+          <button type="button" id="cw-place"></button>
+          <button type="button" id="cw-remove"></button>
+        </div>
+        <button type="button" class="cw-primary" id="cw-action"></button>
+        <div class="cw-utility">
+          <button type="button" id="cw-hint"></button>
+          <button type="button" id="cw-undo"></button>
+          <button type="button" id="cw-reset" hidden></button>
+        </div>
+        <button type="button" id="cw-credit" class="cw-credit" hidden></button>
+      </aside>
+    </section>
+    <nav class="cw-levels" id="cw-levels" hidden></nav>
+    <noscript>Enable JavaScript to play Clocktower Workshop.</noscript>
+  </main>
+  <dialog id="cw-purchase" class="cw-dialog">
+    <form method="dialog">
+      <h2 id="cw-credit-title"></h2>
+      <p id="cw-credit-body"></p>
+      <p id="cw-credit-balance"></p>
+      <div class="cw-utility"><button type="button" class="cw-primary" id="cw-confirm"></button><button id="cw-cancel"></button></div>
+    </form>
+  </dialog>
+  <dialog id="cw-movie" class="cw-dialog cw-movie">
+    <form method="dialog">
+      <div class="cw-animation" aria-hidden="true"><div class="cw-ring"><i></i><b></b></div></div>
+      <h2 id="cw-finished"></h2>
+      <p id="cw-ending"></p>
+      <button id="cw-close" class="cw-primary"></button>
+    </form>
+  </dialog>
+  <!-- campaign-view:end -->
+  <script type="module" src="./clockwork/main.js"></script>
+</body>
+</html>

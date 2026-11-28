@@ -1,0 +1,67 @@
+{
+  "release": "expedition-v17",
+  "date": "2026-11-27",
+  "code_commit": "d37ac607be5b9c6c40b343b83c03d53833d0d44a",
+  "sites": {
+    "commit": "0be0584b35a8f7cf519759c877d64d62a8372320",
+    "url": "https://tvijo-crew-academy.be9ava.chatgpt.site",
+    "version": 17,
+    "deployment": "appgdep_6b09db65c6708191bafc58f2c88c8178",
+    "status": "succeeded",
+    "assets": 102
+  },
+  "play": "https://tvijo-crew-academy.be9ava.chatgpt.site/storm.html",
+  "scenes": [
+    "signal",
+    "power",
+    "rescue",
+    "docking",
+    "journal"
+  ],
+  "art": {
+    "path": "web/storm/orbital-storm.webp",
+    "sha256": "66ac684e84dc42698c389dbf8f3e47cb2867f16ff5a29b9c30df8a63c5b9d0d0"
+  },
+  "verification": {
+    "node_passed": 71,
+    "fastapi_passed": 3,
+    "worker_routes_200": 11,
+    "worker_sha256": "70def176de1cb9ff558cf5d1ead05bbb86811ab8149c1a27366082577b90b89c",
+    "simulated_ui": "All five stage views, incorrect signal, pulse fallback, dock rejection, keyboard and tile actions, reload, debrief, restart and idempotent badge passed",
+    "reserve_variants": [
+      "shield",
+      "drive",
+      "winch"
+    ],
+    "physical_phone": "pending"
+  },
+  "biba2": {
+    "base": "expedition-v16",
+    "directory": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v17",
+    "parts": [
+      {
+        "name": "update.patch.part-01",
+        "bytes": 40971,
+        "sha256": "9d15210c4500ff67f0c786869dcb529e0dd81c5bf0323602f110eda57d959499"
+      },
+      {
+        "name": "update.patch.part-02",
+        "bytes": 40937,
+        "sha256": "076e9456d049558c91f3a7ff0726bd864ee461d5fb99ca2f46e898d84c182133"
+      },
+      {
+        "name": "update.patch.part-03",
+        "bytes": 40975,
+        "sha256": "abc83d1582930b5f55475c920562734a0589688699ea8bdb138b2aedbba09c48"
+      },
+      {
+        "name": "update.patch.part-04",
+        "bytes": 6425,
+        "sha256": "ed604bdb9ff4800b907222627453c8b4d5e655d97a91b80532823dad5f995b1d"
+      }
+    ],
+    "sha256": "c51a604a0c200553430b9ec910bbae6a89d9805aa54758c5b55bdba731c53141",
+    "locally_rebuilt_from_server_patch": true,
+    "full_server_build": "pending"
+  }
+}

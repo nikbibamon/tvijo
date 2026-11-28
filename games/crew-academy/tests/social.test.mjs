@@ -193,3 +193,53 @@ test('existing pilots can decline; withdrawn, blocked and private beacon links c
   assert.equal((await send(guest,'accept',muted)).code,409);assert.equal((await guest.room()).data.peers.length,0);
  }finally{db.close();}
 });
+
+test('rescue uses the same beacon pair, protects the scan result and saves both roles through duplicate actions',async()=>{
+ const {db,DB}=await openCrewDB();
+ try{
+  const host=player({DB}),guest=player({DB}),outsider=player({DB});
+  for (const pilot of [host,guest,outsider]) {await pilot.join();await pilot.share();}
+  const A=(await host.room()).data.me.id,B=(await guest.room()).data.me.id;
+  const book=async(player,action,code)=>player.fetch('/api/crew/beacon-link',{action,code});
+  const c=(await book(host,'create')).data.code;
+  const read=async(player,other)=>player.fetch('/api/crew/rescue?other='+other);
+  const act=(player,other,action,mission,lane)=>player.fetch('/api/crew/rescue',{other,action,mission,lane});
+  assert.equal((await act(host,B,'start')).code,409);
+  await book(guest,'accept',c);
+  const beacon=async(player)=>(await player.fetch('/api/crew/room?beacon='+c)).data.beacon;
+  const a=(await beacon(host)).relay,b=(await beacon(guest)).relay;
+  const relay=(player,op,run,sequence)=>player.fetch('/api/crew/relay',{other:run.other,action:op,mission:run.mission,sequence});
+  const symbols=(await relay(host,'scan',a)).data.relay.sequence;
+  await relay(host,'send',a);await relay(guest,'tune',b,symbols);
+  assert.equal((await beacon(guest)).rescuePeer,A);
+  assert.deepEqual((await host.fetch('/api/crew/rescue')).data.eligible.map(p=>p.id),[B]);
+  const started=await Promise.all([act(host,B,'start'),act(guest,A,'start')]);
+  const first=started[0].data.rescue;
+  assert.equal(started[1].data.rescue.mission,first.mission);
+  const [scout,base,scoutPeer,basePeer]=first.role==='drone'?[host,guest,B,A]:[guest,host,A,B];
+  const id=first.mission;
+  assert.equal((await read(outsider,A)).code,409);
+  assert.equal((await act(base,basePeer,'scan',id)).code,403);
+  assert.equal((await act(scout,scoutPeer,'cross',id)).code,409);
+  const scanned=(await act(scout,scoutPeer,'scan',id)).data.rescue;
+  const lane=scanned.lane,bad=lane==='upper'?'lower':'upper';
+  assert.equal((await read(base,basePeer)).data.rescue.lane,null);
+  assert.equal((await act(scout,scoutPeer,'mark',id,bad)).code,422);
+  await act(scout,scoutPeer,'mark',id,lane);
+  assert.equal((await read(base,basePeer)).data.rescue.lane,lane);
+  assert.equal((await act(base,basePeer,'anchor',id,bad)).code,422);
+  assert.equal((await act(base,basePeer,'anchor',id,lane)).data.rescue.phase,'cross');
+  assert.equal((await read(scout,scoutPeer)).data.rescue.phase,'cross');
+  assert.equal((await act(scout,scoutPeer,'cross',id)).data.rescue.phase,'pull');
+  const pulls=await Promise.all([act(base,basePeer,'pull',id),act(base,basePeer,'pull',id)]);
+  for (const r of pulls) assert.equal(r.data.rescue.phase,'done');
+  const final=(await read(scout,scoutPeer)).data.rescue;
+  assert.equal(final.finished,pulls[0].data.rescue.finished);
+  assert.equal((await act(scout,scoutPeer,'start')).data.rescue.mission,id);
+  assert.equal(db.prepare("SELECT count(*) AS n FROM crew_rescues WHERE phase='done'").get().n,1);
+  assert.equal((await host.room()).data.me.beacons,1);
+  await guest.share(false);
+  assert.deepEqual((await host.fetch('/api/crew/rescue')).data.eligible,[]);
+  assert.equal((await read(host,B)).code,409);
+ }finally{db.close();}
+});

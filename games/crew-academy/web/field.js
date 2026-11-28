@@ -3,7 +3,7 @@ import {heroes,moves} from './catalog.js';
 import {layout} from './worlds.js';
 import {state,doneFor} from './tvijoService.js';
 import {bindFieldPads} from './fieldControls.js';
-import {companionsFor,drawBackdrop} from './sceneArt.js';
+import {companionsFor,drawBackdrop,drawRunner,runnerImage} from './sceneArt.js';
 import {readyTasks} from './strategy.js';
 const W=960,H=448,G=1050,clamp=(n,a,b)=>Math.max(a,Math.min(b,n));
 export function createField(ui){
@@ -28,11 +28,18 @@ export function createField(ui){
     return !(done.includes('rescue')||level.id==='mine'&&done.includes('compare'));
   }
   const spriteHeight={captain:91,assistant:86,blue:91,son:82,daughter:75,robot:97,plane:67};
-  const loadRunner=h=>load('runner-'+h,'./art/runners/'+h+'.webp');
+  const loadRunner=h=>load('runner-'+h,runnerImage(h));
+  function setHero(id){
+    hero=id;loadRunner(id);
+    const flying=id==='plane';
+    document.querySelector('#jump span').textContent=flying?'Взлёт':'Прыжок';
+    document.querySelector('[data-pad=left]').setAttribute?.('aria-label',flying?'Лететь влево':'Бежать влево');
+    document.querySelector('[data-pad=right]').setAttribute?.('aria-label',flying?'Лететь вправо':'Бежать вправо');
+  }
   const sparkSites=()=>[[176,level.floor-32],[337,level.floor-67],[route.goal-62,route.goalY-30]];
   function clearDust(){motes=[];}
   function dust(n){
-    if(reduce)return;
+    if(reduce||hero==='plane')return;
     for(let i=0;i<n;i++)motes.push({x:x-face*(6+i*2),y:y-2,vx:-face*(11+i*7),vy:-13-i*6,age:0});
   }
   function load(id,path='./art/'+id+'.webp'){if(imgs.has(id))return;const im=new Image();im.decoding='async';im.src=path;imgs.set(id,im);}
@@ -44,7 +51,7 @@ export function createField(ui){
   function spawn(pos=55){courier=0;x=pos;y=level.floor;vy=0;grounded=true;airGrace=.1;clearMovement();}
   function start(l,h){
     const same=level?.id===l.id&&started&&!ended;
-    level=l;hero=h;relay=l.id.startsWith('pair-');route=layout(l);load(l.art);loadRunner(h);team=companionsFor(l);for(const member of team)loadRunner(member);['deck','cell','relay','wraith'].forEach(a=>load(a));
+    level=l;setHero(h);relay=l.id.startsWith('pair-');route=layout(l);load(l.art);team=companionsFor(l);for(const member of team)loadRunner(member);['deck','cell','relay','wraith'].forEach(a=>load(a));
     if(!same){bridgeProgress=l.id==='dock'&&opened()?1:0;bridgeSignal=0;pickupRequested=false;outing++;issuing=null;courier=0;setPilot(false);nextOrder=0;stride=0;face=1;atTerminal=false;sparks=new Set(relay?[]:state.stages[l.id]?.sparks||[]);clearDust();clock=0;elapsed=0;ended=false;blocking=false;falls=0;checkpoint=55;shield=!!props().shield;windowShown=false;status.textContent='';spawn();}started=true;paused=false;last=0;overlay.hidden=true;run();draw();
   }
   function leave(){outing++;issuing=null;courier=0;setPilot(false);blocking=false;clearMovement();paused=true;if(raf)cancelAnimationFrame(raf);raf=0;}
@@ -55,7 +62,7 @@ export function createField(ui){
   function resume(){if(ended)return;paused=false;overlay.hidden=true;last=0;run();canvas.focus({preventScroll:true});}
   function warp(){spawn(Math.max(55,route.gate-45));checkpoint=x;speak('Телепорт к реле выполнен.');resume();}
   function fall(){falls++;if(!relay)ui.fell(falls);if(shield){shield=false;checkpoint=Math.max(55,Math.floor(x-35));for(const gap of [route.jumpGap,opened()?null:route.gap])if(gap&&checkpoint>gap[0]-12&&checkpoint<gap[1])checkpoint=gap[0]-20;speak('Стабилизатор Робота удержал позицию.');}
-    else speak(falls>=2?'Контрольная точка. Коснись капсулы — герой сам подберёт момент для прыжка.':'Возврат на контрольную точку · бесплатно');spawn(checkpoint);stamp=clock;}
+    else speak(falls>=2?'Контрольная точка. Коснись капсулы — герой сам подберёт путь.':'Возврат на контрольную точку · бесплатно');spawn(checkpoint);stamp=clock;}
   function launchJump(){
     vy=-(props().jump||430);grounded=false;airGrace=0;jumpBuffer=0;
   }
@@ -63,7 +70,7 @@ export function createField(ui){
     if(paused||ended||suspended||!started||blocking)return;
     if(grounded||airGrace>0)launchJump();else jumpBuffer=.14;
   }
-  // Contact is measured against the runner and the capsule, both anchored at their feet.
+  // Contact is measured from the field physics anchor to the capsule platform.
   function touchingGoal(manual=false){
     const reach=manual?(props().reach||44):(props().reach?35:26);
     const base=route.goalY,head=y-spriteHeight[hero]*.78;
@@ -291,13 +298,14 @@ export function createField(ui){
         cy=g;
       }
       const size=air?43:66,frame=!air&&following&&running?1+Math.floor(stride/20)%2:0;
-      c.drawImage(actor,frame*128,0,128,128,cx-size/2,cy-size,size,size);
+      drawRunner(c,actor,member,frame,cx-size/2,cy-size,size);
       if(carrying)sprite('cell',cx,cy+11,20);
     }
     const atlas=imgs.get('runner-'+hero);
     if(atlas?.complete&&atlas.naturalWidth){const frame=!grounded?3:running?1+Math.floor(stride/20)%2:0;
-      const h=spriteHeight[hero];c.save();c.translate(x,y);c.scale(face,1);c.imageSmoothingEnabled=false;
-      c.drawImage(atlas,frame*128,0,128,128,-h/2,-h*122/128,h,h);c.restore();}
+      const h=spriteHeight[hero],hover=hero==='plane'?10+(reduce?0:3*Math.sin(clock*3)):0;
+      c.save();c.translate(x,y);c.scale(face,1);c.imageSmoothingEnabled=false;
+      drawRunner(c,atlas,hero,frame,-h/2,-h*122/128-hover,h);c.restore();}
 
   }
   function tick(t){raf=0;if(paused||ended||suspended||!started)return;let dt=Math.min(.4,(t-(last||t))/1000);last=t;while(dt>0.00001&&!blocking&&!ended){const d=Math.min(dt,1/90);step(d);dt-=d;}draw();run();}
@@ -340,5 +348,5 @@ export function createField(ui){
   };
   document.querySelector('#pause').onclick=pause;document.querySelector('#field-target').onclick=()=>{stopPilot();if(opened())requestPickup();else autoGoal();};
   pilotButton.onclick=()=>{if(pilot){stopPilot();speak('Управление у тебя.',1);}else startPilot();};
-  new ResizeObserver(draw).observe(canvas);return {start,leave,suspend,draw,resume,warp,issue,pickup:requestPickup,startPilot,forget(){started=false;leave();},get stageId(){return started?level.id:null;},get active(){return started&&!ended;},setHero(h){hero=h;loadRunner(h);}};
+  new ResizeObserver(draw).observe(canvas);return {start,leave,suspend,draw,resume,warp,issue,pickup:requestPickup,startPilot,forget(){started=false;leave();},get stageId(){return started?level.id:null;},get active(){return started&&!ended;},setHero};
 }

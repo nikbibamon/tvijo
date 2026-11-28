@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111321">
+  <meta name="description" content="Короткие игры Академии экипажа. Пройди первое задание и собери следующий уровень.">
+  <title>Игровой полигон · Академия экипажа</title>
+  <link rel="icon" href="./art/tvijo.png">
+  <link rel="stylesheet" href="./expedition/expedition.css">
+  <link rel="stylesheet" href="./playground/playground.css">
+  <link rel="stylesheet" href="./playground/duel.css">
+</head>
+<body class="pg">
+  <header class="exp-nav">
+    <div class="exp-bar">
+      <a class="exp-brand" href="./#hq"><img src="./art/tvijo.png" alt="">Tvijo</a>
+      <nav aria-label="Академия экипажа">
+        <a href="./#hq">Штаб</a><a href="./expedition.html#rift">Комнаты</a><a href="./chronicles.html">Хроники</a><a href="./#journal">Журнал</a>
+      </nav>
+    </div>
+  </header>
+  <!-- campaign-view:start -->
+  <main class="pg-main">
+    <section id="pg-lobby" hidden>
+      <div class="pg-cover">
+        <div>
+          <p class="pg-kicker">Академия экипажа</p>
+          <h1>Игровой полигон</h1>
+          <p>Выбери героя и пройди короткое задание. Следующий уровень соберётся за 0 кредитов.</p>
+        </div>
+        <div class="pg-cover-art" aria-hidden="true"><i></i><span class="pg-sprite plane"></span><span class="pg-sprite daughter"></span><span class="pg-sprite robot"></span></div>
+      </div>
+      <div class="pg-cards" id="pg-cards"></div>
+    </section>
+    <section id="pg-run" hidden>
+      <a class="pg-back" href="./playground.html">Все игры полигона</a>
+      <div class="pg-heading">
+        <div class="pg-heading-identity"><span class="pg-sprite" id="pg-portrait" aria-hidden="true"></span><div><p class="pg-kicker" id="pg-hero"></p><h1 id="pg-title" tabindex="-1"></h1></div></div>
+        <span id="pg-level"></span>
+      </div>
+      <div class="pg-layout">
+        <div class="pg-play">
+          <div id="pg-board"></div>
+          <div class="pg-board-note" id="pg-board-note"></div>
+        </div>
+        <aside class="pg-console" aria-label="Управление">
+          <p id="pg-description"></p>
+          <div id="pg-feedback" role="status" aria-live="polite"></div>
+          <div id="pg-controls"></div>
+          <div id="pg-finish" hidden>
+            <strong>Уровень пройден</strong>
+            <button type="button" class="pg-button primary" id="pg-next"></button>
+            <a href="./playground.html">Выбрать другую игру</a>
+          </div>
+          <div class="pg-tools">
+            <button type="button" class="pg-button" id="pg-hint">Подсказка</button>
+            <button type="button" class="pg-button" id="pg-undo">Шаг назад</button>
+            <button type="button" class="pg-button" id="pg-restart">Начать заново</button>
+          </div>
+        </aside>
+      </div>
+    </section>
+    <noscript>Для игр полигона включи JavaScript.</noscript>
+  </main>
+  <!-- campaign-view:end -->
+  <script type="module" src="./playground/main.js"></script>
+</body>
+</html>

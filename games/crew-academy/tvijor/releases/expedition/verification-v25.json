@@ -1,0 +1,62 @@
+{
+  "release": 25,
+  "date": "2026-11-28",
+  "site": {
+    "url": "https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html",
+    "version": 25,
+    "id": "appgprj_6b08be8d319881918d089d9ce576a41f~appgver_079e2ff0e90c8191a2b4d88f47520370",
+    "deployment": "appgdep_6b0aa4f72eb88191a364675575a29bda",
+    "source": "a52bd045c9526956bc66c3c39a17dac9972f87ee",
+    "status": "succeeded",
+    "worker_sha256": "cc7a4211e94f0f2e2e4516345e25e89e0852e6693ec84296faeca85deefeea41"
+  },
+  "github": {
+    "pr": 20,
+    "commit": "7a2f6e777b477932ff7bed3afb1aebada944a893",
+    "game_files": 15
+  },
+  "tests": {
+    "node": 103,
+    "assets": 147,
+    "generated_levels_played_by_real_rule_functions": 1152,
+    "games": 3,
+    "levels_per_game_tested": [
+      2,
+      9
+    ],
+    "seeds_per_level": 48
+  },
+  "chrome": {
+    "preview_level1_and_2_each": true,
+    "public_level1_and_2_each": true,
+    "public_journal_entries": 6,
+    "balance_before": 21,
+    "balance_after": 21,
+    "previous_layout_restored_after_reload": true,
+    "portrait_and_landscape": [
+      [
+        375,
+        667
+      ],
+      [
+        390,
+        844
+      ],
+      [
+        844,
+        390
+      ]
+    ],
+    "horizontal_overflow_px": 0,
+    "physical_phone": false
+  },
+  "biba2": {
+    "path": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v25",
+    "review_files_exact": 13,
+    "patch_parts": 3,
+    "patch_bytes": 64728,
+    "patch_sha256": "d163b7595a6074c3676fe3e5f24f3b925071b779dafadd4010cb9a12a42afecd",
+    "rebuild_matching_worker": true,
+    "production_game_process_verified": false
+  }
+}

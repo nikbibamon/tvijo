@@ -1,0 +1,33 @@
+{
+  "version": 28,
+  "date": "2026-11-28",
+  "url": "https://tvijo-crew-academy.be9ava.chatgpt.site/chronicles.html",
+  "sourceCommit": "722da0c5fd80774f57b62b8209580cb4a39d1222",
+  "deployment": "appgdep_6b0ab812501c81919b4f6a77c1e92eab",
+  "verification": {
+    "nodeTestsPassed": 114,
+    "generatedExpeditionsSolved": 144,
+    "bundledAssets": 160,
+    "previewCompletedChapters": [
+      "origin",
+      "bridge"
+    ],
+    "threeEraTravelAndReturn": true,
+    "wrongSignalRecovered": true,
+    "filmGateAndPause": true,
+    "customHeroRestored": true,
+    "secondGeneratedEpisodeReached": true,
+    "mobileViewportWidths": [
+      360,
+      390
+    ],
+    "productionArtAndChapterPickerVerified": true
+  },
+  "mirror": {
+    "host": "biba2",
+    "release": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v28",
+    "patchParts": 24,
+    "patchSha256": "c9806c705d82ea0b492cb57c9ccbed93d7a74f4b4d81ee89e5adb22e0304b7dc",
+    "rebuiltWorkerSha256": "fa98e2745b14f165a9f0f2e120da1bb91ed2c5bb06677271495893436ced905a"
+  }
+}

@@ -19,7 +19,13 @@ class GatewayTest(unittest.TestCase):
         with tempfile.TemporaryDirectory() as folder, TestClient(
             build_app(Path(folder)/"test.sqlite"), base_url="https://testserver"
         ) as c:
-            self.assertIn("Ночной штаб",c.get("/").text)
+            home = c.get("/")
+            self.assertIn("Играть в «Первую смену»", home.text)
+            field = c.get("/first-shift.html")
+            self.assertEqual(field.status_code, 200)
+            self.assertEqual(field.content, home.content)
+            self.assertEqual(c.head("/first-shift.html").status_code, 200)
+            self.assertEqual(c.get("/expedition.html").status_code, 200)
             self.assertEqual(c.post("/api/herdr/turn", json=order()).json()["reply"]["changes"],["bridge"])
             self.assertEqual(c.post("/api/herdr/turn", json=order()).json()["source"],"cache")
             self.assertEqual(c.post("/api/herdr/turn", json={**order(),"user_id":"invented"}).status_code,422)

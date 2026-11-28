@@ -1,0 +1,37 @@
+plugins {
+    id 'com.android.application' version '8.13.2'
+}
+
+def projectRoot = rootProject.projectDir.parentFile
+def webAssets = layout.buildDirectory.dir('generated/clockwork/assets')
+def buildCampaign = tasks.register('buildCampaign', Exec) {
+    workingDir projectRoot
+    commandLine providers.gradleProperty('nodeExecutable').getOrElse('node'),
+        'tools/build-campaign.mjs', webAssets.get().asFile
+    inputs.files fileTree(new File(projectRoot, 'tools')) { include 'build-campaign.mjs', 'assemble-campaign.mjs' }
+    inputs.dir new File(projectRoot, 'web')
+    outputs.dir webAssets
+}
+
+android {
+    namespace 'com.tvijo.clockwork'
+    compileSdk 36
+    defaultConfig {
+        applicationId 'com.tvijo.centaur.chronicles'
+        minSdk 26
+        targetSdk 36
+        versionCode 1
+        versionName '0.2.0'
+    }
+    sourceSets.main.assets.srcDir(webAssets)
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+tasks.named('preBuild') { dependsOn buildCampaign }
+
+dependencies {
+    implementation 'androidx.webkit:webkit:1.15.0'
+}

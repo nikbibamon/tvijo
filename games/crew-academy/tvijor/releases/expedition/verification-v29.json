@@ -1,0 +1,52 @@
+{
+  "release": 29,
+  "date": "2026-11-28",
+  "site": {
+    "url": "https://tvijo-crew-academy.be9ava.chatgpt.site/clockwork.html",
+    "sourceCommit": "6b5699eb722fe7d6e23f86b1e396dc0a68b37c3b",
+    "status": "succeeded",
+    "verified": [
+      "Chronicles entry card",
+      "first placement",
+      "first goal",
+      "second blueprint"
+    ]
+  },
+  "checks": {
+    "nodeTestsPassed": 118,
+    "storeDesktopChrome": [
+      "three blueprints",
+      "ending",
+      "free build",
+      "undo",
+      "reload"
+    ],
+    "localFirstInteractiveMs": 74,
+    "responsiveFrameWidthsPx": [
+      390,
+      796
+    ],
+    "testedOnPhysicalPhone": false
+  },
+  "packages": {
+    "CrazyGames": {
+      "bytes": 13588,
+      "sha256": "d0bb56054e193e81c1c75571c795a4b1da12ff43ce4d8a95dc0f5d20e44c26d5"
+    },
+    "itch.io": {
+      "bytes": 13585,
+      "sha256": "6193c0ed3c8b2c372bdadf2c23943d7701e84c15187f3e3780fc370e6d5ed09f"
+    },
+    "Google Play": {
+      "targetSdk": 36,
+      "sourceOnly": true,
+      "signedBundleBuilt": false
+    }
+  },
+  "storeSubmissions": [],
+  "biba2": {
+    "directory": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v29",
+    "baseSiteCommit": "722da0c5fd80774f57b62b8209580cb4a39d1222",
+    "patchSha256": "d962662cc0e11a8460fcf0c550fc6124ef571e4389713ff6c4441a67c45e2000"
+  }
+}

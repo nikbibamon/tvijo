@@ -1,0 +1,31 @@
+{
+  "release": 30,
+  "site": {
+    "url": "https://tvijo-crew-academy.be9ava.chatgpt.site/chronicles.html",
+    "sourceCommit": "d788ffcd9237a53bdfc63ba0bf801b7e39f73dae",
+    "status": "succeeded",
+    "checked": [
+      "atlas",
+      "museum first action",
+      "same-page workshop"
+    ]
+  },
+  "checks": {
+    "nodeTestsPassed": 121,
+    "chapterStopsPlayed": 8,
+    "endingFramesPlayed": 3,
+    "midPuzzleReload": true,
+    "mobileIframeWidthPx": 390,
+    "testedOnPhysicalPhone": false
+  },
+  "package": {
+    "file": "Centaur-Chronicles-v30.zip",
+    "bytes": 2825215,
+    "sha256": "fa9b39d4262129cbf9e06142b493ff085992a654520c1888d32c1e859d285c28"
+  },
+  "android": {
+    "applicationId": "com.tvijo.centaur.chronicles",
+    "targetSdk": 36,
+    "signedBundleBuilt": false
+  }
+}

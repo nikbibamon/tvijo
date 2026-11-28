@@ -1,0 +1,162 @@
+{
+  "release": 23,
+  "date": "2026-11-28",
+  "game": "Tvijo · Академия экипажа",
+  "site": {
+    "url": "https://tvijo-crew-academy.be9ava.chatgpt.site",
+    "chain": "https://tvijo-crew-academy.be9ava.chatgpt.site/expedition.html#chain",
+    "rescue": "https://tvijo-crew-academy.be9ava.chatgpt.site/rescue-together.html",
+    "source": "e021d9afc9223f0142f049b7279db69851d8fbf2",
+    "version": 23,
+    "version_id": "appgprj_6b08be8d319881918d089d9ce576a41f~appgver_8a7543467b4c8191accff4a097cc618a",
+    "deployment_id": "appgdep_6b0a02a8cde48191826a7f210590ef96",
+    "status": "succeeded",
+    "assets": 138,
+    "worker_sha256": "6ee0f071aaee66b134c941d62581f2ad731b4381bdfcaceea5c03da58def72ea",
+    "previous": {
+      "version": 22,
+      "id": "appgprj_6b08be8d319881918d089d9ce576a41f~appgver_0813ac2b12448191933916a2ac8966ae",
+      "deployment_id": "appgdep_6b0a00db95408191bec5707ce3074c40",
+      "source": "6adcfd07c11c3570ffefaed18b425818acaaf94d"
+    }
+  },
+  "repo": {
+    "slug": "nikbibamon/tvijo",
+    "pr": 20,
+    "branch": "feat/remdesk-crew-expedition",
+    "game_commit": "c92595020617fe204c47a97b866f236f638b501b",
+    "previous_commit": "7a78ac5950b3d8e3226c7636d029f8ba7c9f4890",
+    "v22_paths": 29,
+    "v23_paths": 3
+  },
+  "checks": {
+    "node": 97,
+    "fastapi": 3,
+    "workers_get_head_mime_and_bytes": 138,
+    "fastapi_get_head_and_bytes": 138,
+    "test_page_absent": true,
+    "hosted_d1_rescue_migration_verified": true
+  },
+  "preview_chrome": {
+    "circuit": {
+      "lamp": {
+        "attempts": 3,
+        "recovered_from": [
+          "trap",
+          "gap"
+        ],
+        "restored_after_hq_and_reload": true
+      },
+      "pump": {
+        "attempts": 2,
+        "corrected_lamp_branch": true
+      },
+      "journal_both": true
+    },
+    "rescue": {
+      "interactive_browser_role": "Самолётик",
+      "independent_test_role": "Робот",
+      "invite_and_beacon_link_verified": true,
+      "wrong_marker_shown": true,
+      "resumed_after_reload_on_fixed_cable": true,
+      "goodToneAfterRetry": true,
+      "goodAnchorAfterRetry": true,
+      "pairCompleted": true,
+      "duplicateFinishKept": true,
+      "lane": "upper",
+      "final_capsule_visible": true,
+      "backpack_badge_visible": true,
+      "journal": true
+    },
+    "mobile_layouts": [
+      {
+        "viewport": [
+          375,
+          667
+        ],
+        "circuit": [
+          346,
+          195
+        ],
+        "rescue_lobby": [
+          355,
+          280
+        ]
+      },
+      {
+        "viewport": [
+          390,
+          844
+        ],
+        "circuit": [
+          361,
+          203
+        ],
+        "rescue_lobby": [
+          370,
+          280
+        ]
+      },
+      {
+        "viewport": [
+          844,
+          390
+        ],
+        "circuit": [
+          457,
+          257
+        ],
+        "rescue_lobby": [
+          777,
+          360
+        ]
+      }
+    ],
+    "horizontal_overflow_px": 0,
+    "min_primary_touch_height_px": 44
+  },
+  "worker_upgrade": {
+    "base": "v21",
+    "release": "v22",
+    "independentSessions": 2,
+    "reopens": 2,
+    "v21BeaconSurvivedMigration": true,
+    "preservedPrivateSignals": true,
+    "correctedBeaconAndBothWrongBranches": true,
+    "rescue": "done",
+    "lane": "lower",
+    "uniqueRescueRows": 1,
+    "assetRoutes": 138
+  },
+  "published_chrome": {
+    "hq_links": true,
+    "v21_lamp_award_recognized": true,
+    "pump_switch_restored_after_reload": true,
+    "workshop_transition": true,
+    "rescue_lobby": true,
+    "both_roles_verified_on_production": false,
+    "isolated_external_http_client": "Cloudflare signature policy did not allow API verification from the automated HTTP client."
+  },
+  "remdesk": {
+    "base": "/srv/remdesk/workspace/tvijo-crew-academy-online",
+    "v22": {
+      "parts": 18,
+      "bytes": 587250,
+      "sha256": "6bb7aa77b4b6a948dd6c486087aa28ebb9536bf36c57029ac3fa9cea107e8114",
+      "parts_read_back": 18
+    },
+    "v23": {
+      "hash": "405e13bc46c1752618b747d0877e827bd04bb0e62f4a3d741fdda39e992b44a7",
+      "bytes": 3620,
+      "path": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v23/update.patch",
+      "readback": true,
+      "rebuild": true
+    },
+    "runtime_verified": false
+  },
+  "open": [
+    "Five independent first-time players for M1, including a physical phone.",
+    "Two real devices on the public version, including Telegram entry and sound.",
+    "Public HTTPS and runtime integration on biba2."
+  ]
+}

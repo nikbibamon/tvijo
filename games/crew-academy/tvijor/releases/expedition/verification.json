@@ -1,0 +1,137 @@
+{
+  "release": "Tvijo Академия экипажа v13",
+  "deployed_at": "2026-11-27T15:26:22.996200+00:00",
+  "public_origin": "https://tvijo-crew-academy.be9ava.chatgpt.site",
+  "sites_project": "appgprj_6b08be8d319881918d089d9ce576a41f",
+  "sites_source": "551734cee62c08d37eca81d425f2fa5aab6b2078",
+  "sites_version": 13,
+  "sites_deployment": "appgdep_6b09a11071f081919953db6e505bfd09",
+  "github": {
+    "pr": 20,
+    "branch": "feat/remdesk-crew-expedition",
+    "puzzle_commit": "eec52efc54c64d4e2d7d08783274cd680169578b",
+    "game_source_commit": "aebcb64988d6c93e4017acb73af1b6dce7f14756",
+    "game_source_tree": "ae8f0333bc28f1f500d6f589f685f96e10c27882"
+  },
+  "worker": {
+    "sha256": "3c2e2069ba34fcb5df9f179a77431f25967dda9d41d10dd8c9bcc9d05585617c",
+    "assets": 92
+  },
+  "browser": {
+    "first_shift": "Главная → закрепить мост → взять капсулу → Алфавит маяка",
+    "alphabet": {
+      "clues": [
+        "Антенна",
+        "Блок питания",
+        "Створки"
+      ],
+      "orders": [
+        [
+          "echo",
+          "power",
+          "shutters"
+        ],
+        [
+          "power",
+          "echo",
+          "shutters"
+        ]
+      ],
+      "early_shutters": "Дочка ждёт. Дуги на антенне неподвижны, кабель у шлюза тёмный.",
+      "wrong_guess": "Сверь знак дуг с тем, что Самолётик делает у антенны.",
+      "undo_and_retry": "питать → слушать → отмена возвращает питать → слушать",
+      "reward": "Линза связи в рюкзаке. На постаменте осталось пустое гнездо."
+    },
+    "completed": [
+      "Склад Робота",
+      "Цепная реакция",
+      "Ремонтный шлюз (5/5)",
+      "Шахта эха",
+      "Радиомастерская (трос и трап)"
+    ],
+    "pack_after_reload": [
+      "Линза связи",
+      "Энергоячейка",
+      "Световое реле",
+      "Знак спасателей",
+      "Резонатор",
+      "Радиометка"
+    ],
+    "greenhouse": {
+      "voice_toggle": "включена",
+      "orders": [
+        "Разведать путь",
+        "Сверить сигналы",
+        "Вывести дрон"
+      ],
+      "visible_dome_reports": 1
+    },
+    "other_screens": [
+      "Штаб",
+      "Карта",
+      "Журнал",
+      "Герои",
+      "Награды",
+      "Настройки",
+      "Мастерская, шесть тем",
+      "Почта Нижнего острова",
+      "Маяк под волной",
+      "Парный маяк — открытие приглашения"
+    ],
+    "responsive_windows": [
+      [
+        390,
+        844
+      ],
+      [
+        667,
+        375
+      ]
+    ]
+  },
+  "tests": {
+    "compiled_source_node": {
+      "passed": 53,
+      "failed": 0
+    },
+    "github_source_node": {
+      "passed": 56,
+      "failed": 0,
+      "runtime": "24.22.3"
+    },
+    "fastapi": {
+      "passed": 3,
+      "methods": [
+        "GET /first-shift.html",
+        "HEAD /first-shift.html"
+      ]
+    },
+    "studio": {
+      "passed": 6
+    },
+    "art_and_routes": {
+      "locked_assets": 34,
+      "campaign": 6,
+      "generated": 900
+    }
+  },
+  "biba2": {
+    "game_path": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v12/game",
+    "game_source_files": 153,
+    "initial_receipt": "SOURCE-RECEIPT.json",
+    "updated_receipt": "SOURCE-CURRENT.json",
+    "worker_receipt": "VERIFIED.json",
+    "parity_receipt": "SERVER-PARITY.json",
+    "http_worker_checks": 10,
+    "verified_via": "in-process Worker requests on biba2",
+    "fastapi_direct_pytest": 3,
+    "focused_node_test_files": 4,
+    "biba_public_https_verified": false,
+    "full_node_suite_on_vm": "Node 20.20.0; available runtime does not support the full suite. The sandbox IPv4 loopback socket was denied."
+  },
+  "human_pilot": {
+    "last_recorded_attempts": 0,
+    "target_attempts": 5,
+    "physical_phone_and_audible_russian_voice": "ожидают живой проверки"
+  }
+}

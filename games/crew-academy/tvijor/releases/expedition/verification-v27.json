@@ -1,0 +1,32 @@
+{
+  "version": 27,
+  "date": "2026-11-28",
+  "url": "https://tvijo-crew-academy.be9ava.chatgpt.site/playground.html#duel",
+  "sourceCommit": "91f747941039f333f0139611c701603f1022ba0c",
+  "deployment": "appgdep_6b0ab272b044819193c840eb9f336379",
+  "verification": {
+    "nodeTestsPassed": 110,
+    "duelLayoutsSolved": 384,
+    "otherLayoutsSolved": 1536,
+    "bundledAssets": 150,
+    "previewWonLevels": [
+      1,
+      2
+    ],
+    "previewOpponentReply": true,
+    "previewRestoredRound": true,
+    "previewUndo": true,
+    "mobileViewportWidths": [
+      360,
+      390
+    ],
+    "launchVisibleWithoutScroll": true,
+    "productionOpeningVerified": true
+  },
+  "mirror": {
+    "host": "biba2",
+    "release": "/srv/remdesk/workspace/tvijo-crew-academy-online/releases/expedition-v27",
+    "patchSha256": "9b7c8170b3ecf6ac5bf3b64812df1e9c8dc6a68080316a0c54cd146c2f7c8929",
+    "rebuiltWorkerSha256": "c0815b134ce314034ce3bea7cf5e737843857015a13f20fe4b99a38978331eb5"
+  }
+}

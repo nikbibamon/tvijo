@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Awaitable, Callable
 
 from fastapi import FastAPI, HTTPException, Request
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -218,6 +218,10 @@ def build_app(database: Path | None = None, narrator: Narrator | None = None):
         sid = session_id(req)
         data = await asyncio.to_thread(app.state.records.report, sid) if sid else []
         return JSONResponse({"first_events":data}, headers={"Cache-Control":"no-store"})
+
+    @app.api_route("/first-shift.html", methods=["GET", "HEAD"], include_in_schema=False)
+    async def first_shift():
+        return FileResponse(ROOT / "web" / "index.html", media_type="text/html")
 
     app.mount("/", StaticFiles(directory=ROOT / "web", html=True), name="game")
     return app

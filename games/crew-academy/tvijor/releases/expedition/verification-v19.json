@@ -1,0 +1,127 @@
+{
+  "release": 19,
+  "date": "2026-11-27",
+  "game": "Tvijo · Академия экипажа",
+  "site": {
+    "url": "https://tvijo-crew-academy.be9ava.chatgpt.site",
+    "entry": "https://tvijo-crew-academy.be9ava.chatgpt.site/echo-mine.html",
+    "source": "07f537ab9e4456b1602f44f801bcfd374c5c6bde",
+    "version": 19,
+    "version_id": "appgprj_6b08be8d319881918d089d9ce576a41f~appgver_6bf825ebae248191b145fe08610fe996",
+    "deployment_id": "appgdep_6b09e6100b108191be67706894c1853b",
+    "status": "succeeded",
+    "assets": 115,
+    "worker_sha256": "cc354d429d8c25d48287a0151c7d8649e375f65ce8646bd52e08d43f899535f0"
+  },
+  "previous_game_release": {
+    "version": 18,
+    "source": "3b886289cf1de19b14123ccf4271408e098ee2e0",
+    "deployment_id": "appgdep_6b09e46d34c48191bcbfdb2727d86a65",
+    "worker_sha256": "c00acd285a3fc6b50614ed11bc5d8ac7d8cf69c9aa2c8d445d329802ef8de058"
+  },
+  "repo": {
+    "slug": "nikbibamon/tvijo",
+    "pr": 20,
+    "game_commit": "bb20a6c9451ce098e0c71c84128f17b7b624d84e",
+    "landscape_fix_commit": "78596ad35b719cfd4cd1937ac489275f31e2c020",
+    "branch": "feat/remdesk-crew-expedition"
+  },
+  "automated": {
+    "node": {
+      "passed": 79,
+      "failed": 0,
+      "new_mine_tests": 8
+    },
+    "fastapi": {
+      "passed": 3,
+      "failed": 0
+    },
+    "worker_routes_matching_media_types_and_source": 23,
+    "fastapi_routes_get_and_head": 8,
+    "storm_regression": "Five stages, wrong turns, keyboard, reload, restart and one persistent badge passed"
+  },
+  "browser": {
+    "engine": "Chrome",
+    "preview": [
+      {
+        "first": "Самолётик",
+        "ore_checks": 1,
+        "launches": 3,
+        "crossing": "трос",
+        "loaded_drone_reload": true,
+        "report_verified": true
+      },
+      {
+        "first": "Гуманоид",
+        "ore_checks": 0,
+        "launches": 1,
+        "crossing": "выдвижной настил",
+        "resumed_from_hq": true,
+        "report_verified": true
+      }
+    ],
+    "public_v19": {
+      "entry": "/echo-mine.html",
+      "resumed_via_hq": true,
+      "signals_restored": true,
+      "first": "Самолётик",
+      "ore_checks": 0,
+      "launches": 1,
+      "crossing": "трос",
+      "reloaded_with_drone": true,
+      "finished": true,
+      "global_journal_verified": true,
+      "prize": "Чёрный ящик разведчика"
+    },
+    "viewport_tests": {
+      "sizes_css_px": [
+        "375x667",
+        "390x844",
+        "844x390"
+      ],
+      "horizontal_document_overflow_px": {
+        "mine": [
+          0,
+          0,
+          0
+        ],
+        "hq": [
+          0,
+          0,
+          0
+        ]
+      },
+      "landscape_hq_overflow_px_before": 74,
+      "touch_device_hardware": false
+    }
+  },
+  "remdesk": {
+    "root": "/srv/remdesk/workspace/tvijo-crew-academy-online",
+    "patches": [
+      {
+        "directory": "releases/expedition-v18",
+        "base": "v17",
+        "path": "update.patch.part-01 … update.patch.part-21",
+        "parts": 21,
+        "bytes": 701810,
+        "sha256": "95c8ee13cd8127a7048e66ebb1bd5fc23e47e607d2f64f8d45539ec3e240f52e",
+        "all_parts_readback_exact": true
+      },
+      {
+        "directory": "releases/expedition-v19",
+        "base": "v18",
+        "path": "update.patch",
+        "bytes": 610,
+        "sha256": "4d3a5e4cb87967b0a59eeba652e3bce780d203e198f1d4c0e0b91e29a4cf983a",
+        "readback_exact": true
+      }
+    ],
+    "clean_local_v17_plus_both_patches_matches_publication_package": true,
+    "biba2_process_v19_verified": false
+  },
+  "open": [
+    "Physical phone and two real Telegram clients",
+    "Independent first-shift M1 playtests",
+    "Running the complete v19 process on biba2"
+  ]
+}

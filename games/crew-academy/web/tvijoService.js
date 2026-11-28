@@ -1,3 +1,4 @@
+import {createNarrator} from './narration.js';
 import {heroOrder,tiers,levels,crewIntro,moves} from './catalog.js';
 import {planTurn,tacticalDigest,resolveLevel,intent,readyTasks} from './strategy.js';
 import {makeSpec,cleanSpec,worldLevel,routeReachable,encodeWorld} from './worlds.js';
@@ -21,14 +22,32 @@ let queue=Promise.resolve();export function write(fn){
   const go=()=>navigator.locks?.request?navigator.locks.request(lock,async()=>op()):op();
   const result=queue.then(go,go);queue=result.catch(()=>{});return result;
 }
-window.addEventListener('storage',e=>{if(e.key===STORAGE){state=read();bus.dispatchEvent(new Event('change'));}});
-export function addLines(lines){chat=chat.concat(lines).slice(-70);bus.dispatchEvent(new Event('chat'));}
+function refreshState() {
+  state=read();
+  if (!state.voice) { silenceRadio(); setVoiceProblem(false); }
+  bus.dispatchEvent(new Event('change'));
+}
+window.addEventListener('storage',e=>{if(e.key===STORAGE)refreshState();});
+window.addEventListener('pageshow',e=>{if(e.persisted)refreshState();});
+export let radioAttempt=0;
+export function beginRadioAttempt(){radioAttempt++;}
+export function addLines(lines){chat=chat.concat(lines.map(msg=>({...msg,attempt:radioAttempt}))).slice(-70);bus.dispatchEvent(new Event('chat'));}
 export function setHero(id){return write(s=>{if(heroOrder.includes(id))s.hero=id;});}
 export function setShowHints(on){return write(s=>{s.showHints=on===true;});}
 export function setTier(t){return write(s=>{if(Object.hasOwn(tiers,t))s.tier=t;});}
-export function setLevel(l){return write(s=>{s.level=l.id;s.digest=null;});}
+export function setLevel(l){return write(s=>{s.level=l.id;s.digest=null;if(l.id!=='dock')delete s.resumeAfterShift;});}
+export function enterFirstShift(){
+  return write(s=>{
+    if(s.level!=='dock')s.resumeAfterShift=s.level;
+    s.level='dock';
+    const dock=stageOf(s,'dock');
+    if(s.completed.includes('dock')&&!dock.replaying){
+      dock.done=[];dock.replaying=true;
+    }
+  });
+}
 export function complete(id){
-  return write(s=>{const l=resolveLevel(id);if(!l||s.level!==id||!l.tasks.every(([t])=>s.stages[id]?.done.includes(t)))return false;if(!s.completed.includes(id)){s.completed.push(id);note(s,'field','Капсула получена · '+l.name);}return true;});
+  return write(s=>{const l=resolveLevel(id);if(!l||s.level!==id||!l.tasks.every(([t])=>s.stages[id]?.done.includes(t)))return false;if(!s.completed.includes(id)){s.completed.push(id);note(s,'field','Капсула получена · '+l.name);}if(id==='dock')delete s.stages.dock.replaying;return true;});
 }
 function stageOf(s,id){return s.stages[id]||={done:[],observed:[],turns:0,digest:null};}
 export function collectSpark(id,index){return write(s=>{const stage=stageOf(s,id);stage.sparks||=[];if(!stage.sparks.includes(index))stage.sparks.push(index);});}
@@ -70,7 +89,7 @@ export function fieldOrder(levelId,id,automatic=false){
   return turn(moves[id].example,false,id,automatic);
 }
 export async function turn(raw,voice=false,preset=null,automatic=false){
-  const text=raw.trim().slice(0,450);if(!text)return null;const s=state,l=currentLevel(),pre=doneFor().slice(),parsed=intent(text),tier=preset?'standard':s.tier,hero=s.hero;
+  const text=raw.trim().slice(0,450);if(!text)return null;const attempt=radioAttempt,s=state,l=currentLevel(),pre=doneFor().slice(),parsed=intent(text),tier=preset?'standard':s.tier,hero=s.hero;
   const lastDigest=s.stages[l.id]?.digest,feedback=lastDigest?{blocks:lastDigest.blocks,focus:lastDigest.focus}:null;
   const pkt={level:l.id,done:pre,tier,parsed,hero,feedback};const k=JSON.stringify([l.id,pre.slice().sort(),tier,hero,parsed.orders,parsed.who,parsed.kind,parsed.criteria,feedback]);
   const predicted=planTurn({level:l,done:pre,tier,parsed,hero,feedback});const cache=s.cache.includes(k),requestId=crypto.randomUUID();let source=preset?'preset':cache?'cache':'demo',reply=predicted;const began=now();
@@ -81,7 +100,7 @@ export async function turn(raw,voice=false,preset=null,automatic=false){
   }
   // The public service never debits. One local commit applies the reward and the demo cost together.
   const settled=await write(st=>{
-    if(st.level!==l.id)return {discarded:true};const scene=stageOf(st,l.id);
+    if(st.level!==l.id||attempt!==radioAttempt)return {discarded:true};const scene=stageOf(st,l.id);
     if(st.receipts.includes(requestId)||preset&&!readyTasks(l,scene.done).includes(preset))return {discarded:true};
     const current=planTurn({level:l,done:scene.done,tier,parsed,hero,feedback});
     if(current.changes.join()!==reply.changes.join()){reply=current;source='cache';}
@@ -130,9 +149,41 @@ export async function pilotReport(){
     return data.first_events.filter(x=>allowedEvents.has(x.event)&&Number.isInteger(x.seconds));
   });
 }
-export function speech(text){
-  if(!state.voice||!window.speechSynthesis)return;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(text.slice(0,200));u.lang='ru-RU';u.rate=1.03;speechSynthesis.speak(u);}catch{}
+export let voiceProblem = false;
+function setVoiceProblem(value) {
+  if (voiceProblem === value) return;
+  voiceProblem = value;
+  bus.dispatchEvent(new Event('voice-status'));
 }
+const narrator = createNarrator(globalThis, Date.now, playing => setVoiceProblem(!playing));
+let pendingVoice = null;
+let voiceRequest = 0;
+export function toggleVoice() {
+  const enabled = !(pendingVoice ?? state.voice);
+  const request = ++voiceRequest;
+  pendingVoice = enabled;
+  setVoiceProblem(false);
+  if (enabled) {
+    narrator.prepare();
+    narrator.say('Рация Tvijo на связи.');
+  }
+  else silenceRadio();
+  return write(s => { s.voice = enabled; }).finally(() => {
+    if (request === voiceRequest) pendingVoice = null;
+  });
+}
+export function speech(text){ if ((pendingVoice ?? state.voice) && !globalThis.document?.hidden) narrator.say(text); }
+export function silenceRadio(){ narrator.stop(); }
+function prepareRadio() {
+  if (pendingVoice ?? state.voice) narrator.prepare();
+}
+// Saved sound preferences still need a gesture to unlock Web Audio after navigation.
+window.addEventListener('pointerup', prepareRadio, true);
+window.addEventListener('keydown', prepareRadio, true);
+window.addEventListener('pagehide', silenceRadio);
+globalThis.document?.addEventListener('visibilitychange', () => {
+  if (document.hidden) silenceRadio();
+});
 let recorder=null;
 export function stopVoice(){if(recorder){try{recorder.abort();}catch{}recorder=null;}}
 export function dictate({onText,onState,onHint,onSpeech=()=>{}}){

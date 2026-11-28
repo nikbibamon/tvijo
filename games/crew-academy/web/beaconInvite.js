@@ -1,4 +1,5 @@
 import {invitationLinks,openTelegramShare} from './miniApp.js';
+import {rescueHref} from './rescue/mission.js';
 // One address follows both posts from the invitation to the result.
 export function beaconInvitation(room,{el,group,para,action,ii,request,track,share,play,campaign,code}){
  const me=room.me,offer=room.beacon||{status:'unavailable'};
@@ -10,7 +11,8 @@ export function beaconInvitation(room,{el,group,para,action,ii,request,track,sha
    const message=offer.status==='declined'?'Приглашение отклонено.':offer.status==='closed'?'Приглашение закрыто.':'Это приглашение уже недоступно.';
    return [intro,para(message),group('actions',...(offer.owner?[button('Создать новое приглашение',()=>request('beacon-link',{action:'create'}))]:[]),go())];
  }
- if(offer.status==='done')return [intro,el('h3','','Маяк зажжён!'),para('Смена с пилотом «'+offer.partner+'» завершена.'),group('actions',...(offer.owner?[button('Пригласить ещё одного друга',()=>request('beacon-link',{action:'create'}))]:[]),go())];
+ const rescue=()=>{const link=el('a','btn primary','В «Линию спасения»');link.href=rescueHref(offer.rescuePeer);return link;};
+ if(offer.status==='done')return [intro,el('h3','','Маяк зажжён!'),para('Смена с пилотом «'+offer.partner+'» завершена.'),group('actions',rescue(),...(offer.owner?[button('Пригласить ещё одного друга',()=>request('beacon-link',{action:'create'}))]:[]),go())];
  if(offer.status==='active')return [intro,button('На свой пост',()=>play(offer)),go()];
  if(offer.status==='waiting'){
    const link=invitationLinks('b',offer.code,location,room.telegramBot);
